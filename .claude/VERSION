@@ -1,1 +1,25 @@
-3.6.2
+{
+  "version": "1.0.0",
+  "type": "coc-use-template",
+  "description": "COC USE template for Ruby SDK projects (Magnus bindings)",
+  "released": "2026-03-31",
+  "upstream": {
+    "name": "loom",
+    "type": "coc-source",
+    "version": "1.2.0",
+    "build_version": "3.6.1",
+    "synced_at": "2026-03-31T15:00:00Z"
+  },
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-03-31",
+      "summary": "Initial Gate 2 sync — 515 artifacts from loom/ with rb variant overlays",
+      "changes": [
+        "Initial population: 515 artifacts (agents, commands, rules, skills, guides)",
+        "12 rb variant overlays applied (Ruby-specific patterns, commands, skills)",
+        "Express-first patterns in rules/patterns.md with Ruby syntax"
+      ]
+    }
+  ]
+}
