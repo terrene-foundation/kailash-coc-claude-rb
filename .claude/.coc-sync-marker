@@ -1,0 +1,1 @@
+{"synced_at": "2026-03-31T15:00:00Z", "source": "loom", "target": "kailash-coc-claude-rb", "source_version": "1.2.0", "target_version": "1.0.0", "variant": "rb", "sync_type": "gate2_initial", "stats": {"added": 515, "updated": 0, "unchanged": 0}}
