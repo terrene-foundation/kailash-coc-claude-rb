@@ -1,238 +1,257 @@
 ---
 paths:
-  - "**/trust/**"
+  - "lib/**/trust/**"
 ---
 
 # Trust-Plane Security Rules
 
 ## Scope
 
-These rules apply when editing trust-plane code.
+These rules apply when editing trust-plane code in the Ruby SDK.
 
 These rules supplement `.claude/rules/security.md`. Both apply to trust-plane files.
 Violations during code review by intermediate-reviewer are BLOCK-level findings.
 
 ## MUST Rules
 
-### 1. No Bare `open()` or `Path.read_text()` for Record Files
+### 1. No Bare `File.open` or `File.read` for Record Files
 
-```python
+```ruby
 # DO:
-from kailash.trust._locking import safe_read_json, safe_open
-data = safe_read_json(path)
+data = Kailash::Trust::Locking.safe_read_json(path)
 
 # DO NOT:
-with open(path) as f:           # Follows symlinks — attacker redirects to arbitrary file
-    data = json.load(f)
-data = json.loads(path.read_text())  # No symlink protection, no fd safety
+data = JSON.parse(File.read(path))       # Follows symlinks -- attacker redirects to arbitrary file
+File.open(path) { |f| JSON.parse(f.read) }  # No symlink protection, no fd safety
 ```
 
-**Why**: `safe_read_json()` and `safe_open()` use `O_NOFOLLOW` to prevent symlink attacks. Bare `open()` and `Path.read_text()` bypass all protections.
+**Why**: `safe_read_json` uses `File.realpath` and `O_NOFOLLOW` (where supported) to prevent symlink attacks. Bare `File.read` and `File.open` bypass all protections.
 
-### 2. `validate_id()` on Every Externally-Sourced Record ID
+### 2. `validate_id` on Every Externally-Sourced Record ID
 
-```python
+```ruby
 # DO:
-from kailash.trust._locking import validate_id
-validate_id(record_id)  # Raises ValueError on "../", "/", null bytes, etc.
-path = store_dir / f"{record_id}.json"
+Kailash::Trust::Locking.validate_id(record_id)  # Raises ArgumentError on "../", "/", null bytes, etc.
+path = File.join(store_dir, "#{record_id}.json")
 
 # DO NOT:
-path = store_dir / f"{user_input}.json"  # Path traversal: "../../../etc/passwd"
-cursor.execute(f"SELECT * FROM records WHERE id = '{record_id}'")  # SQL injection
+path = File.join(store_dir, "#{user_input}.json")  # Path traversal: "../../../etc/passwd"
+conn.exec("SELECT * FROM records WHERE id = '#{record_id}'")  # SQL injection
 ```
 
-**Why**: The regex `^[a-zA-Z0-9_-]+$` prevents directory traversal and SQL injection via IDs. Every method that accepts a record ID or query parameter MUST validate before use.
+**Why**: The regex `/\A[a-zA-Z0-9_-]+\z/` prevents directory traversal and SQL injection via IDs. Every method that accepts a record ID or query parameter MUST validate before use.
 
-### 3. `math.isfinite()` on All Numeric Constraint Fields
+### 3. `Float#finite?` on All Numeric Constraint Fields
 
-```python
-# DO (in __post_init__ or from_dict):
-if self.max_cost is not None and not math.isfinite(self.max_cost):
-    raise ValueError("max_cost must be finite")
+```ruby
+# DO (in initialize or from_hash):
+raise ArgumentError, "max_cost must be finite" if max_cost && !max_cost.to_f.finite?
 
 # DO NOT:
-if self.max_cost is not None and self.max_cost < 0:
-    raise ValueError("negative")  # NaN passes, Inf passes
+raise ArgumentError, "negative" if max_cost && max_cost < 0  # NaN passes, Inf passes
 ```
 
-**Why**: `NaN` and `Inf` bypass numeric comparisons (`NaN < 0` is `False`, `Inf < 0` is `False`). Constraints set to `NaN` make all checks pass silently.
+**Why**: `Float::NAN` and `Float::INFINITY` bypass numeric comparisons (`Float::NAN < 0` is `false`, `Float::INFINITY < 0` is `false`). Constraints set to `NaN` make all checks pass silently.
 
-### 4. Bounded Collections (`maxlen=10000`)
+### 4. Bounded Collections (max size 10_000)
 
-```python
+```ruby
 # DO:
-call_log: deque = field(default_factory=lambda: deque(maxlen=10000))
+class BoundedLog
+  MAX_SIZE = 10_000
+
+  def initialize
+    @entries = []
+  end
+
+  def push(entry)
+    @entries.shift(@entries.size - (MAX_SIZE * 9 / 10)) if @entries.size >= MAX_SIZE
+    @entries << entry
+  end
+end
 
 # DO NOT:
-call_log: list = field(default_factory=list)  # Grows without bound -> OOM
+@call_log = []  # Grows without bound -> OOM
 ```
 
 **Why**: Unbounded collections in long-running processes lead to memory exhaustion. Trim oldest 10% when at capacity.
 
 ### 5. Parameterized SQL for All Database Queries
 
-```python
-# DO:
-cursor.execute("SELECT * FROM decisions WHERE id = ?", (record_id,))
-cursor.execute("INSERT INTO decisions (id, data) VALUES (?, ?)", (id, data))
+```ruby
+# DO (PG gem):
+conn.exec_params("SELECT * FROM decisions WHERE id = $1", [record_id])
+conn.exec_params("INSERT INTO decisions (id, data) VALUES ($1, $2)", [id, data])
+
+# DO (Sequel):
+DB[:decisions].where(id: record_id).first
+DB[:decisions].insert(id: id, data: data)
 
 # DO NOT:
-cursor.execute(f"SELECT * FROM decisions WHERE id = '{record_id}'")
-cursor.execute("INSERT INTO decisions VALUES (" + id + ", " + data + ")")
+conn.exec("SELECT * FROM decisions WHERE id = '#{record_id}'")
+conn.exec("INSERT INTO decisions VALUES (#{id}, #{data})")
 ```
 
-**Why**: f-string interpolation into SQL enables injection. Even validated IDs should use parameterized queries as defense-in-depth.
+**Why**: String interpolation into SQL enables injection. Even validated IDs should use parameterized queries as defense-in-depth.
 
-### 6. SQLite Database File Permissions
+### 6. Database File Permissions
 
-```python
+```ruby
 # DO (on POSIX):
-import os, stat
-db_path.touch(mode=0o600)  # Owner read/write only
-os.chmod(db_path, stat.S_IRUSR | stat.S_IWUSR)
+FileUtils.touch(db_path)
+File.chmod(0o600, db_path)  # Owner read/write only
 
 # DO NOT:
-db_path.touch()  # Default permissions may be world-readable
+FileUtils.touch(db_path)  # Default permissions may be world-readable
 ```
 
-**Why**: SQLite database files (`.db`, `-wal`, `-shm`) contain all trust records. Default permissions may expose them to other users on shared systems.
+**Why**: Database files (`.db`, `-wal`, `-shm`) contain all trust records. Default permissions may expose them to other users on shared systems.
 
-### 7. All Record Writes Through `atomic_write()`
+### 7. All Record Writes Through `atomic_write`
 
-```python
+```ruby
 # DO:
-from kailash.trust._locking import atomic_write
-atomic_write(path, json.dumps(record.to_dict()))
+Kailash::Trust::Locking.atomic_write(path, JSON.generate(record.to_h))
 
 # DO NOT:
-with open(path, 'w') as f:  # Partial write on crash = corrupted record
-    json.dump(record, f)
+File.write(path, JSON.generate(record))  # Partial write on crash = corrupted record
+File.open(path, "w") { |f| f.write(JSON.generate(record)) }
 ```
 
-**Why**: `atomic_write()` uses temp file + `fsync` + `os.replace()` for crash safety. The `O_NOFOLLOW` flag also prevents symlink attacks during writes.
+**Why**: `atomic_write` uses temp file + `fsync` + `File.rename` for crash safety. It also checks `File.realpath` to prevent symlink attacks during writes.
 
 ## MUST NOT Rules
 
 ### 1. MUST NOT Use `==` to Compare HMAC Digests
 
-```python
+```ruby
 # DO:
-import hmac as hmac_mod
-if not hmac_mod.compare_digest(stored_hash, computed_hash):
-    raise TamperDetectedError(...)
+require "openssl"
+unless OpenSSL.secure_compare(stored_hash, computed_hash)
+  raise Kailash::Trust::TamperDetectedError, "..."
+end
+
+# Or using Rack::Utils if available:
+unless Rack::Utils.secure_compare(stored_hash, computed_hash)
+  raise Kailash::Trust::TamperDetectedError, "..."
+end
 
 # DO NOT:
-if stored_hash != computed_hash:  # Timing side-channel for byte-by-byte forgery
-    raise TamperDetectedError(...)
+if stored_hash != computed_hash  # Timing side-channel for byte-by-byte forgery
+  raise Kailash::Trust::TamperDetectedError, "..."
+end
 ```
 
-**Why**: String equality (`==`) leaks timing information. An attacker can measure comparison time to determine how many bytes match.
+**Why**: String equality (`==`) leaks timing information. An attacker can measure comparison time to determine how many bytes match. Use `OpenSSL.secure_compare` or `Rack::Utils.secure_compare` for constant-time comparison.
 
 ### 2. MUST NOT Downgrade Trust State
 
-```python
+```ruby
 # CORRECT: Monotonic escalation only
-# AUTO_APPROVED -> FLAGGED -> HELD -> BLOCKED (only forward)
+# :auto_approved -> :flagged -> :held -> :blocked (only forward)
 
 # FORBIDDEN:
-if some_condition:
-    verdict = Verdict.AUTO_APPROVED  # Downgrading from HELD is forbidden
+verdict = :auto_approved if some_condition  # Downgrading from :held is forbidden
 ```
 
-**Why**: Trust state can only escalate, never relax. A HELD action cannot become AUTO_APPROVED — it must be explicitly resolved through the hold workflow.
+**Why**: Trust state can only escalate, never relax. A HELD action cannot become AUTO_APPROVED -- it must be explicitly resolved through the hold workflow.
 
-### 3. MUST NOT Write Records Without `atomic_write()`
+### 3. MUST NOT Write Records Without `atomic_write`
 
-Any filesystem record write that bypasses `atomic_write()` is a security defect. See MUST Rule 7.
+Any filesystem record write that bypasses `atomic_write` is a security defect. See MUST Rule 7.
 
 ### 4. MUST NOT Leave Private Key Material in Memory
 
-```python
+```ruby
 # DO:
 key_mgr.register_key(key_id, private_key)
-del private_key  # Remove reference immediately
+private_key.replace("\0" * private_key.bytesize)  # Overwrite contents
+private_key = nil
 
 # On revocation:
-self._keys[key_id] = ""  # Clear material, keep tombstone
+@keys[key_id] = ""  # Clear material, keep tombstone
 
 # DO NOT:
 key_mgr.register_key(key_id, private_key)
-# private_key persists in scope — visible to memory dumps
+# private_key persists in scope -- visible to memory dumps
 ```
 
-**Why**: Private key material in memory is vulnerable to debugger inspection and memory dumps.
+**Why**: Private key material in memory is vulnerable to debugger inspection and memory dumps. Ruby strings are mutable, so overwrite with null bytes before discarding.
 
-### 5. MUST NOT Construct `MultiSigPolicy` as Mutable
+### 5. MUST NOT Construct Policy Objects as Mutable After Validation
 
-```python
+```ruby
 # DO:
-@dataclass(frozen=True)
-class MultiSigPolicy:
-    required_signatures: int
-    ...
+class MultiSigPolicy
+  attr_reader :required_signatures
+
+  def initialize(required_signatures:)
+    raise ArgumentError, "must be positive" unless required_signatures.positive?
+    @required_signatures = required_signatures
+    freeze
+  end
+end
 
 # DO NOT:
-@dataclass  # Mutable — fields can be changed after __post_init__ validation
-class MultiSigPolicy:
-    ...
+class MultiSigPolicy
+  attr_accessor :required_signatures  # Mutable -- fields can be changed after validation
+end
 ```
 
-**Why**: Without `frozen=True`, an attacker with object reference can bypass `__post_init__` validation by directly setting fields. This applies to ALL five constraint sub-dataclasses (`OperationalConstraints`, `DataAccessConstraints`, `FinancialConstraints`, `TemporalConstraints`, `CommunicationConstraints`) — all must be `frozen=True`. Use `object.__setattr__` in `__post_init__` if field normalization is needed (e.g., `DataAccessConstraints`).
+**Why**: Without `freeze`, an attacker with object reference can bypass validation by directly setting fields. This applies to ALL five constraint classes (`OperationalConstraints`, `DataAccessConstraints`, `FinancialConstraints`, `TemporalConstraints`, `CommunicationConstraints`) -- all must call `freeze` after initialization.
 
 ### 6. MUST NOT Pass Unvalidated Cost Values to Budget Checks
 
-```python
+```ruby
 # DO:
-import math
-action_cost = float(ctx.get("cost", 0.0))
-if not math.isfinite(action_cost) or action_cost < 0:
-    return Verdict.BLOCKED  # Fail-closed on NaN/Inf/negative
+action_cost = ctx.fetch("cost", 0.0).to_f
+unless action_cost.finite? && action_cost >= 0
+  return :blocked  # Fail-closed on NaN/Inf/negative
+end
 
 # DO NOT:
-action_cost = float(ctx.get("cost", 0.0))
-if action_cost > limit:  # NaN > limit is always False — budget bypassed!
-    return Verdict.BLOCKED
+action_cost = ctx.fetch("cost", 0.0).to_f
+return :blocked if action_cost > limit  # NaN > limit is always false -- budget bypassed!
 ```
 
-**Why**: `NaN` bypasses all numeric comparisons (`NaN > X` is always `False`). If `NaN` enters `session_cost` via `+=`, it permanently poisons the accumulator — all future budget checks pass. Every path that accepts a cost value (`check()`, `record_action()`, `from_dict()`) MUST validate with `math.isfinite()`.
+**Why**: `Float::NAN` bypasses all numeric comparisons (`Float::NAN > x` is always `false`). If `NaN` enters `session_cost` via `+=`, it permanently poisons the accumulator -- all future budget checks pass. Every path that accepts a cost value MUST validate with `finite?`.
 
-### 7. MUST NOT Catch Bare `KeyError` Where `RecordNotFoundError` Is Intended
+### 7. MUST NOT Rescue Bare `KeyError` Where `RecordNotFoundError` Is Intended
 
-```python
+```ruby
 # DO:
-from kailash.trust.plane.exceptions import RecordNotFoundError
-try:
-    delegate = store.get_delegate(did)
-except RecordNotFoundError:
-    pass  # Already gone
+begin
+  delegate = store.get_delegate(did)
+rescue Kailash::Trust::RecordNotFoundError
+  # Already gone
+end
 
 # DO NOT:
-try:
-    delegate = store.get_delegate(did)
-except KeyError:  # Too broad after dual-hierarchy change
-    pass
+begin
+  delegate = store.get_delegate(did)
+rescue KeyError  # Too broad -- catches unrelated hash lookup failures
+  # ...
+end
 ```
 
-**Why**: `RecordNotFoundError` inherits from both `TrustPlaneStoreError` and `KeyError`. Bare `except KeyError` now catches store errors, potentially swallowing unrelated dict lookup failures or corrupted-record exceptions.
+**Why**: `RecordNotFoundError` may inherit from both `Kailash::Trust::StoreError` and `KeyError`. Bare `rescue KeyError` catches store errors and potentially swallows unrelated hash lookup failures or corrupted-record exceptions.
 
-### 8. MUST: Use `normalize_resource_path()` for All Constraint Pattern Storage and Comparison
+### 8. MUST: Use `normalize_resource_path` for All Constraint Pattern Storage and Comparison
 
-All constraint patterns and resource paths MUST be normalized via `normalize_resource_path()` before storage or comparison. Direct use of `posixpath.normpath`, `os.path.normpath`, or `Path.as_posix()` for constraint patterns is FORBIDDEN.
+All constraint patterns and resource paths MUST be normalized via `Kailash::Trust.normalize_resource_path` before storage or comparison. Direct use of `File.expand_path`, `Pathname#cleanpath`, or manual path manipulation for constraint patterns is FORBIDDEN.
 
-```python
+```ruby
 # DO:
-from kailash.trust.pathutils import normalize_resource_path
-norm = normalize_resource_path(user_path)
+norm = Kailash::Trust.normalize_resource_path(user_path)
 
 # DO NOT:
-norm = os.path.normpath(user_path)  # Platform-dependent, Windows produces backslashes
-norm = Path(user_path).as_posix()   # Doesn't collapse double slashes
+norm = File.expand_path(user_path)      # Platform-dependent, resolves against cwd
+norm = Pathname.new(user_path).cleanpath.to_s  # Doesn't normalize separators consistently
 ```
 
-**Why**: `os.path.normpath` produces backslashes on Windows, breaking cross-platform constraint matching. `Path.as_posix()` doesn't collapse double slashes. `normalize_resource_path()` provides consistent forward-slash normalization on all platforms.
+**Why**: `File.expand_path` resolves against the current working directory and behaves differently across platforms. `Pathname#cleanpath` doesn't collapse double slashes consistently. `normalize_resource_path` provides consistent forward-slash normalization on all platforms.
 
 ## Cross-References
 
-- `.claude/rules/security.md` — Global security rules (secrets, injection, input validation)
-- `.claude/rules/eatp.md` — EATP SDK conventions (dataclasses, error hierarchy, cryptography)
+- `.claude/rules/security.md` -- Global security rules (secrets, injection, input validation)
+- `.claude/rules/eatp.md` -- EATP SDK conventions (error hierarchy, cryptography)

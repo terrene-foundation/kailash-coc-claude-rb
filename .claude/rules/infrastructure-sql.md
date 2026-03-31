@@ -1,237 +1,292 @@
 ---
 paths:
-  - "**/db/**"
-  - "**/infrastructure/**"
+  - "lib/**/db/**"
+  - "lib/**/infrastructure/**"
 ---
 
 # Infrastructure SQL Rules
 
 ## Scope
 
-These rules apply when editing database infrastructure code.
+These rules apply when editing files in:
+
+- `lib/**/db/**`
+- `lib/**/infrastructure/**`
 
 ## MUST Rules
 
-### 1. Validate SQL Identifiers with `_validate_identifier()`
+### 1. Validate SQL Identifiers
 
 Every method that interpolates a table or column name into SQL MUST validate it first.
 
-```python
+```ruby
 # DO:
-from kailash.db.dialect import _validate_identifier
-_validate_identifier(table_name)
-await conn.execute(f"SELECT * FROM {table_name} WHERE id = ?", record_id)
+TABLE_NAME_RE = /\A[a-zA-Z_][a-zA-Z0-9_]*\z/
+
+def validate_identifier!(name)
+  unless TABLE_NAME_RE.match?(name)
+    raise ArgumentError, "Invalid SQL identifier '#{name}': must match [a-zA-Z_][a-zA-Z0-9_]*"
+  end
+end
+
+validate_identifier!(table_name)
+db.execute("SELECT * FROM #{table_name} WHERE id = ?", record_id)
 
 # DO NOT:
-await conn.execute(f"SELECT * FROM {user_input} WHERE id = ?", record_id)
+db.execute("SELECT * FROM #{user_input} WHERE id = ?", record_id)
 ```
 
 **Why**: Unvalidated identifiers enable SQL injection. The regex `^[a-zA-Z_][a-zA-Z0-9_]*$` prevents all injection vectors.
 
-**Enforced by**: Red team finding C6 — all public methods in dialect.py, task_queue.py, and worker_registry.py validate identifiers.
+**Enforced by**: Red team finding C6 — all public methods in dialect, task queue, and worker registry modules validate identifiers.
 
-### 2. Use Transactions for Multi-Statement Operations
+### 2. Use Parameterized Queries — Always
 
-Any operation involving more than one SQL statement that must be atomic MUST use `conn.transaction()`.
+All user-provided values MUST use parameterized queries via Sequel or ActiveRecord. NEVER interpolate values into SQL strings.
 
-```python
+```ruby
+# DO: Sequel parameterized queries
+DB[:users].where(id: user_id).first
+DB[:users].where(Sequel.like(:name, pattern)).all
+DB.fetch("SELECT * FROM users WHERE id = ?", user_id).first
+
+# DO: ActiveRecord parameterized queries
+User.where(id: user_id).first
+User.where("name LIKE ?", pattern).to_a
+
+# DO NOT: String interpolation
+DB.execute("SELECT * FROM users WHERE id = #{user_id}")        # <-- SQL injection!
+User.where("name = '#{name}'")                                  # <-- SQL injection!
+DB.execute("DELETE FROM users WHERE id = " + id.to_s)           # <-- SQL injection!
+```
+
+**Why**: Parameterized queries prevent SQL injection regardless of input content. Ruby's Sequel and ActiveRecord both support parameterized queries natively.
+
+### 3. Use Transactions for Multi-Statement Operations
+
+Any operation involving more than one SQL statement that must be atomic MUST use `DB.transaction`.
+
+```ruby
 # DO:
-async with conn.transaction() as tx:
-    row = await tx.fetchone("SELECT MAX(seq) FROM events WHERE stream = ?", stream)
-    await tx.execute("INSERT INTO events (stream, seq, data) VALUES (?, ?, ?)", ...)
+DB.transaction do
+  row = DB[:events].where(stream: stream).max(:seq)
+  DB[:events].insert(stream: stream, seq: (row || 0) + 1, data: data)
+end
 
 # DO NOT:
-row = await conn.fetchone("SELECT MAX(seq) FROM events WHERE stream = ?", stream)
-await conn.execute("INSERT INTO events (stream, seq, data) VALUES (?, ?, ?)", ...)
+row = DB[:events].where(stream: stream).max(:seq)
+DB[:events].insert(stream: stream, seq: (row || 0) + 1, data: data)
 ```
 
 **Why**: Without a transaction, auto-commit releases locks between statements. This causes race conditions (C2, C3, C4 in red team report): event store sequence races, idempotency TOCTOU, task queue lock release.
 
-### 3. Use `?` Canonical Placeholders
+### 4. Use Sequel/ActiveRecord Dialect Abstractions
 
-All SQL in infrastructure code MUST use `?` as the parameter placeholder. ConnectionManager translates to dialect-specific format automatically.
+SQL in infrastructure code MUST use framework abstractions for dialect-portable operations. Do NOT write raw dialect-specific SQL.
 
-```python
-# DO:
-await conn.execute("INSERT INTO tasks VALUES (?, ?)", task_id, status)
+```ruby
+# DO: Sequel dataset API (dialect-portable)
+DB[:tasks].insert(task_id: task_id, status: status)
+DB[:tasks].where(task_id: task_id).update(status: "complete")
 
-# DO NOT:
-await conn.execute("INSERT INTO tasks VALUES ($1, $2)", task_id, status)
-await conn.execute("INSERT INTO tasks VALUES (%s, %s)", task_id, status)
+# DO: When raw SQL is needed, use ? placeholders
+DB.fetch("INSERT INTO tasks (task_id, status) VALUES (?, ?)", task_id, status)
+
+# DO NOT: Dialect-specific raw SQL
+DB.execute("INSERT INTO tasks VALUES ($1, $2)", task_id, status)  # PostgreSQL only
+DB.execute("INSERT INTO tasks VALUES (%s, %s)", task_id, status)  # MySQL only
 ```
 
-**Why**: `?` is the canonical placeholder. `translate_query()` converts to `$1` (PostgreSQL), `%s` (MySQL), or `?` (SQLite) automatically.
+**Why**: Sequel and ActiveRecord translate to dialect-specific format automatically. Hardcoded dialect syntax breaks portability.
 
-### 4. Use `dialect.blob_type()` Not Hardcoded BLOB
+### 5. Use Database-Level Upserts, Not Check-Then-Act
 
-DDL that includes binary columns MUST use `dialect.blob_type()`.
+Any "insert or update" operation MUST use the database's upsert mechanism.
 
-```python
-# DO:
-blob_type = conn.dialect.blob_type()
-await conn.execute(f"CREATE TABLE checkpoints (id TEXT PRIMARY KEY, data {blob_type})")
+```ruby
+# DO: Sequel upsert (insert_conflict)
+DB[:checkpoints].insert_conflict(
+  target: [:run_id, :node_id],
+  update: { data: data, updated_at: Time.now }
+).insert(run_id: run_id, node_id: node_id, data: data, updated_at: Time.now)
 
-# DO NOT:
-await conn.execute("CREATE TABLE checkpoints (id TEXT PRIMARY KEY, data BLOB)")
-```
-
-**Why**: PostgreSQL uses `BYTEA`, not `BLOB`. Hardcoded `BLOB` fails on PostgreSQL (H2 in red team report).
-
-### 5. Use `dialect.upsert()` Not Check-Then-Act
-
-Any "insert or update" operation MUST use `dialect.upsert()` or `dialect.insert_ignore()`.
-
-```python
-# DO:
-sql, param_cols = conn.dialect.upsert(
-    "checkpoints", ["run_id", "node_id", "data", "updated_at"],
-    ["run_id", "node_id"]
+# DO: ActiveRecord upsert
+Checkpoint.upsert(
+  { run_id: run_id, node_id: node_id, data: data, updated_at: Time.now },
+  unique_by: [:run_id, :node_id]
 )
 
-# DO NOT:
-row = await conn.fetchone("SELECT * FROM checkpoints WHERE run_id = ?", run_id)
-if row:
-    await conn.execute("UPDATE checkpoints SET data = ? WHERE run_id = ?", data, run_id)
-else:
-    await conn.execute("INSERT INTO checkpoints VALUES (?, ?)", run_id, data)
+# DO NOT: Check-then-act (TOCTOU race)
+row = DB[:checkpoints].where(run_id: run_id).first
+if row
+  DB[:checkpoints].where(run_id: run_id).update(data: data)
+else
+  DB[:checkpoints].insert(run_id: run_id, data: data)
+end
 ```
 
 **Why**: Check-then-act is a TOCTOU race. Between the SELECT and INSERT, another process can insert the same row (M1 in red team report).
 
 ### 6. Validate Table Names in Constructors
 
-Store classes that accept a configurable table name MUST validate it in `__init__`.
+Store classes that accept a configurable table name MUST validate it in `initialize`.
 
-```python
+```ruby
 # DO:
-_TABLE_NAME_RE = re.compile(r"^[a-zA-Z_][a-zA-Z0-9_]*$")
+TABLE_NAME_RE = /\A[a-zA-Z_][a-zA-Z0-9_]*\z/
 
-def __init__(self, conn, table_name="kailash_task_queue"):
-    if not _TABLE_NAME_RE.match(table_name):
-        raise ValueError(f"Invalid table name '{table_name}': must match [a-zA-Z_][a-zA-Z0-9_]*")
-    self._table = table_name
+def initialize(db, table_name: "kailash_task_queue")
+  unless TABLE_NAME_RE.match?(table_name)
+    raise ArgumentError, "Invalid table name '#{table_name}': must match [a-zA-Z_][a-zA-Z0-9_]*"
+  end
+  @db = db
+  @table_name = table_name.freeze
+end
 
 # DO NOT:
-def __init__(self, conn, table_name="kailash_task_queue"):
-    self._table = table_name  # No validation!
+def initialize(db, table_name: "kailash_task_queue")
+  @db = db
+  @table_name = table_name  # No validation!
+end
 ```
 
 **Why**: Constructor-time validation prevents injection before any SQL is ever generated (C6+ fix in convergence report).
 
 ### 7. Bound In-Memory Stores
 
-In-memory stores (dicts, OrderedDicts) MUST have a maximum size with LRU eviction.
+In-memory stores (Hashes, Arrays) MUST have a maximum size with LRU eviction.
 
-```python
+```ruby
 # DO:
-from collections import OrderedDict
+MAX_ENTRIES = 10_000
 
-_MAX_ENTRIES = 10000
+class InMemoryExecutionStore
+  def initialize(max_entries: MAX_ENTRIES)
+    @store = {}
+    @order = []
+    @max_entries = max_entries
+    @mutex = Mutex.new
+  end
 
-class InMemoryExecutionStore:
-    def __init__(self, max_entries=_MAX_ENTRIES):
-        self._store: OrderedDict[str, Dict] = OrderedDict()
-        self._max_entries = max_entries
-
-    async def record_start(self, run_id, ...):
-        while len(self._store) >= self._max_entries:
-            self._store.popitem(last=False)  # Evict oldest
-        self._store[run_id] = {...}
+  def record_start(run_id, data)
+    @mutex.synchronize do
+      while @store.size >= @max_entries
+        oldest = @order.shift
+        @store.delete(oldest)
+      end
+      @order << run_id
+      @store[run_id] = data
+    end
+  end
+end
 
 # DO NOT:
-class InMemoryExecutionStore:
-    def __init__(self):
-        self._store: dict = {}  # Grows without bound -> OOM
+class InMemoryExecutionStore
+  def initialize
+    @store = {}  # Grows without bound -> OOM
+  end
+end
 ```
 
 **Why**: Unbounded collections in long-running processes lead to memory exhaustion (H1 in red team report). Default bound: 10,000 entries.
 
-### 8. Lazy Driver Imports
+### 8. Lazy Driver Requires
 
-Database driver packages (`aiosqlite`, `asyncpg`, `aiomysql`) MUST be imported inside the method that uses them, not at module top level.
+Database driver gems (`pg`, `mysql2`, `sqlite3`) MUST be required inside the method that uses them, not at file top level.
 
-```python
+```ruby
 # DO:
-async def _init_postgres(self):
-    try:
-        import asyncpg
-    except ImportError as exc:
-        raise ImportError(
-            "asyncpg is required for PostgreSQL connections. "
-            "Install it with: pip install kailash[postgres]"
-        ) from exc
-    self._pool = await asyncpg.create_pool(self.url)
+def init_postgres
+  begin
+    require "pg"
+  rescue LoadError => e
+    raise LoadError,
+      "pg gem is required for PostgreSQL connections. " \
+      "Add it to your Gemfile: gem 'pg'",
+      cause: e
+  end
+  @pool = PG::Connection.new(@url)
+end
 
 # DO NOT:
-import asyncpg  # Module-level import -- fails at import time if not installed
+require "pg"  # Top-level require — fails at require time if gem not installed
 ```
 
-**Why**: `pip install kailash` (without extras) must work at Level 0. Lazy imports ensure optional drivers are only required when actually used.
+**Why**: `gem install kailash` (without extras) must work at Level 0. Lazy requires ensure optional drivers are only needed when actually used.
 
 ## MUST NOT Rules
 
-### 1. No `AUTOINCREMENT` in Shared DDL
+### 1. No Dialect-Specific DDL in Shared Code
 
-MUST NOT use `AUTOINCREMENT` in table definitions that must work across databases.
+MUST NOT use dialect-specific DDL keywords in table definitions that must work across databases.
 
-```python
-# DO:
-"CREATE TABLE events (id INTEGER PRIMARY KEY, ...)"
-# INTEGER PRIMARY KEY auto-increments natively on SQLite, PostgreSQL, and MySQL
+```ruby
+# DO: Use Sequel migrations (dialect-portable)
+DB.create_table(:events) do
+  primary_key :id
+  String :stream, null: false
+  Integer :seq, null: false
+  column :data, :text
+end
 
-# DO NOT:
-"CREATE TABLE events (id INTEGER PRIMARY KEY AUTOINCREMENT, ...)"
-# AUTOINCREMENT is SQLite-specific and fails on PostgreSQL/MySQL
+# DO NOT: Hardcoded dialect-specific SQL
+DB.execute("CREATE TABLE events (id SERIAL PRIMARY KEY, ...)")     # PostgreSQL only
+DB.execute("CREATE TABLE events (id INTEGER AUTOINCREMENT, ...)")  # SQLite only
 ```
 
-**Why**: `AUTOINCREMENT` is a SQLite keyword. PostgreSQL uses `SERIAL` or `GENERATED`, MySQL uses `AUTO_INCREMENT`. `INTEGER PRIMARY KEY` auto-increments natively on all three databases (C5 in red team report).
+**Why**: Sequel and ActiveRecord migrations abstract dialect differences. Hardcoded DDL breaks portability.
 
-### 2. No Separate ConnectionManagers Per Store
+### 2. No Separate Connection Pools Per Store
 
-MUST NOT create a new `ConnectionManager` for each store instance.
+MUST NOT create a new connection pool for each store instance.
 
-```python
+```ruby
 # DO:
-factory = StoreFactory.get_default()
-await factory.initialize()
-# All stores share factory._conn internally
+factory = Kailash::StoreFactory.default
+factory.initialize!
+# All stores share factory.db internally
 
 # DO NOT:
-conn1 = ConnectionManager("postgresql://...")
-conn2 = ConnectionManager("postgresql://...")
-event_store = DBEventStoreBackend(conn1)
-exec_store = DBExecutionStore(conn2)
+conn1 = Sequel.connect("postgres://...")
+conn2 = Sequel.connect("postgres://...")
+event_store  = DBEventStore.new(conn1)
+exec_store   = DBExecutionStore.new(conn2)
 ```
 
-**Why**: Each ConnectionManager creates its own connection pool. Multiple pools to the same database waste connections and prevent transaction isolation across stores.
+**Why**: Each connection creates its own pool. Multiple pools to the same database waste connections and prevent transaction isolation across stores.
 
 ### 3. No `FOR UPDATE SKIP LOCKED` Without a Transaction
 
 MUST NOT use `FOR UPDATE SKIP LOCKED` outside of an explicit transaction.
 
-```python
+```ruby
 # DO:
-async with conn.transaction() as tx:
-    row = await tx.fetchone(
-        "SELECT task_id FROM tasks WHERE status = 'pending' "
-        "ORDER BY created_at LIMIT 1 FOR UPDATE SKIP LOCKED",
-        ...
-    )
-    await tx.execute("UPDATE tasks SET status = 'processing' WHERE task_id = ?", ...)
+DB.transaction do
+  row = DB[:tasks]
+    .where(status: "pending")
+    .order(:created_at)
+    .limit(1)
+    .for_update
+    .skip_locked
+    .first
+  DB[:tasks].where(task_id: row[:task_id]).update(status: "processing") if row
+end
 
 # DO NOT:
-row = await conn.fetchone(
-    "SELECT task_id FROM tasks WHERE status = 'pending' "
-    "ORDER BY created_at LIMIT 1 FOR UPDATE SKIP LOCKED"
-)
+row = DB[:tasks]
+  .where(status: "pending")
+  .for_update
+  .skip_locked
+  .first
 # Lock is released immediately on auto-commit! Another worker can claim the same row.
-await conn.execute("UPDATE tasks SET status = 'processing' WHERE task_id = ?", ...)
+DB[:tasks].where(task_id: row[:task_id]).update(status: "processing")
 ```
 
 **Why**: `FOR UPDATE SKIP LOCKED` acquires a row-level lock. In auto-commit mode, the lock is released as soon as the SELECT completes. The subsequent UPDATE then races with other workers (C4 in red team report).
 
 ## Cross-References
 
-- `workspaces/enterprise-infrastructure/04-validate/01-redteam-report.md` — Red team findings (C1-C8, H1-H7)
-- `workspaces/enterprise-infrastructure/04-validate/02-convergence-round1.md` — All fixes verified
+- `lib/**/db/dialect.rb` — QueryDialect, `validate_identifier!`, `validate_json_path!`
+- `lib/**/db/connection.rb` — ConnectionManager, transaction proxy
+- `lib/**/infrastructure/factory.rb` — StoreFactory singleton
 - `.claude/rules/security.md` — Global security rules (parameterized queries, no secrets)
