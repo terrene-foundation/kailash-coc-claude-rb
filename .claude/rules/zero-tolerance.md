@@ -5,25 +5,28 @@ paths:
   - "**/Gemfile"
 ---
 
-# Zero-Tolerance Enforcement Rules (Ruby)
+# Zero-Tolerance Rules (Ruby)
 
 ## Scope
 
-These rules apply to ALL Ruby code in this repository.
+ALL sessions, ALL agents, ALL code, ALL phases. ABSOLUTE and NON-NEGOTIABLE.
 
-## ABSOLUTE RULE 1: Pre-Existing Failures MUST Be Resolved
+## Rule 1: Pre-Existing Failures MUST Be Fixed
 
-When tests or analysis reveals a pre-existing failure: FIX IT.
+If you found it, you own it. Period.
 
-**Required response:**
-1. Diagnose the root cause
+**Why:** Deferring a known failure means it compounds silently across sessions until it blocks a critical path, at which point the original context is lost.
+
+1. Diagnose root cause
 2. Implement the fix
 3. Write a regression spec
 4. Verify with `bundle exec rspec`
 
-## ABSOLUTE RULE 2: No Stubs or Placeholders
+**Exception:** User explicitly says "skip this issue."
 
-Production code MUST NOT contain:
+## Rule 2: No Stubs or Placeholders
+
+**Why:** Ruby silently returns `nil` from empty methods, so a stub appears to work until a caller chains on the return value and gets a `NoMethodError` on `nil`.
 
 ```ruby
 # BLOCKED:
@@ -33,16 +36,14 @@ def method_name; end  # empty body
 return nil  # placeholder
 ```
 
-## ABSOLUTE RULE 3: No Silent Error Swallowing
+## Rule 3: No Silent Error Swallowing
+
+**Why:** Ruby's `rescue => e` catches all `StandardError` subclasses; silently ignoring them hides real failures (DB errors, auth failures) behind `nil` returns that propagate far from the source.
 
 ```ruby
 # BLOCKED:
 rescue => e
   # silently ignored
-end
-
-rescue StandardError
-  nil
 end
 
 # ACCEPTABLE:
@@ -52,6 +53,8 @@ rescue Errno::ENOENT
 end
 ```
 
-## ABSOLUTE RULE 4: No SDK Workarounds
+## Rule 4: No SDK Workarounds
+
+**Why:** Ruby monkey-patches are globally visible and persist for the process lifetime, so a workaround in one gem silently alters behavior for every other gem that uses the patched class.
 
 If you encounter a bug in the Kailash gem, report it upstream. Do NOT work around it with monkey-patches or reimplementations.

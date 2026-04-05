@@ -11,7 +11,7 @@ Patterns for automated file processing, transformation, and batch operations.
 > Category: `workflow-patterns`
 > Priority: `MEDIUM`
 > SDK Version: `0.9.25+`
-> Related Skills: [`nodes-data-reference`](../nodes/nodes-data-reference.md), [`workflow-pattern-etl`](workflow-pattern-etl.md)
+> Related Skills: [`nodes-data-reference`](../08-nodes-reference/nodes-data-reference.md), [`workflow-pattern-etl`](workflow-pattern-etl.md)
 > Related Subagents: `pattern-expert` (file workflows)
 
 ## Quick Reference
@@ -91,7 +91,7 @@ workflow.add_node("TransformNode", "extract_text", {
 # 4. Analyze with AI
 workflow.add_node("LLMNode", "analyze_document", {
     "provider": "openai",
-    "model": "gpt-4",
+    "model": os.environ["LLM_MODEL"],
     "prompt": "Summarize this document: {{extract_text.text}}"
 })
 
@@ -118,7 +118,7 @@ workflow.add_connection("analyze_document", "response", "save_results", "data")
 workflow = WorkflowBuilder()
 
 # 1. Read source file
-workflow.add_node("ConditionalNode", "detect_format", {
+workflow.add_node("SwitchNode", "detect_format", {
     "condition": "{{input.file_ext}}",
     "branches": {
         ".csv": "read_csv",
@@ -147,7 +147,7 @@ workflow.add_node("TransformNode", "normalize", {
 })
 
 # 4. Write in target format
-workflow.add_node("ConditionalNode", "write_format", {
+workflow.add_node("SwitchNode", "write_format", {
     "condition": "{{input.target_format}}",
     "branches": {
         "csv": "write_csv",
@@ -223,7 +223,7 @@ workflow.add_error_handler("process", "move_failed")
 
 ## Related Skills
 
-- **Data Nodes**: [`nodes-data-reference`](../nodes/nodes-data-reference.md)
+- **Data Nodes**: [`nodes-data-reference`](../08-nodes-reference/nodes-data-reference.md)
 - **ETL Patterns**: [`workflow-pattern-etl`](workflow-pattern-etl.md)
 
 ## Documentation

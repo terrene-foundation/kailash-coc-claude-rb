@@ -5,15 +5,6 @@ paths:
 
 # Trust-Plane Security Rules
 
-## Scope
-
-These rules apply when editing trust-plane code in the Ruby SDK.
-
-These rules supplement `.claude/rules/security.md`. Both apply to trust-plane files.
-Violations during code review by intermediate-reviewer are BLOCK-level findings.
-
-## MUST Rules
-
 ### 1. No Bare `File.open` or `File.read` for Record Files
 
 ```ruby
@@ -21,91 +12,71 @@ Violations during code review by intermediate-reviewer are BLOCK-level findings.
 data = Kailash::Trust::Locking.safe_read_json(path)
 
 # DO NOT:
-data = JSON.parse(File.read(path))       # Follows symlinks -- attacker redirects to arbitrary file
-File.open(path) { |f| JSON.parse(f.read) }  # No symlink protection, no fd safety
+data = JSON.parse(File.read(path))  # Follows symlinks
 ```
 
-**Why**: `safe_read_json` uses `File.realpath` and `O_NOFOLLOW` (where supported) to prevent symlink attacks. Bare `File.read` and `File.open` bypass all protections.
+**Why:** Bare `File.read` follows symlinks, allowing an attacker to redirect trust-plane reads to arbitrary files outside the store directory.
 
 ### 2. `validate_id` on Every Externally-Sourced Record ID
 
 ```ruby
 # DO:
-Kailash::Trust::Locking.validate_id(record_id)  # Raises ArgumentError on "../", "/", null bytes, etc.
+Kailash::Trust::Locking.validate_id(record_id)
 path = File.join(store_dir, "#{record_id}.json")
 
 # DO NOT:
-path = File.join(store_dir, "#{user_input}.json")  # Path traversal: "../../../etc/passwd"
-conn.exec("SELECT * FROM records WHERE id = '#{record_id}'")  # SQL injection
+path = File.join(store_dir, "#{user_input}.json")  # Path traversal
 ```
 
-**Why**: The regex `/\A[a-zA-Z0-9_-]+\z/` prevents directory traversal and SQL injection via IDs. Every method that accepts a record ID or query parameter MUST validate before use.
+**Why:** Unvalidated record IDs allow `../../../etc/passwd` traversal to read or overwrite files outside the trust store.
 
 ### 3. `Float#finite?` on All Numeric Constraint Fields
 
 ```ruby
-# DO (in initialize or from_hash):
+# DO:
 raise ArgumentError, "max_cost must be finite" if max_cost && !max_cost.to_f.finite?
 
 # DO NOT:
-raise ArgumentError, "negative" if max_cost && max_cost < 0  # NaN passes, Inf passes
+raise ArgumentError, "negative" if max_cost && max_cost < 0  # NaN passes
 ```
 
-**Why**: `Float::NAN` and `Float::INFINITY` bypass numeric comparisons (`Float::NAN < 0` is `false`, `Float::INFINITY < 0` is `false`). Constraints set to `NaN` make all checks pass silently.
+**Why:** `Float::NAN < 0` evaluates to `false` in Ruby, so NaN silently passes range checks and corrupts constraint budgets.
 
 ### 4. Bounded Collections (max size 10_000)
 
 ```ruby
 # DO:
-class BoundedLog
-  MAX_SIZE = 10_000
-
-  def initialize
-    @entries = []
-  end
-
-  def push(entry)
-    @entries.shift(@entries.size - (MAX_SIZE * 9 / 10)) if @entries.size >= MAX_SIZE
-    @entries << entry
-  end
-end
+@entries.shift(@entries.size - (MAX_SIZE * 9 / 10)) if @entries.size >= MAX_SIZE
+@entries << entry
 
 # DO NOT:
 @call_log = []  # Grows without bound -> OOM
 ```
 
-**Why**: Unbounded collections in long-running processes lead to memory exhaustion. Trim oldest 10% when at capacity.
+**Why:** Ruby's GC cannot reclaim live-referenced arrays, so unbounded collections cause OOM kills in long-running trust-plane processes.
 
 ### 5. Parameterized SQL for All Database Queries
 
 ```ruby
-# DO (PG gem):
+# DO:
 conn.exec_params("SELECT * FROM decisions WHERE id = $1", [record_id])
-conn.exec_params("INSERT INTO decisions (id, data) VALUES ($1, $2)", [id, data])
-
-# DO (Sequel):
 DB[:decisions].where(id: record_id).first
-DB[:decisions].insert(id: id, data: data)
 
 # DO NOT:
 conn.exec("SELECT * FROM decisions WHERE id = '#{record_id}'")
-conn.exec("INSERT INTO decisions VALUES (#{id}, #{data})")
 ```
 
-**Why**: String interpolation into SQL enables injection. Even validated IDs should use parameterized queries as defense-in-depth.
+**Why:** Ruby string interpolation in SQL turns user input into executable statements, enabling full database compromise via injection.
 
 ### 6. Database File Permissions
 
 ```ruby
-# DO (on POSIX):
+# DO:
 FileUtils.touch(db_path)
 File.chmod(0o600, db_path)  # Owner read/write only
-
-# DO NOT:
-FileUtils.touch(db_path)  # Default permissions may be world-readable
 ```
 
-**Why**: Database files (`.db`, `-wal`, `-shm`) contain all trust records. Default permissions may expose them to other users on shared systems.
+**Why:** World-readable SQLite trust databases expose decision records, HMAC keys, and governance state to any local process.
 
 ### 7. All Record Writes Through `atomic_write`
 
@@ -115,143 +86,74 @@ Kailash::Trust::Locking.atomic_write(path, JSON.generate(record.to_h))
 
 # DO NOT:
 File.write(path, JSON.generate(record))  # Partial write on crash = corrupted record
-File.open(path, "w") { |f| f.write(JSON.generate(record)) }
 ```
 
-**Why**: `atomic_write` uses temp file + `fsync` + `File.rename` for crash safety. It also checks `File.realpath` to prevent symlink attacks during writes.
+**Why:** A crash during bare `File.write` truncates the file mid-write, permanently corrupting the trust record with no recovery path.
 
-## MUST NOT Rules
+## MUST NOT
 
-### 1. MUST NOT Use `==` to Compare HMAC Digests
+### 1. No `==` to Compare HMAC Digests
 
 ```ruby
 # DO:
-require "openssl"
-unless OpenSSL.secure_compare(stored_hash, computed_hash)
-  raise Kailash::Trust::TamperDetectedError, "..."
-end
-
-# Or using Rack::Utils if available:
-unless Rack::Utils.secure_compare(stored_hash, computed_hash)
-  raise Kailash::Trust::TamperDetectedError, "..."
-end
+OpenSSL.secure_compare(stored_hash, computed_hash)
 
 # DO NOT:
-if stored_hash != computed_hash  # Timing side-channel for byte-by-byte forgery
-  raise Kailash::Trust::TamperDetectedError, "..."
-end
+stored_hash != computed_hash  # Timing side-channel
 ```
 
-**Why**: String equality (`==`) leaks timing information. An attacker can measure comparison time to determine how many bytes match. Use `OpenSSL.secure_compare` or `Rack::Utils.secure_compare` for constant-time comparison.
+**Why:** Ruby's `==` on strings short-circuits on the first differing byte, leaking digest contents one character at a time via timing attacks.
 
-### 2. MUST NOT Downgrade Trust State
+### 2. No Trust State Downgrade
 
-```ruby
-# CORRECT: Monotonic escalation only
-# :auto_approved -> :flagged -> :held -> :blocked (only forward)
+Trust state only escalates: `:auto_approved → :flagged → :held → :blocked`. Never relax.
 
-# FORBIDDEN:
-verdict = :auto_approved if some_condition  # Downgrading from :held is forbidden
-```
+**Why:** Allowing downgrade means a compromised agent can reset its own trust state to `:auto_approved`, bypassing all governance controls.
 
-**Why**: Trust state can only escalate, never relax. A HELD action cannot become AUTO_APPROVED -- it must be explicitly resolved through the hold workflow.
-
-### 3. MUST NOT Write Records Without `atomic_write`
-
-Any filesystem record write that bypasses `atomic_write` is a security defect. See MUST Rule 7.
-
-### 4. MUST NOT Leave Private Key Material in Memory
+### 3. No Private Key Material in Memory
 
 ```ruby
 # DO:
 key_mgr.register_key(key_id, private_key)
-private_key.replace("\0" * private_key.bytesize)  # Overwrite contents
+private_key.replace("\0" * private_key.bytesize)
 private_key = nil
-
-# On revocation:
-@keys[key_id] = ""  # Clear material, keep tombstone
-
-# DO NOT:
-key_mgr.register_key(key_id, private_key)
-# private_key persists in scope -- visible to memory dumps
 ```
 
-**Why**: Private key material in memory is vulnerable to debugger inspection and memory dumps. Ruby strings are mutable, so overwrite with null bytes before discarding.
+**Why:** Ruby strings are heap-allocated and GC-managed; without explicit zeroing, private keys persist in memory and appear in core dumps or heap inspections.
 
-### 5. MUST NOT Construct Policy Objects as Mutable After Validation
+### 4. Frozen Constraint/Policy Objects
 
-```ruby
-# DO:
-class MultiSigPolicy
-  attr_reader :required_signatures
+All constraint and policy classes MUST call `freeze` after initialization. Use `attr_reader`, not `attr_accessor`.
 
-  def initialize(required_signatures:)
-    raise ArgumentError, "must be positive" unless required_signatures.positive?
-    @required_signatures = required_signatures
-    freeze
-  end
-end
+**Why:** Unfrozen policy objects can be mutated after creation, allowing runtime tampering with governance constraints that should be immutable once set.
 
-# DO NOT:
-class MultiSigPolicy
-  attr_accessor :required_signatures  # Mutable -- fields can be changed after validation
-end
-```
-
-**Why**: Without `freeze`, an attacker with object reference can bypass validation by directly setting fields. This applies to ALL five constraint classes (`OperationalConstraints`, `DataAccessConstraints`, `FinancialConstraints`, `TemporalConstraints`, `CommunicationConstraints`) -- all must call `freeze` after initialization.
-
-### 6. MUST NOT Pass Unvalidated Cost Values to Budget Checks
+### 5. No Unvalidated Cost Values
 
 ```ruby
 # DO:
 action_cost = ctx.fetch("cost", 0.0).to_f
-unless action_cost.finite? && action_cost >= 0
-  return :blocked  # Fail-closed on NaN/Inf/negative
-end
+return :blocked unless action_cost.finite? && action_cost >= 0
 
 # DO NOT:
-action_cost = ctx.fetch("cost", 0.0).to_f
-return :blocked if action_cost > limit  # NaN > limit is always false -- budget bypassed!
+return :blocked if action_cost > limit  # NaN > limit is always false
 ```
 
-**Why**: `Float::NAN` bypasses all numeric comparisons (`Float::NAN > x` is always `false`). If `NaN` enters `session_cost` via `+=`, it permanently poisons the accumulator -- all future budget checks pass. Every path that accepts a cost value MUST validate with `finite?`.
+**Why:** `Float::NAN > limit` returns `false` in Ruby, so NaN costs silently pass budget checks and allow unlimited spending.
 
-### 7. MUST NOT Rescue Bare `KeyError` Where `RecordNotFoundError` Is Intended
+### 6. No Bare `KeyError` Where `RecordNotFoundError` Is Intended
 
-```ruby
-# DO:
-begin
-  delegate = store.get_delegate(did)
-rescue Kailash::Trust::RecordNotFoundError
-  # Already gone
-end
+Use `Kailash::Trust::RecordNotFoundError`, not bare `rescue KeyError`.
 
-# DO NOT:
-begin
-  delegate = store.get_delegate(did)
-rescue KeyError  # Too broad -- catches unrelated hash lookup failures
-  # ...
-end
-```
+**Why:** Rescuing `KeyError` catches unrelated Hash/Array key misses, masking real programming errors as "record not found."
 
-**Why**: `RecordNotFoundError` may inherit from both `Kailash::Trust::StoreError` and `KeyError`. Bare `rescue KeyError` catches store errors and potentially swallows unrelated hash lookup failures or corrupted-record exceptions.
-
-### 8. MUST: Use `normalize_resource_path` for All Constraint Pattern Storage and Comparison
-
-All constraint patterns and resource paths MUST be normalized via `Kailash::Trust.normalize_resource_path` before storage or comparison. Direct use of `File.expand_path`, `Pathname#cleanpath`, or manual path manipulation for constraint patterns is FORBIDDEN.
+### 7. Use `normalize_resource_path` for Constraint Patterns
 
 ```ruby
 # DO:
 norm = Kailash::Trust.normalize_resource_path(user_path)
 
 # DO NOT:
-norm = File.expand_path(user_path)      # Platform-dependent, resolves against cwd
-norm = Pathname.new(user_path).cleanpath.to_s  # Doesn't normalize separators consistently
+norm = File.expand_path(user_path)  # Platform-dependent
 ```
 
-**Why**: `File.expand_path` resolves against the current working directory and behaves differently across platforms. `Pathname#cleanpath` doesn't collapse double slashes consistently. `normalize_resource_path` provides consistent forward-slash normalization on all platforms.
-
-## Cross-References
-
-- `.claude/rules/security.md` -- Global security rules (secrets, injection, input validation)
-- `.claude/rules/eatp.md` -- EATP SDK conventions (error hierarchy, cryptography)
+**Why:** `File.expand_path` resolves against the OS filesystem, producing platform-dependent paths that break constraint matching across Linux/macOS/Windows.
