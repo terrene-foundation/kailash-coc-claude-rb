@@ -1,14 +1,14 @@
 {
-  "last_sync": "2026-04-05T18:00:00Z",
+  "last_sync": "2026-04-05T20:00:00Z",
   "source": "loom",
-  "source_version": "2.0.0",
-  "template_version": "1.3.0",
+  "source_version": "2.1.0",
+  "template_version": "1.4.0",
   "variant": "rb",
-  "files_updated": 28,
+  "files_updated": 6,
   "files_created": 0,
   "files_unchanged": 0,
-  "content_adaptations": 0,
-  "build_refs_stripped": 0,
+  "content_adaptations": 3,
+  "build_refs_stripped": 3,
   "cross_refs_fixed": 0,
-  "summary": "28 tightened skill files synced from loom v2.0.0 (78% reduction + 7 restored patterns)"
+  "summary": "6 tightened global skill files synced from loom v2.1.0 (3,167→1,290 lines, 59% reduction, 3 BUILD paths stripped)"
 }
