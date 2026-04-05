@@ -1,1 +1,14 @@
-{"synced_at": "2026-03-31T16:30:00Z", "source": "loom", "target": "kailash-coc-claude-rb", "source_version": "1.2.0", "target_version": "1.1.0", "variant": "rb", "sync_type": "gate2_resync", "stats": {"added": 0, "updated": 13, "unchanged": 502, "scripts_added": 16, "settings_added": 1}, "updated_files": ["rules/agent-reasoning.md", "rules/deployment.md", "rules/eatp.md", "rules/infrastructure-sql.md", "rules/pact-governance.md", "rules/trust-plane-security.md", "rules/connection-pool.md", "rules/dataflow-pool.md", "rules/e2e-god-mode.md", "skills/02-dataflow/SKILL.md", "skills/03-nexus/SKILL.md", "skills/04-kaizen/SKILL.md", "skills/05-kailash-mcp/SKILL.md"], "notes": "Re-sync: 9 rules + 4 SKILL.md files replaced with new rb variant versions (previously had global versions). Scripts and settings.json added (missing from initial sync)."}
+{
+  "last_sync": "2026-04-05T18:00:00Z",
+  "source": "loom",
+  "source_version": "2.0.0",
+  "template_version": "1.3.0",
+  "variant": "rb",
+  "files_updated": 28,
+  "files_created": 0,
+  "files_unchanged": 0,
+  "content_adaptations": 0,
+  "build_refs_stripped": 0,
+  "cross_refs_fixed": 0,
+  "summary": "28 tightened skill files synced from loom v2.0.0 (78% reduction + 7 restored patterns)"
+}
