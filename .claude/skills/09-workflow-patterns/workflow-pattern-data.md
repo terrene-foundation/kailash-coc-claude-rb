@@ -11,7 +11,7 @@ Patterns for data cleaning, transformation, and aggregation workflows.
 > Category: `workflow-patterns`
 > Priority: `HIGH`
 > SDK Version: `0.9.25+`
-> Related Skills: [`workflow-pattern-etl`](workflow-pattern-etl.md), [`nodes-transform-reference`](../nodes/nodes-transform-reference.md)
+> Related Skills: [`workflow-pattern-etl`](workflow-pattern-etl.md), [`nodes-transform-reference`](../08-nodes-reference/nodes-transform-reference.md)
 
 ## Pattern: Data Quality Pipeline
 
@@ -30,7 +30,7 @@ workflow.add_node("DeduplicateNode", "dedupe", {
 })
 
 # 3. Validate schema
-workflow.add_node("DataValidationNode", "validate", {
+workflow.add_node("CodeValidationNode", "validate", {
     "input": "{{dedupe.data}}",
     "schema": {"email": "email", "age": "integer"}
 })

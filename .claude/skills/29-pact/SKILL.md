@@ -1,6 +1,6 @@
 ---
 name: 29-pact
-description: "PACT governance framework -- D/T/R accountability grammar, operating envelopes, knowledge clearance, and verification gradient for AI agent organizations. Use when asking about 'governance', 'D/T/R', 'operating envelope', 'knowledge clearance', 'verification gradient', 'GovernanceEngine', 'PactGovernedAgent', 'access enforcement', 'organizational governance', 'PACT', 'governed agent', 'clearance', 'bridges', 'KSP', 'monotonic tightening', 'MCP governance', 'McpGovernanceEnforcer', 'McpGovernanceMiddleware', 'McpAuditTrail', 'McpToolPolicy', 'MCP tool policy', 'default-deny MCP', or 'governed MCP tools'."
+description: "PACT governance framework -- D/T/R accountability grammar, operating envelopes, knowledge clearance, and verification gradient for AI agent organizations. Use when asking about 'governance', 'D/T/R', 'operating envelope', 'knowledge clearance', 'verification gradient', 'GovernanceEngine', 'PactGovernedAgent', 'access enforcement', 'organizational governance', 'PACT', 'governed agent', 'clearance', 'bridges', 'KSP', 'monotonic tightening', 'MCP governance', 'McpGovernanceEnforcer', 'McpGovernanceMiddleware', 'McpAuditTrail', 'McpToolPolicy', 'MCP tool policy', 'default-deny MCP', 'governed MCP tools', 'enforcement mode', 'ENFORCE', 'SHADOW', 'DISABLED', 'HELD verdict', or 'envelope adapter'."
 ---
 
 # PACT Governance Skills
@@ -31,17 +31,17 @@ pip install kailash-kaizen>=2.0.0 # For governed Kaizen agents
 ## Key Types
 
 ```python
-from pact.governance import GovernanceEngine, GovernanceVerdict
-from pact.governance.config import (
+from kailash.trust.pact import GovernanceEngine, GovernanceVerdict
+from kailash.trust.pact.config import (
     ConstraintEnvelopeConfig, OrgDefinition,
     TrustPostureLevel, VerificationLevel,
     ConfidentialityLevel,
 )
-from pact.governance.agent import PactGovernedAgent
-from pact.governance.audit import AuditChain
+from kailash.trust.pact.agent import PactGovernedAgent
+from kailash.trust.pact.audit import AuditChain
 
 # MCP governance
-from pact.mcp import (
+from kailash.trust.pact.mcp import (
     McpGovernanceEnforcer, McpGovernanceMiddleware, McpAuditTrail,
     McpToolPolicy, McpGovernanceConfig, McpActionContext,
 )

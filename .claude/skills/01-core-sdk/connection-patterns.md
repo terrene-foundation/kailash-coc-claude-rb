@@ -163,7 +163,7 @@ workflow.add_connection("orders", "data", "join", "orders")
 ### Type 7: Complex Nested Extraction
 ```python
 workflow.add_node("LLMAgentNode", "llm", {
-    "model": "gpt-4",
+    "model": os.environ["LLM_MODEL"],
     "system_prompt": "Analyze data"
 })
 
@@ -251,7 +251,6 @@ Use `pattern-expert` subagent when:
 - Debugging connection issues
 - Optimizing workflow architecture
 
-Use `sdk-navigator` subagent when:
 - Finding node port names
 - Understanding node input/output structure
 - Resolving connection errors

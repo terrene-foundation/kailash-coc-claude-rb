@@ -5,63 +5,51 @@ paths:
 
 # DataFlow Pool Configuration Rules
 
-## Scope
-
-These rules apply when working with DataFlow code in the Ruby SDK.
-
-## MUST Rules
-
 ### 1. Single Source of Truth for Pool Size
 
-Pool size MUST be resolved through exactly one code path: `Kailash::DataFlow::Config#pool_size`.
-
-No hardcoded pool size defaults outside this method. Any code that needs a pool size MUST call the config object's method. If the config object does not have a value, that is a config bug -- not a reason to invent a local default.
-
-**Why**: Five competing defaults (10, 20, 25, 30, `Etc.nprocessors * 4`) caused the pool exhaustion crisis. Every new default creates convention drift.
-
-**How to apply**: Before adding `pool_size: N` anywhere, check if the config object's pool size is being used. If not, wire it up rather than hardcoding.
-
-### 2. No Hardcoded Numeric Pool Defaults
-
-MUST NOT add `pool_size: N` as a default in constructors, env var fallbacks, or adapter base classes. All defaults flow through `Kailash::DataFlow::Config#pool_size`.
+Pool size MUST be resolved through `Kailash::DataFlow::Config#pool_size`. No hardcoded defaults elsewhere.
 
 ```ruby
-# DO:
+# ✅
 pool_size = config.pool_size(environment)
 
-# DO NOT:
-pool_size = options.fetch(:pool_size, 10)  # Competing default!
-pool_size = ENV.fetch("DATAFLOW_POOL_SIZE", "10").to_i  # Ghost code!
+# ❌ Competing defaults
+pool_size = options.fetch(:pool_size, 10)
+pool_size = ENV.fetch("DATAFLOW_POOL_SIZE", "10").to_i
 ```
 
-### 3. Validate Pool Config at Startup
+**Why:** Five competing defaults (10, 20, 25, 30, `Etc.nprocessors * 4`) caused the pool exhaustion crisis.
 
-When connecting to PostgreSQL, MUST call `validate_pool_config` to log whether the configured pool will exhaust `max_connections`. This runs in `Kailash::DataFlow.new` automatically.
+### 2. Validate Pool Config at Startup
 
-### 4. No Deceptive Configuration
+**Why:** Without startup validation, misconfigured pool sizes silently exhaust `max_connections` under load, causing cryptic `PG::ConnectionBad` errors hours after deployment.
 
-Config fields that suggest a feature exists MUST have a backing implementation. A config flag set to `true` by default with no consumer is functionally a stub and violates `no-stubs.md` Rule 4.
+When connecting to PostgreSQL, `validate_pool_config` logs whether pool will exhaust `max_connections`. Runs in `Kailash::DataFlow.new` automatically.
 
-**Why**: `MonitoringConfig.alert_on_connection_exhaustion = true` with no backing code led users to believe they had exhaustion protection when they didn't.
+### 3. No Deceptive Configuration
 
-### 5. Bounded max_overflow
+Config flags MUST have backing implementation. A flag set to `true` with no consumer is a stub (`zero-tolerance.md` Rule 2).
 
-MUST NOT compute `max_overflow = pool_size * 2`. This triples the connection footprint. Use `[2, pool_size / 2].max` instead.
+**Why:** A config flag with no backing code gives operators false confidence that a feature is active, masking the gap until a production incident reveals it was never wired up.
+
+### 4. Bounded max_overflow
+
+**Why:** Unbounded overflow defeats pool sizing math entirely -- a `pool_size * 2` overflow triples the connection footprint and exhausts `max_connections` during traffic spikes.
 
 ```ruby
-# DO:
+# ✅
 max_overflow = [2, pool_size / 2].max
 
-# DO NOT:
-max_overflow = pool_size * 2  # Triples connection footprint!
+# ❌ Triples connection footprint
+max_overflow = pool_size * 2
 ```
 
-### 6. No Orphan Runtimes
+### 5. No Orphan Runtimes
 
-DataFlow subsystem classes MUST accept an optional `runtime` parameter. If provided, call `runtime.acquire` and store. If `nil`, create own runtime. All classes MUST implement `close` that calls `@runtime.release`.
+Subsystem classes MUST accept optional `runtime` parameter. All MUST implement `close` calling `@runtime.release`.
 
 ```ruby
-# DO:
+# ✅
 class SubsystemClass
   def initialize(runtime: nil)
     if runtime
@@ -75,32 +63,22 @@ class SubsystemClass
 
   def close
     return unless @runtime
-
     @runtime.release
     @runtime = nil
   end
 end
 
-# DO NOT:
+# ❌ Orphan — no close, no sharing
 class SubsystemClass
   def initialize
-    @runtime = Kailash::LocalRuntime.new  # Orphan -- no close, no sharing
+    @runtime = Kailash::LocalRuntime.new
   end
 end
 ```
 
-**Why**: Five independent runtimes per DataFlow instance caused the connection pool exhaustion crisis. Each runtime opens 7-16 connections; without sharing, a single `Kailash::DataFlow.new(auto_migrate: true)` consumed 28-64 connections.
+**Why:** Five independent runtimes per DataFlow instance consumed 28-64 connections each.
 
-**Enforced by**: `validate-workflow.js` emits WARNING on unmanaged `LocalRuntime.new` construction.
+## MUST NOT
 
-## MUST NOT Rules
-
-### 1. No New Pool Size Defaults
-
-When adding a new config parameter, search for existing parameters with similar names or purposes. Consolidate before adding. The pool default drift incident (five competing defaults) is the canonical example of what happens when this rule is violated.
-
-## Cross-References
-
-- `01-analysis/01-codebase-defects.md` -- DEFECT-A (five competing defaults)
-- `01-analysis/04-cross-sdk-alignment.md` -- kailash-rs uses same auto-scaling formula
-- `rules/connection-pool.md` -- Connection pool safety rules (application-level)
+- No new pool size defaults — consolidate with existing parameters before adding
+  **Why:** Each new default creates another competing pool size source, recreating the exact five-default crisis that caused the original pool exhaustion bug.

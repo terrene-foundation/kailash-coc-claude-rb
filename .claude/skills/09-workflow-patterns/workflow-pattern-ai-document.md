@@ -11,7 +11,7 @@ AI-powered document analysis, extraction, and classification workflows.
 > Category: `workflow-patterns`
 > Priority: `MEDIUM`
 > SDK Version: `0.9.25+`
-> Related Skills: [`workflow-pattern-rag`](workflow-pattern-rag.md), [`nodes-ai-reference`](../nodes/nodes-ai-reference.md)
+> Related Skills: [`workflow-pattern-rag`](workflow-pattern-rag.md), [`nodes-ai-reference`](../08-nodes-reference/nodes-ai-reference.md)
 
 ## Pattern: Invoice Processing with AI
 
@@ -35,7 +35,7 @@ workflow.add_node("LLMNode", "extract_fields", {
 })
 
 # 3. Validate extracted data
-workflow.add_node("DataValidationNode", "validate", {
+workflow.add_node("CodeValidationNode", "validate", {
     "input": "{{extract_fields.data}}",
     "schema": {
         "invoice_number": "string",
@@ -46,7 +46,7 @@ workflow.add_node("DataValidationNode", "validate", {
 })
 
 # 4. Store in database
-workflow.add_node("DatabaseExecuteNode", "store", {
+workflow.add_node("SQLDatabaseNode", "store", {
     "query": "INSERT INTO invoices (number, date, amount, vendor) VALUES (?, ?, ?, ?)",
     "parameters": "{{validate.valid_data}}"
 })

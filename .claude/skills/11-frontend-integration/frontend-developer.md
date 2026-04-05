@@ -1,5 +1,5 @@
 ---
-name: frontend-developer
+name: react-specialist
 description: "Frontend development patterns with Kailash. Use when asking 'frontend patterns', 'frontend development', or 'UI integration'."
 ---
 
@@ -21,7 +21,7 @@ description: "Frontend development patterns with Kailash. Use when asking 'front
        ▼
 ┌─────────────┐
 │ WorkflowAPI │  (Python/Kailash)
-│   (FastAPI) │
+│   (Nexus)   │
 └──────┬──────┘
        │
        ▼
