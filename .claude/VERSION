@@ -1,16 +1,32 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "type": "coc-use-template",
   "description": "COC USE template for Ruby SDK projects (Magnus bindings)",
-  "released": "2026-03-31",
+  "released": "2026-04-05",
   "upstream": {
     "name": "loom",
     "type": "coc-source",
-    "version": "1.2.0",
+    "version": "1.6.0",
     "build_version": "3.6.1",
-    "synced_at": "2026-03-31T16:30:00Z"
+    "synced_at": "2026-04-05T10:00:00Z"
   },
   "changelog": [
+    {
+      "version": "1.2.0",
+      "date": "2026-04-05",
+      "summary": "TSG specialists + stale agent/rule cleanup + ontology catch-up from loom v1.2→1.6",
+      "changes": [
+        "NEW: 3 specialist agents (mcp-platform, ml, align) from loom v1.6.0",
+        "NEW: skills/34-kailash-ml/ (8 ML lifecycle skills)",
+        "NEW: skills/35-kailash-align/ (5 LLM alignment skills)",
+        "NEW: 7 MCP platform skills in skills/05-kailash-mcp/",
+        "DELETED: rules/no-stubs.md (merged into zero-tolerance.md in loom v1.3.0)",
+        "DELETED: rules/branch-protection.md (merged into git.md in loom v1.3.0)",
+        "UPDATED: rules/agents.md — delegation table expanded to 8 specialists",
+        "UPDATED: commands/wrapup.md — red team verification with inline evidence",
+        "FIXED: cc-audit fixes — delegation routing, SKILL.md descriptions"
+      ]
+    },
     {
       "version": "1.1.0",
       "date": "2026-03-31",
