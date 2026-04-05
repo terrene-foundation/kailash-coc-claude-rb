@@ -1,16 +1,29 @@
 {
-  "version": "1.3.0",
+  "version": "1.4.0",
   "type": "coc-use-template",
   "description": "COC USE template for Ruby SDK projects (Magnus bindings)",
   "released": "2026-04-05",
   "upstream": {
     "name": "loom",
     "type": "coc-source",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "build_version": "3.6.1",
-    "synced_at": "2026-04-05T18:00:00Z"
+    "synced_at": "2026-04-05T20:00:00Z"
   },
   "changelog": [
+    {
+      "version": "1.4.0",
+      "date": "2026-04-05",
+      "summary": "6 global skill files tightened (59% reduction) from loom v2.1.0",
+      "changes": [
+        "UPDATED: skills/01-core-sdk/async-pythoncode-patterns.md — tightened (508→231 lines)",
+        "UPDATED: skills/02-dataflow/dataflow-debug-agent.md — tightened (532→220 lines), BUILD path stripped",
+        "UPDATED: skills/03-nexus/nexus-workflow-registration.md — tightened (544→187 lines)",
+        "UPDATED: skills/04-kaizen/kaizen-agent-registry.md — tightened (516→185 lines), BUILD path stripped",
+        "UPDATED: skills/04-kaizen/kaizen-observability-hooks.md — tightened (531→221 lines), BUILD path stripped",
+        "UPDATED: skills/07-development-guides/production-testing.md — tightened (536→246 lines)"
+      ]
+    },
     {
       "version": "1.3.0",
       "date": "2026-04-05",
