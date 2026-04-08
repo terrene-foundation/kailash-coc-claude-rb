@@ -1,16 +1,51 @@
 {
-  "version": "1.5.0",
+  "version": "1.6.0",
   "type": "coc-use-template",
   "description": "COC USE template for Ruby SDK projects (Magnus bindings)",
-  "released": "2026-04-06",
+  "released": "2026-04-08",
   "upstream": {
     "name": "loom",
     "type": "coc-source",
-    "version": "2.2.0",
+    "version": "2.7.0",
     "build_version": "3.9.0",
-    "synced_at": "2026-04-06T10:00:00Z"
+    "synced_at": "2026-04-08T18:00:00Z"
   },
   "changelog": [
+    {
+      "version": "1.6.0",
+      "date": "2026-04-08",
+      "summary": "Sync loom 2.7.0 — Framework mandate enforcement wave. New rules: observability.md (rb variant, Ruby logging), schema-migration.md (rb variant, ActiveRecord migrations). Extended: zero-tolerance.md (rb variant, warnings scope), framework-first.md (global, mandate table), dependencies.md, agents.md (worktree stripped). New hooks: integration-hygiene.js, log-triage-gate.js + 9 updated hooks. 8 framework agent descriptions rewritten. 8 SKILL.md descriptions rewritten. Updated: reviewer.md, testing-specialist.md, implement.md, redteam.md. Catch-up: 53 artifact updates from loom 2.6.2-2.7.0 delta.",
+      "changes": [
+        "NEW: rules/observability.md — rb variant (SemanticLogger/Rails.logger, tagged logging, Ruby log-triage gate)",
+        "NEW: rules/schema-migration.md — rb variant (ActiveRecord migrations, db/migrate, change vs up/down)",
+        "NEW: rules/python-environment.md — Python venv isolation (global, carried forward from loom)",
+        "EXTENDED: rules/framework-first.md — work-domain binding table, specialist consultation",
+        "EXTENDED: rules/dependencies.md — declared=imported section",
+        "ADAPTED: rules/agents.md — worktree section stripped (Ruby users do not compile Rust)",
+        "NEW: scripts/hooks/integration-hygiene.js and log-triage-gate.js",
+        "UPDATED: 9 existing hook/lib scripts",
+        "UPDATED: settings.json — registered new hooks",
+        "DESCRIPTION REWRITE: 8 framework agents + 8 SKILL.md files",
+        "UPDATED: reviewer.md, testing-specialist.md, implement.md, redteam.md",
+        "CATCH-UP: 53 artifact updates across agents, commands, guides, rules, skills from loom 2.6.2-2.7.0 delta"
+      ]
+    },
+    {
+      "version": "1.5.1",
+      "date": "2026-04-08",
+      "summary": "Sync loom 2.6.2 — /redteam spec compliance + /deploy hygiene + Rust leak fix. New skills, deploy infrastructure, rb variant testing.md confirmed Ruby-only with audit-mode additions.",
+      "changes": [
+        "NEW: skills/spec-compliance/SKILL.md — 9-check verification protocol (Python global, no Rust syntax leak — protocol is universal, examples are Python).",
+        "UPDATE: variants/rb/rules/testing.md — added § Audit Mode Rules (Ruby bundle exec rspec --dry-run, verify NEW specs for new modules, verify security mitigation specs). Confirmed Ruby-only — no Rust or Python syntax.",
+        "REWRITE: commands/redteam.md — semantic verification protocol, language-agnostic test enumeration phrasing.",
+        "REWRITE: commands/deploy.md — config-driven onboard/execute/check modes, 10-step checklist.",
+        "NEW: rules/deploy-hygiene.md — 6-level failure model, infrastructure-only paths (Dockerfile, deploy/**, k8s/**, vercel.json, etc.).",
+        "NEW: skills/10-deployment-git/application-deployment.md — deployment-config.md schema + Vite/Docker/Next.js frontend patterns.",
+        "UPDATE: commands/wrapup.md — 4-state deploy classification (type:application / type:sdk / legacy prose / missing).",
+        "UPDATE: agents/analysis/analyst.md and testing/testing-specialist.md — /redteam Step 1 and Step 4 ownership.",
+        "LANGUAGE MAPPING: sync-manifest.yaml header documents that rb USE template is Ruby-only."
+      ]
+    },
     {
       "version": "1.5.0",
       "date": "2026-04-06",

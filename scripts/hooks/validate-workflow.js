@@ -130,6 +130,12 @@ function validateFile(data) {
   // -- Hardcoded API key detection (all file types including configs) -----
   checkHardcodedKeys(content, filePath, messages);
 
+  // -- Frontend mock data detection (JS/TS only) --------------------------
+  if (isJs) {
+    const mockBlocked = checkFrontendMockData(content, filePath, messages);
+    if (mockBlocked) shouldBlock = true;
+  }
+
   // -- Stub/TODO/simulation detection (code files only) -------------------
   if (isRust || isPy || isJs) {
     const stubBlocked = checkStubsAndSimulations(content, filePath, messages);
@@ -578,6 +584,126 @@ function checkHardcodedKeys(content, filePath, messages) {
 }
 
 // =====================================================================
+// Frontend mock data detection (JS/TS)
+// =====================================================================
+
+/**
+ * Detect mock/fake/generated data in frontend production code.
+ * BLOCKING — frontend mock data is a stub. See rules/no-stubs.md.
+ *
+ * Patterns:
+ *   - MOCK_*, FAKE_*, DUMMY_*, SAMPLE_* constants
+ *   - generate*() / mock*() functions producing synthetic data
+ *   - Math.random() used to generate display data
+ *
+ * Returns true if any blocking violation was found.
+ */
+function checkFrontendMockData(content, filePath, messages) {
+  if (isTestFile(filePath)) return false;
+  // Storybook stories legitimately use mock data for visual testing
+  if (/\.stories\.[jt]sx?$/.test(filePath)) return false;
+
+  const lines = content.split("\n");
+  const found = new Set();
+  let hasBlocking = false;
+
+  // Constant patterns: MOCK_USERS, FAKE_DATA, DUMMY_ITEMS
+  // Exclude SAMPLE_RATE, SAMPLE_SIZE, SAMPLE_INTERVAL, SAMPLE_FREQUENCY (legitimate terms)
+  const mockConstantPattern = /\b(MOCK_|FAKE_|DUMMY_)[A-Z][A-Z0-9_]*\b/;
+  const sampleDataPattern =
+    /\bSAMPLE_(?!RATE\b|SIZE\b|INTERVAL\b|FREQUENCY\b)[A-Z][A-Z0-9_]*\b/;
+
+  // Function patterns: only mock*() declarations (not generate* — too broad,
+  // catches generateUUID, generateKeyPair, generateCSRFToken, generateHash)
+  const mockFuncDeclPattern =
+    /\b(?:function\s+|const\s+|let\s+|var\s+)(mock\w+)\s*[=(]/;
+
+  // Call patterns: functions that produce synthetic display data
+  // Targets: generate*Data/List/Records/Entries/Stats/Metrics/Occupancy/Transactions/Revenue
+  //          generateFake*/Mock*/Random*/Sample*/Dummy*
+  //          mockData/Users/Items/Records/Response*
+  const mockFuncCallPattern =
+    /\b(generate(?:\w*(?:Data|List|Records|Entries|Stats|Metrics|Occupancy|Transactions|Revenue|Items))|generate(?:Fake|Mock|Random|Sample|Dummy)\w*|mock(?:Data|Users|Items|Records|Response)\w*)\s*\(/;
+
+  // Math.random() producing display data (not crypto/ids)
+  const mathRandomDisplayPattern =
+    /Math\.random\(\)\s*\*\s*\d+.*(?:occupancy|count|rate|percent|amount|total|revenue|cost|price|usage|capacity)/i;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const trimmed = line.trim();
+
+    // Skip comments
+    if (
+      trimmed.startsWith("//") ||
+      trimmed.startsWith("*") ||
+      trimmed.startsWith("/*")
+    )
+      continue;
+
+    // Skip imports (import { MOCK_FOO } from '../test-utils' is ok in test helpers)
+    if (trimmed.startsWith("import ")) continue;
+
+    // MOCK_*, FAKE_*, DUMMY_* constants + SAMPLE_* (excluding legitimate terms)
+    if (mockConstantPattern.test(line) || sampleDataPattern.test(line)) {
+      const match =
+        line.match(mockConstantPattern) || line.match(sampleDataPattern);
+      const name = match ? match[0] : "MOCK_*";
+      if (!found.has("mock-constant")) {
+        found.add("mock-constant");
+        messages.push(
+          `BLOCKED: Mock data constant "${name}" at ${path.basename(filePath)}:${i + 1}. ` +
+            `Replace with real API call. Frontend mock data is a stub (rules/no-stubs.md).`,
+        );
+        hasBlocking = true;
+      }
+    }
+
+    // generate*() / mock*() function declarations
+    if (mockFuncDeclPattern.test(line)) {
+      const match = line.match(mockFuncDeclPattern);
+      const name = match ? match[1] : "generate*";
+      if (!found.has("mock-func-" + name)) {
+        found.add("mock-func-" + name);
+        messages.push(
+          `BLOCKED: Mock data generator "${name}" at ${path.basename(filePath)}:${i + 1}. ` +
+            `Replace with real API call. Frontend mock data is a stub (rules/no-stubs.md).`,
+        );
+        hasBlocking = true;
+      }
+    }
+
+    // generate*() calls that produce display data
+    if (mockFuncCallPattern.test(line) && !mockFuncDeclPattern.test(line)) {
+      const match = line.match(mockFuncCallPattern);
+      const name = match ? match[1] : "generate*";
+      if (!found.has("mock-call-" + name)) {
+        found.add("mock-call-" + name);
+        messages.push(
+          `BLOCKED: Mock data generator call "${name}()" at ${path.basename(filePath)}:${i + 1}. ` +
+            `Replace with real API call. Frontend mock data is a stub (rules/no-stubs.md).`,
+        );
+        hasBlocking = true;
+      }
+    }
+
+    // Math.random() for display data
+    if (mathRandomDisplayPattern.test(line)) {
+      if (!found.has("math-random-display")) {
+        found.add("math-random-display");
+        messages.push(
+          `BLOCKED: Math.random() generating display data at ${path.basename(filePath)}:${i + 1}. ` +
+            `Display data must come from real APIs, not random generators (rules/no-stubs.md).`,
+        );
+        hasBlocking = true;
+      }
+    }
+  }
+
+  return hasBlocking;
+}
+
+// =====================================================================
 // Stub / TODO / Simulation detection
 // =====================================================================
 
@@ -629,6 +755,10 @@ function checkStubsAndSimulations(content, filePath, messages) {
     [
       /\b(simulated?|fake|dummy|placeholder)\s*(data|response|result|value)/i,
       "simulated/fake data",
+    ],
+    [
+      /\b(MOCK_|FAKE_|DUMMY_)[A-Z][A-Z0-9_]*\s*[=:]/,
+      "mock data constant — replace with real data source",
     ],
     [/catch\s*\([^)]*\)\s*\{\s*\}/, "empty catch block — handle the error"],
   ];
@@ -690,6 +820,13 @@ function checkStubsAndSimulations(content, filePath, messages) {
  * Runs after validation; overhead is <5ms (fs.appendFileSync of JSONL lines).
  */
 function logFileObservations(content, filePath, cwd, messages) {
+  // Skip hook/script files — observing our own infrastructure is noise
+  if (
+    filePath.includes("/scripts/hooks/") ||
+    filePath.includes("/scripts/learning/")
+  )
+    return;
+
   const basename = path.basename(filePath);
   const ext = path.extname(filePath).toLowerCase();
 
@@ -779,32 +916,21 @@ function logFileObservations(content, filePath, cwd, messages) {
     }
   }
 
-  // --- Error observations from validation messages ---
+  // --- Rule violations from validation messages ---
   const blockMessages = messages.filter(
     (m) => m.startsWith("BLOCKED") || m.startsWith("CRITICAL"),
   );
-  const warnMessages = messages.filter((m) => m.startsWith("WARNING"));
 
   if (blockMessages.length > 0) {
-    logLearningObservation(cwd, "error_occurrence", {
-      error_type: "validation_block",
-      errors: blockMessages,
-      file: basename,
-    });
-  }
-
-  // --- Track error_fix: file was edited and now passes (no blocks) ---
-  if (
-    blockMessages.length === 0 &&
-    warnMessages.length === 0 &&
-    nodeTypes.length > 0
-  ) {
-    // Clean file with actual code patterns = potential fix if prior error existed
-    logLearningObservation(cwd, "error_fix", {
-      fix_type: "clean_validation",
-      file: basename,
-      patterns_present: nodeTypes.length,
-    });
+    // Log each violation with the specific rule that was violated
+    for (const msg of blockMessages) {
+      const rule = inferRuleName(msg);
+      logLearningObservation(cwd, "rule_violation", {
+        rule,
+        message: msg.substring(0, 200),
+        file: basename,
+      });
+    }
   }
 }
 
@@ -872,6 +998,37 @@ function buildDocCommentLines(lines) {
     }
   }
   return docLines;
+}
+
+/**
+ * Infer the rule name from a validation message.
+ */
+function inferRuleName(msg) {
+  const lower = msg.toLowerCase();
+  if (lower.includes("hardcoded model") || lower.includes("model string"))
+    return "env-models";
+  if (lower.includes("stub") || lower.includes("notimplementederror"))
+    return "zero-tolerance-stubs";
+  if (lower.includes("todo") || lower.includes("fixme"))
+    return "zero-tolerance-stubs";
+  if (
+    lower.includes("mock") ||
+    lower.includes("fake") ||
+    lower.includes("simulated")
+  )
+    return "zero-tolerance-stubs";
+  if (lower.includes("relative import")) return "absolute-imports";
+  if (lower.includes("workflow.execute") || lower.includes("missing .build"))
+    return "patterns-runtime";
+  if (lower.includes("bare except") || lower.includes("except: pass"))
+    return "zero-tolerance-silent-fallback";
+  if (
+    lower.includes("secret") ||
+    lower.includes("api_key") ||
+    lower.includes("password")
+  )
+    return "security-secrets";
+  return "validation-general";
 }
 
 function isTestFile(filePath) {
