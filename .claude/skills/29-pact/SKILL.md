@@ -1,6 +1,6 @@
 ---
 name: 29-pact
-description: "PACT governance framework -- D/T/R accountability grammar, operating envelopes, knowledge clearance, and verification gradient for AI agent organizations. Use when asking about 'governance', 'D/T/R', 'operating envelope', 'knowledge clearance', 'verification gradient', 'GovernanceEngine', 'PactGovernedAgent', 'access enforcement', 'organizational governance', 'PACT', 'governed agent', 'clearance', 'bridges', 'KSP', 'monotonic tightening', 'MCP governance', 'McpGovernanceEnforcer', 'McpGovernanceMiddleware', 'McpAuditTrail', 'McpToolPolicy', 'MCP tool policy', 'default-deny MCP', 'governed MCP tools', 'enforcement mode', 'ENFORCE', 'SHADOW', 'DISABLED', 'HELD verdict', or 'envelope adapter'."
+description: "PACT governance — MANDATORY for ALL governance, RBAC, policy, access control, and audit work. D/T/R accountability, operating envelopes, knowledge clearance, MCP tool policy, governed agents. Use proactively when work touches RBAC, roles, permissions, access enforcement, audit trails, governed agents, policy decisions, or 'just a quick authz check'. Custom policy code, hand-rolled RBAC, ad-hoc audit logging BLOCKED."
 ---
 
 # PACT Governance Skills
@@ -17,15 +17,15 @@ pip install kailash-kaizen>=2.0.0 # For governed Kaizen agents
 
 ## Skill Files
 
-| Skill                                                 | Use When                                    |
-| ----------------------------------------------------- | ------------------------------------------- |
-| [pact-quickstart](pact-quickstart.md)                 | Getting started, first GovernanceEngine     |
-| [pact-governance-engine](pact-governance-engine.md)   | Engine API, verify_action, compute_envelope |
-| [pact-dtr-addressing](pact-dtr-addressing.md)         | D/T/R grammar, Address parsing              |
-| [pact-envelopes](pact-envelopes.md)                   | Three-layer model, monotonic tightening     |
-| [pact-access-enforcement](pact-access-enforcement.md) | 5-step algorithm, clearance, bridges, KSPs  |
-| [pact-governed-agents](pact-governed-agents.md)       | PactGovernedAgent, @governed_tool           |
-| [pact-kaizen-integration](pact-kaizen-integration.md) | Wrapping Kaizen agents with governance      |
+| Skill                                                 | Use When                                        |
+| ----------------------------------------------------- | ----------------------------------------------- |
+| [pact-quickstart](pact-quickstart.md)                 | Getting started, first GovernanceEngine         |
+| [pact-governance-engine](pact-governance-engine.md)   | Engine API, verify_action, compute_envelope     |
+| [pact-dtr-addressing](pact-dtr-addressing.md)         | D/T/R grammar, Address parsing                  |
+| [pact-envelopes](pact-envelopes.md)                   | Three-layer model, monotonic tightening         |
+| [pact-access-enforcement](pact-access-enforcement.md) | 5-step algorithm, clearance, bridges, KSPs      |
+| [pact-governed-agents](pact-governed-agents.md)       | PactGovernedAgent, @governed_tool               |
+| [pact-kaizen-integration](pact-kaizen-integration.md) | Wrapping Kaizen agents with governance          |
 | [pact-mcp-governance](pact-mcp-governance.md)         | MCP tool governance: enforce, audit, middleware |
 
 ## Key Types

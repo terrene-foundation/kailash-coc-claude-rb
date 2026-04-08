@@ -1,6 +1,6 @@
 ---
 name: mcp-specialist
-description: MCP specialist for production-ready server implementation. Use for AI agent and MCP integration.
+description: "MCP specialist. Use for MCP servers, tools, resources, exposing APIs as LLM tools — raw JSON-RPC BLOCKED."
 tools: Read, Write, Edit, Bash, Grep, Glob, Task
 model: opus
 ---

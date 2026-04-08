@@ -1,14 +1,7 @@
 {
-  "last_sync": "2026-04-05T20:00:00Z",
+  "synced_at": "2026-04-08T08:12:12Z",
   "source": "loom",
-  "source_version": "2.1.0",
-  "template_version": "1.4.0",
-  "variant": "rb",
-  "files_updated": 6,
-  "files_created": 0,
-  "files_unchanged": 0,
-  "content_adaptations": 3,
-  "build_refs_stripped": 3,
-  "cross_refs_fixed": 0,
-  "summary": "6 tightened global skill files synced from loom v2.1.0 (3,167→1,290 lines, 59% reduction, 3 BUILD paths stripped)"
+  "source_version": "2.7.0",
+  "agent": "coc-sync (Gate 2)",
+  "variant": "rb"
 }

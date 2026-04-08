@@ -1,6 +1,6 @@
 ---
 name: dataflow-specialist
-description: "DataFlow database specialist. Use for zero-config DB operations, bulk processing, or auto-generated nodes."
+description: "DataFlow specialist. Use proactively for ANY DB/cache/schema/query/CRUD/migration work — raw SQL & ORMs BLOCKED."
 tools: Read, Write, Edit, Bash, Grep, Glob, Task
 model: opus
 ---

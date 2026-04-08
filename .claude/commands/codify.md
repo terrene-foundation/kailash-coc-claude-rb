@@ -22,15 +22,47 @@ This phase executes under the **autonomous execution model** (see `rules/autonom
 
 ## Workflow
 
-### 1. Consume L5 learning artifacts
+### 1. Consume learning digest
 
-Before extracting new knowledge, integrate what the learning system has already discovered:
+Before extracting new knowledge, integrate what the learning system has captured:
 
-1. Read `.claude/learning/evolved/skills/` — if evolved skills exist, integrate them into canonical skill directories
-2. Read `.claude/learning/instincts/personal/` — review high-confidence instincts for patterns worth codifying
-3. Read `.claude/rules/learned-instincts.md` — verify rendered instincts are accurate and actionable
+1. Read `.claude/learning/learning-digest.json` — the structured summary of recent observations
+2. Read `.claude/learning/learning-codified.json` — what was previously codified (avoid re-processing)
+3. Read recent journal entries referenced in the digest (`decisions` array) — DECISION and DISCOVERY entries contain semantic context
+4. Read `.session-notes` — latest session accomplishments and outstanding items
 
-This closes the L5 feedback loop: observe → instinct → evolve → **codify**.
+Analyze the digest for actionable findings:
+
+- **Corrections** → Do any rules or skills need updating to match user preferences? Each correction is a real signal where the user pushed back on an approach.
+- **Error patterns** → Should any recurring rule violations become new rule sections (DO/DO NOT with examples)?
+- **Decisions** → Should any architectural decisions from journals become agent or skill knowledge?
+- **Accomplishments** → Do any completed features need documentation in skills?
+
+For each finding, either:
+
+- Update an existing rule (add DO/DO NOT with example and Why)
+- Update a skill's SKILL.md or sub-files
+- Update an agent's knowledge section
+- Skip (not worth codifying — explain why)
+
+After processing, write `.claude/learning/learning-codified.json` to record what was analyzed:
+
+```json
+{
+  "last_codified": "2026-04-07T12:00:00Z",
+  "digest_hash": "<sha256 of digest at time of processing>",
+  "actions_taken": [
+    { "type": "rule_update", "file": "rules/patterns.md", "reason": "..." },
+    {
+      "type": "skill_update",
+      "file": "skills/03-nexus/SKILL.md",
+      "reason": "..."
+    }
+  ]
+}
+```
+
+This closes the feedback loop: observe → digest → **codify into real artifacts**.
 
 ### 2. Deep knowledge extraction
 
@@ -66,9 +98,19 @@ Ensure user-facing documentation reflects new capabilities. Verify README.md, do
 
 Validate that generated agents and skills are correct, complete, and secure. **claude-code-architect** verifies cc-artifacts compliance (descriptions under 120 chars, agents under 400 lines, commands under 150 lines, rules path-scoped, SKILL.md progressive disclosure).
 
-### 7. Create upstream proposal (MANDATORY)
+### 7. Create upstream proposal (BUILD repos only)
 
-After artifacts are updated and validated locally, create a proposal for upstream review at loom/ (the source of truth). This step is NOT optional — codification is incomplete without upstream propagation.
+**This step applies ONLY to BUILD repos** (kailash-py, kailash-rs). Detect by checking:
+
+- Git remote contains `kailash-py` or `kailash-rs`, OR
+- `pyproject.toml` contains `name = "kailash"` or `Cargo.toml` contains `name = "kailash"`
+
+**If this is a downstream project repo** (anything else): SKIP this step. Downstream repos consume COC artifacts from templates — they do not propose changes upstream. Artifact changes from `/codify` in downstream repos stay local to that project. Report:
+
+> Artifacts updated locally. This is a downstream project repo — changes stay local.
+> Only BUILD repos (kailash-py, kailash-rs) create upstream proposals.
+
+**If this is a BUILD repo**: Create a proposal for upstream review at loom/ (source of truth).
 
 **DO NOT sync directly to COC template repos.** All distribution flows through loom/ via `/sync`.
 
@@ -93,13 +135,13 @@ changes:
 status: pending_review
 ```
 
-3. For each changed artifact, suggest a tier:
+4. For each changed artifact, suggest a tier:
    - **cc**: Claude Code universal (guides, cc-audit)
    - **co**: Methodology universal (CO principles, journal, communication)
    - **coc**: Codegen, language-agnostic (workflow phases, analysis patterns)
    - **coc-py** / **coc-rs**: Language-specific (code examples, SDK patterns)
 
-4. Report to the developer:
+5. Report to the developer:
 
 > Artifacts updated locally and available in this repo. Proposal created at
 > `.claude/.proposals/latest.yaml` with {N} changes for upstream review.
@@ -129,9 +171,10 @@ Deploy these agents as a team for codification:
 - **testing-specialist** — Verify any code examples in skills are testable
 - **security-reviewer** — Audit agents/skills for prompt injection, insecure patterns, secrets exposure
 
-**Upstream proposal (step 7 — mandatory):**
+**Upstream proposal (step 7 — BUILD repos only):**
 
-- Generate `.claude/.proposals/latest.yaml` with tier suggestions for each changed artifact
+- Only in BUILD repos (kailash-py, kailash-rs): generate `.claude/.proposals/latest.yaml` with tier suggestions
+- Downstream project repos: skip proposal creation, changes stay local
 - See `rules/artifact-flow.md` for the controlled flow: BUILD repo → loom/ → templates
 
 ### Journal

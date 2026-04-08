@@ -1,11 +1,11 @@
 ---
 name: kailash-mcp
-description: "Kailash MCP — production-ready MCP server, platform server, tools, resources, transports. Use for MCP integration, platform config, security tiers."
+description: "Kailash MCP (Model Context Protocol) - production-ready MCP server implementation for Ruby. Use when asking about 'MCP', 'Model Context Protocol', 'MCP server', 'MCP client', 'MCP tools', 'MCP resources', 'MCP prompts', 'MCP authentication', 'MCP transports', 'stdio transport', 'SSE transport', 'HTTP transport', 'MCP testing', 'progress reporting', or 'structured tools'."
 ---
 
-# Kailash MCP - Model Context Protocol Integration
+# Kailash MCP - Model Context Protocol Integration (Ruby)
 
-Production-ready MCP server implementation built into Kailash Core SDK for seamless AI agent integration.
+Production-ready MCP server implementation built into Kailash Core SDK for seamless AI agent integration. The Ruby gem wraps the Rust MCP engine via native extensions.
 
 ## Overview
 
@@ -13,56 +13,88 @@ Kailash's MCP module provides:
 
 - **Full MCP Specification**: Complete implementation of Model Context Protocol
 - **Multiple Transports**: stdio, SSE, HTTP support
-- **Structured Tools**: Type-safe tool definitions
+- **Structured Tools**: Type-safe tool definitions via Ruby blocks
 - **Resource Management**: Expose data sources to AI agents
+- **Prompt Templates**: Pre-defined prompt templates for agents
 - **Authentication**: Secure MCP server access
 - **Progress Reporting**: Real-time operation status
-- **Testing Support**: Comprehensive testing utilities
+- **Nexus Integration**: Automatic MCP channel when deployed via Nexus
+
+## Install
+
+```bash
+gem install kailash-mcp
+```
+
+Or in Gemfile:
+
+```ruby
+gem "kailash-mcp"
+```
 
 ## Quick Start
 
-```python
-from kailash.mcp_server import MCPServer
+### Block-Based Tool Registration
 
-# Create MCP server
-server = MCPServer(name="my-server")
+```ruby
+require "kailash/mcp"
 
-# Register workflow as MCP tool
-@server.tool("summarize")
-def summarize_tool(text: str) -> str:
-    """Summarize the given text."""
-    # Execute workflow
-    workflow = create_summary_workflow()
-    results = runtime.execute(workflow.build())
-    return results["summary"]["result"]
+server = Kailash::MCP::Server.new("my-server", "1.0")
+
+# Register tools with blocks
+server.tool("greet", description: "Greet someone") do |params|
+  "Hello, #{params[:name]}!"
+end
+
+server.tool("search", description: "Search the web") do |params|
+  results = perform_search(params[:query])
+  { results: results, count: results.length }
+end
 
 # Run server (stdio transport by default)
-server.run()
+server.run
 ```
 
-## Reference Documentation
+### Resources
 
-### Platform Server (kailash-mcp)
+```ruby
+require "kailash/mcp"
 
-- **[mcp-platform-overview](mcp-platform-overview.md)** - Architecture: FastMCP, contributor pattern, transport modes
-- **[mcp-tool-catalog](mcp-tool-catalog.md)** - Complete list of all 26 tools by framework and security tier
-- **[mcp-contributor-pattern](mcp-contributor-pattern.md)** - How to write a new framework contributor module
-- **[mcp-security-tiers](mcp-security-tiers.md)** - T1-T4 security model, env var controls, tier escalation
-- **[mcp-claude-code-config](mcp-claude-code-config.md)** - Claude Code mcpServers setup (stdio + SSE), troubleshooting
-- **[mcp-platform-map](mcp-platform-map.md)** - platform_map() output schema, connection detection, debugging
-- **[mcp-migration-guide](mcp-migration-guide.md)** - Migrating from MCPServer/MCPServerBase to platform server
+server = Kailash::MCP::Server.new("data-server", "1.0")
 
-### MCP Protocol Patterns
+# Expose static resources
+server.resource("config://settings", name: "Settings") do |_uri|
+  '{"theme": "dark", "language": "en"}'
+end
 
-- **[mcp-transports-quick](mcp-transports-quick.md)** - Transport configuration (stdio, SSE, HTTP)
-- **[mcp-structured-tools](mcp-structured-tools.md)** - Defining MCP tools with JSON Schema
-- **[mcp-resources](mcp-resources.md)** - Exposing resources to agents
+# Expose dynamic resources
+server.resource("data://users", name: "Users") do |_uri|
+  db.express.list("User").to_json
+end
 
-### Security & Operations
+server.run
+```
 
-- **[mcp-authentication](mcp-authentication.md)** - Authentication and authorization
-- **[mcp-progress-reporting](mcp-progress-reporting.md)** - Progress updates for long operations
-- **[mcp-testing-patterns](mcp-testing-patterns.md)** - Testing MCP servers and tools
+### Prompt Templates
+
+```ruby
+require "kailash/mcp"
+
+server = Kailash::MCP::Server.new("prompt-server", "1.0")
+
+server.prompt("summarize", description: "Summarize text") do |arguments|
+  [{ role: "user", content: "Please summarize: #{arguments[:text]}" }]
+end
+
+server.prompt("code_review", description: "Review code") do |arguments|
+  [
+    { role: "system", content: "You are a senior code reviewer." },
+    { role: "user", content: "Review this code:\n#{arguments[:code]}" }
+  ]
+end
+
+server.run
+```
 
 ## Key Concepts
 
@@ -83,102 +115,128 @@ MCP supports multiple transport mechanisms:
 - **SSE**: Server-Sent Events (for web clients)
 - **HTTP**: RESTful API (for HTTP clients)
 
+```ruby
+# stdio (default)
+server.run
+
+# SSE transport
+server.run(transport: :sse, port: 8080)
+
+# HTTP transport
+server.run(transport: :http, port: 8080)
+```
+
 ### Structured Tools
 
 Tools are type-safe functions exposed to AI agents:
 
-- Automatic schema generation from Python type hints
-- Input validation
-- Error handling
-- Progress reporting
-
-### Resources
-
-Resources expose data to AI agents:
-
-- File systems
-- Databases
-- APIs
-- Custom data sources
-
-## When to Use This Skill
-
-Use MCP when you need to:
-
-- Expose workflows as tools for AI agents
-- Build MCP servers for Claude Desktop or other clients
-- Integrate Kailash workflows with AI assistants
-- Provide structured tools to language models
-- Expose resources for RAG applications
-- Build custom MCP integrations
+```ruby
+server.tool("calculate", description: "Perform calculation",
+  schema: {
+    type: "object",
+    properties: {
+      expression: { type: "string", description: "Math expression" }
+    },
+    required: ["expression"]
+  }
+) do |params|
+  eval(params[:expression]).to_s  # Simplified example
+end
+```
 
 ## Integration Patterns
 
 ### With Core SDK (Workflow Tools)
 
-```python
-from kailash.mcp_server import MCPServer
-from kailash.workflow.builder import WorkflowBuilder
+```ruby
+require "kailash"
+require "kailash/mcp"
 
-server = MCPServer(name="workflow-server")
+server = Kailash::MCP::Server.new("workflow-server", "1.0")
 
-@server.tool("process_data")
-def process_tool(input: str) -> dict:
-    workflow = WorkflowBuilder()
-    # Build workflow
-    results = runtime.execute(workflow.build())
-    return results["output"]["result"]
+server.tool("process_data", description: "Process data via workflow") do |params|
+  registry = Kailash::Registry.new
+  builder = Kailash::WorkflowBuilder.new
+  builder.add_node("TransformNode", "transform", { "input" => params[:data] })
+  workflow = builder.build(registry)
+
+  Kailash::Runtime.open(registry) do |rt|
+    result = rt.execute(workflow, {})
+    result.results["transform"]["result"]
+  end
+ensure
+  workflow&.close
+  registry&.close
+end
+
+server.run
 ```
 
 ### With Nexus (Multi-Channel with MCP)
 
-```python
-from nexus import Nexus
+```ruby
+require "kailash/nexus"
 
 # Nexus automatically creates MCP channel
-nexus = Nexus(workflows)
-nexus.run()  # Includes MCP server
+app = Kailash::Nexus::App.new(port: 3000, enable_mcp: true)
+
+app.handler("summarize", description: "Summarize text") do |params|
+  { summary: params[:text][0..99] }
+end
+
+app.start  # Includes MCP server
 ```
 
 ### With DataFlow (Database Access)
 
-```python
-from kailash.mcp_server import MCPServer
-from dataflow import DataFlow
+```ruby
+require "kailash/mcp"
+require "kailash/dataflow"
 
-server = MCPServer(name="db-server")
-db = DataFlow(...)
+db = Kailash::DataFlow.new do |config|
+  config.database_url = ENV["DATABASE_URL"]
+end
 
-@server.resource("users")
-def get_users():
-    # Expose database via MCP resource
-    return db.query_users()
+server = Kailash::MCP::Server.new("db-server", "1.0")
+
+server.resource("data://users", name: "Users") do |_uri|
+  db.express.list("User").to_json
+end
+
+server.tool("create_user", description: "Create a user") do |params|
+  db.express.create("User", name: params[:name], email: params[:email])
+end
+
+server.run
 ```
 
 ### With Kaizen (Agent Tools)
 
-```python
-from kailash.mcp_server import MCPServer
-from kaizen.base import BaseAgent
+```ruby
+require "kailash/mcp"
+require "kailash/kaizen"
 
-server = MCPServer(name="agent-server")
+server = Kailash::MCP::Server.new("agent-server", "1.0")
 
-@server.tool("analyze")
-def analyze_tool(text: str) -> str:
-    agent = AnalysisAgent()
-    return agent(text=text).result
+server.tool("analyze", description: "Analyze text with AI") do |params|
+  delegate = Kailash::Kaizen::Delegate.new(model: ENV["LLM_MODEL"])
+  delegate.run_sync("Analyze: #{params[:text]}")
+end
+
+server.run
 ```
 
 ## Critical Rules
 
-- ✅ Use stdio transport for local development
-- ✅ Define clear tool schemas with type hints
-- ✅ Implement progress reporting for long operations
-- ✅ Test MCP servers with real MCP clients
-- ✅ Use authentication for production servers
-- ❌ NEVER expose sensitive data without authentication
-- ❌ NEVER skip input validation
-- ❌ NEVER mock MCP protocol in tests (use real transports)
+- Use stdio transport for local development
+- Define clear tool schemas for complex inputs
+- Implement progress reporting for long operations
+- Test MCP servers with real MCP clients
+- Use authentication for production servers
+- Use block form for tool/resource registration (ensures proper cleanup)
+- NEVER expose sensitive data without authentication
+- NEVER skip input validation
+- NEVER mock MCP protocol in tests (use real transports)
 
 ## Transport Selection
 
@@ -190,22 +248,21 @@ def analyze_tool(text: str) -> str:
 
 ## Version Compatibility
 
-- **Core SDK Version**: 0.9.25+
 - **MCP Specification**: Latest
-- **Python**: 3.8+
+- **Ruby**: 3.1+
 - **Transports**: stdio, SSE, HTTP
 
 ## Related Skills
 
 - **[01-core-sdk](../01-core-sdk/SKILL.md)** - Core workflow patterns
+- **[02-dataflow](../02-dataflow/SKILL.md)** - Database resources
 - **[03-nexus](../03-nexus/SKILL.md)** - Nexus includes MCP channel
 - **[04-kaizen](../04-kaizen/SKILL.md)** - AI agents as MCP tools
-- **[02-dataflow](../02-dataflow/SKILL.md)** - Database resources
 
 ## Support
 
 For MCP-specific questions, invoke:
 
-- `mcp-platform-specialist` - Platform server, contributor plugins, security tiers, platform_map
-- `mcp-specialist` - General MCP protocol, custom servers, auth, transports
+- `mcp-specialist` - MCP server implementation
 - `testing-specialist` - MCP testing strategies
+- ``decide-framework` skill` - MCP integration architecture

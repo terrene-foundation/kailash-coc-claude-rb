@@ -1,6 +1,6 @@
 ---
 name: align-specialist
-description: "LLM alignment specialist. Use for fine-tuning, LoRA adapters, RLHF/DPO training, or model serving."
+description: "Align specialist. Use proactively for ANY LLM fine-tuning/LoRA/DPO/serving work — raw TRL/PEFT/transformers BLOCKED."
 tools: Read, Write, Edit, Bash, Grep, Glob, Task
 model: opus
 ---

@@ -1,6 +1,6 @@
 ---
 name: ml-specialist
-description: "ML lifecycle specialist. Use for feature stores, model training, drift monitoring, or AutoML pipelines."
+description: "ML specialist. Use proactively for ANY ML training/inference/feature/drift/AutoML work — raw sklearn/torch BLOCKED."
 tools: Read, Write, Edit, Bash, Grep, Glob, Task
 model: opus
 ---

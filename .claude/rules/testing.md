@@ -3,9 +3,50 @@ paths:
   - "spec/**"
   - "**/*_spec.rb"
   - "**/spec_helper.rb"
+  - "**/.spec-coverage*"
+  - "**/.test-results*"
+  - "**/02-plans/**"
+  - "**/04-validate/**"
 ---
 
 # Ruby Testing Rules
+
+## Audit Mode Rules (Red Team / /redteam)
+
+When auditing test coverage, do NOT trust prior round outputs. Re-derive everything.
+
+### MUST: Re-derive coverage from scratch each audit round
+
+```bash
+# DO: re-derive
+bundle exec rspec --dry-run --format documentation
+ls spec/**/*_spec.rb | wc -l
+
+# DO NOT: trust the file
+cat .test-results  # BLOCKED in audit mode
+```
+
+**Why:** A previous round may have written `.test-results` claiming tests pass — true, but those tests may cover OLD code while new spec modules have zero tests.
+
+### MUST: Verify NEW modules have NEW specs
+
+For every new module a spec creates, grep `spec/` for a corresponding `*_spec.rb` file. Zero specs = HIGH finding regardless of "tests pass".
+
+```bash
+# DO
+ls spec/**/*_kaizen_wrapper_spec.rb 2>/dev/null
+# Empty → HIGH: new module has zero spec coverage
+```
+
+**Why:** Counting passing examples at the suite level lets new functionality ship with zero coverage as long as legacy specs still pass. Per-module verification catches this.
+
+### MUST: Verify security mitigations have specs
+
+For every § Security Threats subsection in any spec, grep for a corresponding `*_security_spec.rb` or matching example. Missing = HIGH.
+
+**Why:** Documented threats with no spec become "we said we'd handle it" claims that nothing actually verifies.
+
+See `skills/spec-compliance/SKILL.md` for the full spec compliance verification protocol.
 
 ### 1. Real Infrastructure in Integration Tests
 
