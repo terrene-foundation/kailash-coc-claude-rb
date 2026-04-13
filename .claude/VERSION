@@ -1,16 +1,24 @@
 {
-  "version": "1.6.0",
+  "version": "1.6.1",
   "type": "coc-use-template",
   "description": "COC USE template for Ruby SDK projects (Magnus bindings)",
-  "released": "2026-04-08",
+  "released": "2026-04-13",
   "upstream": {
     "name": "loom",
     "type": "coc-source",
-    "version": "2.8.0",
+    "version": "2.8.2",
     "build_version": "3.9.0",
     "synced_at": "2026-04-09T02:30:00+08:00"
   },
   "changelog": [
+    {
+      "version": "1.6.1",
+      "date": "2026-04-13",
+      "summary": "Enforce high effort + disable adaptive thinking in project settings.",
+      "changes": [
+        "SETTINGS: effortLevel: high + CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING=1."
+      ]
+    },
     {
       "version": "1.6.0",
       "date": "2026-04-08",
