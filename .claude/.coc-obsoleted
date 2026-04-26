@@ -1,0 +1,7 @@
+# COC obsoleted paths — emitted by /sync from loom/.claude/sync-manifest.yaml::obsoleted
+# Downstream /sync MUST recursively delete each path before installing the new layout.
+# One path per line. Lines starting with '#' are comments.
+# Trailing slash means directory.
+scripts/hooks/
+.claude/scripts/
+scripts/resolve-template.js

@@ -1,16 +1,47 @@
 {
-  "version": "1.6.1",
+  "version": "1.7.0",
   "type": "coc-use-template",
   "description": "COC USE template for Ruby SDK projects (Magnus bindings)",
-  "released": "2026-04-13",
+  "released": "2026-04-26",
   "upstream": {
     "name": "loom",
     "type": "coc-source",
-    "version": "2.8.2",
+    "version": "2.9.1",
     "build_version": "3.9.0",
-    "synced_at": "2026-04-09T02:30:00+08:00"
+    "synced_at": "2026-04-26T00:00:00+08:00"
   },
   "changelog": [
+    {
+      "version": "1.7.0",
+      "date": "2026-04-26",
+      "summary": "Sync loom 2.9.1 — STRUCTURAL hooks consolidation (.claude/hooks/ canonical) + sync template-resolver UX fix (env-override-first, GitHub-cache-first, sibling demoted to offline-only fallback) + new declarative obsoleted-paths purge mechanism. Step 4.5 fired: removed legacy scripts/resolve-template.js (scripts/hooks/ + .claude/scripts/ already absent). Emitted .claude/.coc-obsoleted with 3 entries so downstream Ruby consumers purge stale orphan paths on next /sync.",
+      "changes": [
+        "PURGED: scripts/resolve-template.js (legacy shim — replaced by canonical .claude/bin/resolve-template.js in v2.9.1).",
+        "VERIFIED ABSENT: scripts/hooks/, .claude/scripts/ (already gone in this template; obsoleted manifest still emitted to relay purge to Ruby downstream consumers).",
+        "NEW: .claude/.coc-obsoleted — slim purge manifest with 3 entries; downstream /sync reads this to clean stale orphans.",
+        "NEW: .claude/bin/ — canonical resolve-template.js + emit.mjs + compose.mjs + emit-cli-artifacts.mjs + repin-downstream.mjs + lib/slot-parser.mjs.",
+        "COMMAND: variants/rb/commands/sync.md — full-file overlay with env-override-first resolution + obsoleted-paths purge step (2.5/2.6).",
+        "RULES: 14 rb variant overlays (agent-reasoning, connection-pool, dataflow-pool, deployment, e2e-god-mode, eatp, infrastructure-sql, observability, pact-governance, patterns, schema-migration, testing, trust-plane-security, zero-tolerance).",
+        "RULES: ~48 global rules updated (full sync to loom 2.9.1 baseline) including new ones — build-repo-release-discipline, ci-runners, cross-cli-parity, dataflow-classification, dataflow-identifier-safety, event-payload-classification, facade-manager-detection, nexus-http-status-convention, nexus-webhook-hmac, orphan-detection, tenant-isolation, ui-backend-defense, variant-authoring, worktree-isolation.",
+        "AGENTS: cc-architect, cli-orchestrator, codex-architect, gemini-architect added (descriptive only — rb template is CC-only, codex/gemini agents land as documentation).",
+        "COMMANDS: cli-audit, send-it added; sync.md updated to env-override-first resolver per v2.9.1.",
+        "HOOKS: full .claude/hooks/ tree refreshed (13 hook scripts + 7 lib utilities). settings.json already canonical (.claude/hooks/ paths) — no normalization needed.",
+        "SKILLS: ~50 new/updated skills across 01-core-sdk through 35-kailash-align (kaizen, ml, align, deployment, security-patterns, claude-code-patterns, etc).",
+        "PRESERVED: CLAUDE.md (project-specific), settings.json description ('Kailash COC Claude (Ruby)'), legacy commands not in current loom (checkpoint.md, evolve.md, journal.md, start.md), legacy agent claude-code-architect.md, legacy skill 27-care-reference.",
+        "VERSION: upstream version 2.8.2 → 2.9.1; template version 1.6.2 → 1.7.0."
+      ]
+    },
+    {
+      "version": "1.6.2",
+      "date": "2026-04-14",
+      "summary": "Framework-first enforcement hook + Nexus activation improvements.",
+      "changes": [
+        "HOOK: enforce-framework-first.js — blocks raw imports (FastAPI, SQLAlchemy, OpenAI, sklearn, transformers) in production code, redirects to Kailash frameworks.",
+        "AGENT: nexus-specialist description rewritten for semantic activation — user-facing terms (API endpoint, web service, REST API) instead of insider jargon.",
+        "SKILL: 03-nexus/nexus-for-fastapi-users.md — translation guide for route-first developers.",
+        "RULE: CLAUDE.md framework-first directive updated — no specific framework names."
+      ]
+    },
     {
       "version": "1.6.1",
       "date": "2026-04-13",
@@ -129,5 +160,6 @@
         "Express-first patterns in rules/patterns.md with Ruby syntax"
       ]
     }
-  ]
+  ],
+  "updated": "2026-04-26"
 }
