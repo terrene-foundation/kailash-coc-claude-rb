@@ -3,9 +3,11 @@ name: wrapup
 description: "Write .session-notes so the next session resumes without re-discovering context."
 ---
 
-The only deliverable is a `.session-notes` file that lets a fresh session start producing work within 2-3 minutes of reading it, without having to re-explore the codebase.
+The only deliverable is a `.session-notes` file that lets a fresh session start producing work within 2–3 minutes of reading it, without having to re-explore the codebase.
 
 **Before running:** if significant decisions, discoveries, or risks from this session are not yet in `journal/`, run `/journal new DECISION|DISCOVERY|RISK <topic>` first. `.session-notes` is not a decision log.
+
+**Release drift check (MUST — BUILD repos only):** Before writing `.session-notes`, run `node .claude/hooks/lib/release-drift.js` via a quick inline check (or inspect the `[RELEASE-DRIFT]` lines from session-start). If any packages have commits since their last tag, surface this to the user with a recommendation to run `/release` before ending the session. Record the unreleased package list in `.session-notes` under an "Unreleased packages" section so the next session sees the backlog. Silent on downstream repos / non-package repos.
 
 ## What the next session already has for free
 
@@ -50,7 +52,7 @@ change. Just enough for the next session to orient — not a history.
 
 1. `path/to/file` — why it matters (one line)
 2. `path/to/file` — why it matters
-   (3-6 files, priority-ordered)
+   (3–6 files, priority-ordered)
 
 ## In-flight state
 

@@ -1,18 +1,22 @@
 ---
 name: error-troubleshooting
-description: "Common error patterns and troubleshooting guides for Kailash SDK including Nexus blocking issues, connection parameter errors, runtime execution errors, cycle convergence problems, missing .build() calls, parameter validation errors, and DataFlow template syntax errors. Use when encountering errors, debugging issues, or asking about 'error', 'troubleshooting', 'debugging', 'not working', 'hangs', 'timeout', 'validation error', 'connection error', 'runtime error', 'cycle not converging', 'missing build', or 'template syntax'."
+description: "Kailash errors: Nexus hangs, connection errors, runtime errors, cycles, missing .build(), validation, template syntax."
 ---
 
 # Kailash Error Troubleshooting
 
 Common error patterns and solutions for Kailash SDK.
 
+## When to Use
+
+Use when encountering errors, debugging issues, or asking about error, troubleshooting, debugging, not working, hangs, timeout, validation error, connection error, runtime error, cycle not converging, missing build, or template syntax. Covers Nexus blocking issues, connection parameter errors, runtime execution errors, cycle convergence problems, missing `.build()` calls, parameter validation errors, and DataFlow template syntax errors.
+
 ## Sub-File Index
 
 ### Critical Errors
 
 - **[error-nexus-blocking](error-nexus-blocking.md)** - Nexus hangs or blocks
-  - Symptom: API hangs forever | Cause: LocalRuntime in Docker/async | Fix: Use AsyncLocalRuntime
+  - Symptom: API hangs forever | Cause: LocalRuntime in Docker/FastAPI | Fix: Use AsyncLocalRuntime
 - **[error-missing-build](error-missing-build.md)** - Forgot `.build()`
   - Symptom: `TypeError: execute() expects Workflow, got WorkflowBuilder` | Fix: `runtime.execute(workflow.build())`
 
@@ -64,7 +68,7 @@ Common error patterns and solutions for Kailash SDK.
 ## Error Prevention Checklist
 
 - Called `.build()` on WorkflowBuilder?
-- Using `AsyncLocalRuntime` for Docker/async?
+- Using `AsyncLocalRuntime` for Docker/FastAPI?
 - All connections use 4 parameters?
 - All required node parameters provided?
 - Cyclic workflows have convergence checks?
@@ -73,6 +77,85 @@ Common error patterns and solutions for Kailash SDK.
 - Structured output in `response_format` (not `provider_config`)?
 - Azure using canonical env vars (`AZURE_ENDPOINT`, `AZURE_API_KEY`)?
 - `structured_output_mode="explicit"` for new agents?
+
+## Static Analysis False Positives
+
+### CodeQL: `__getattr__` Lazy Loading
+
+**Symptom:** CodeQL reports "Explicit export is not defined" (`py/undefined-export`)
+for names in `__all__` resolved by a module-level `__getattr__` function.
+
+**Fix:** Add a `TYPE_CHECKING`-guarded import for the reported name:
+
+```python
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from mypackage.submodule import LazyName as LazyName  # explicit re-export
+
+def __getattr__(name: str):
+    if name == "LazyName":
+        from mypackage.submodule import LazyName
+        return LazyName
+    raise AttributeError(...)
+
+__all__ = ["LazyName"]  # CodeQL now sees the TYPE_CHECKING import
+```
+
+The `as LazyName` re-export syntax prevents "unused import" warnings from other linters.
+
+### CodeQL: Empty Except Clauses
+
+**Fix:** Add a comment explaining intent. CodeQL accepts `except: pass` with an inline comment:
+
+```python
+except ValueError:
+    pass  # Callback already unregistered; silently ignore duplicate removal
+
+except asyncio.CancelledError:
+    pass  # Expected: we just cancelled this task above
+```
+
+### CodeQL: Overly Complex `__del__`
+
+**Fix:** Use the `_warnings=warnings` default parameter pattern and minimize branching:
+
+```python
+def __del__(self, _warnings=warnings) -> None:
+    if not getattr(self, "_closed", True):
+        _warnings.warn("Resource was not closed.", ResourceWarning, stacklevel=1)
+```
+
+Avoids conditional `import warnings` inside `__del__` that CodeQL flags as complex.
+The default parameter captures the module at definition time, surviving interpreter shutdown.
+
+## Git Hook Traps
+
+### Pre-Commit Auto-Stash Phantom Failure
+
+**Symptom:** `git commit` fails with "stash pop" errors or silently
+drops staged changes, even though running `pre-commit run --all-files`
+directly passes every hook.
+
+**Root cause:** Pre-commit's auto-stash feature stashes unstaged
+changes before running hooks, then pops after. When a hook modifies
+the working tree (e.g., a formatter), the pop conflicts with the
+hook's changes, causing the commit to abort or lose staged hunks.
+
+**Workaround:** Bypass the hooks directory for this commit only:
+
+```bash
+git -c core.hooksPath=/dev/null commit -m "fix(scope): description"
+```
+
+**Mandatory follow-up:** Document the bypass in the commit body AND
+file a todo against the pre-commit configuration. See
+`rules/git.md` "Pre-Commit Hook Workarounds" for the full rule.
+Silent `--no-verify` retries are BLOCKED.
+
+**Frequency:** Recurring across sessions in kailash-py; the stash
+interaction is non-deterministic and depends on which files have
+unstaged changes at commit time.
 
 ## Debugging Tips
 

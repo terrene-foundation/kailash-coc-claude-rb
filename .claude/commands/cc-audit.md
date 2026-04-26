@@ -2,6 +2,11 @@
 
 Audit Claude Code artifacts for quality, completeness, and template alignment in Ruby projects.
 
+## BUILD vs USE Repo Distinction
+
+- **BUILD repos** (kailash-py, kailash-rs, kailash-prism): audit ALL canonical artifact directories (`agents/frameworks/`, `skills/NN-name/`, `rules/*.md`). No `agents/project/` or `skills/project/` should exist.
+- **Downstream USE repos** (consumer Ruby projects): focus on project-specific artifacts (`agents/project/`, `skills/project/`); shared artifacts are owned by the upstream template.
+
 ## Checks
 
 1. **Agent quality**: Descriptions under 120 chars, files under 400 lines

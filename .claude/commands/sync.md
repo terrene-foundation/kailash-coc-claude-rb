@@ -15,15 +15,22 @@ loom/ (source) → kailash-coc-claude-rb/ (USE template) → THIS REPO
                                                               ↑ you are here
 ```
 
+## BUILD vs USE Repo Distinction
+
+- **BUILD repos** (kailash-py, kailash-rs, kailash-prism): artifacts live in canonical locations (`agents/frameworks/`, `skills/01-core-sdk/`, `rules/*.md`). `/codify` writes to canonical locations AND creates `.claude/.proposals/latest.yaml` for upstream flow to loom/. No `agents/project/` or `skills/project/`.
+- **Downstream USE repos** (consumer projects): `/codify` writes project-specific artifacts to `.claude/agents/project/` and `.claude/skills/project/`; stays local.
+
+The "Project-specific" preservation rule below applies only to downstream USE repos. In a BUILD repo every artifact is canonical and subject to merge-review.
+
 ## Merge Semantics
 
 This is a **merge**, not an overwrite. Three categories of files:
 
-| Category             | Examples                                        | Behavior                      |
-| -------------------- | ----------------------------------------------- | ----------------------------- |
-| **Shared artifacts** | agents/analyst.md, rules/security.md            | **Updated** from template     |
-| **Project-specific** | agents/project/_, skills/project/_, workspaces/ | **Preserved** — never touched |
-| **Per-repo data**    | learning/\*, .proposals/                        | **Preserved** — never touched |
+| Category                              | Examples                                          | Behavior                      |
+| ------------------------------------- | ------------------------------------------------- | ----------------------------- |
+| **Shared artifacts**                  | agents/analyst.md, rules/security.md              | **Updated** from template     |
+| **Project-specific** (USE repos only) | agents/project/\*, skills/project/\*, workspaces/ | **Preserved** — never touched |
+| **Per-repo data**                     | learning/\*, .proposals/                          | **Preserved** — never touched |
 
 **Rule**: If a file exists in BOTH the template and this repo, the template version wins (it's the upstream source). If a file exists ONLY in this repo, it's preserved. If a file exists ONLY in the template, it's added.
 
@@ -39,16 +46,24 @@ Check `.claude/.coc-sync-marker` for the template. If missing, auto-detect:
 
 ### 2. Locate template
 
-Search paths (in order):
+Resolution order (canonical, v2.9.1+) — **GitHub-backed cache wins by default**, local clones are offline-only fallback:
 
-1. `../{template}/` (sibling directory)
-2. `../../loom/{template}/` (loom parent)
-3. **GitHub fetch** — if not found locally, shallow-clone from GitHub:
-   ```bash
-   git clone --depth 1 https://github.com/esperie-enterprise/kailash-coc-claude-rb.git /tmp/kailash-coc-template
-   ```
-   Use `/tmp/kailash-coc-template` as the template path. Clean up after sync with `rm -rf /tmp/kailash-coc-template`.
-4. Ask user for path (last resort)
+1. **`KAILASH_COC_TEMPLATE_PATH` env var** — explicit developer escape hatch. Use this when iterating on un-pushed local template changes. MUST point at a directory containing `.claude/`.
+2. **Cache** at `~/.cache/kailash-coc/<template>/`. Auto-update via `git -C <cache> fetch --depth 1 origin main && git -C <cache> reset --hard origin/main` on every sync.
+3. **Shallow clone** to cache if no cache exists: `git clone --depth 1 --single-branch --branch main https://github.com/terrene-foundation/kailash-coc-claude-rb.git ~/.cache/kailash-coc/kailash-coc-claude-rb/`.
+4. **Offline fallback only** — local sibling `../{template}/` or `~/repos/loom/{template}/`. Used ONLY when steps 2-3 all fail (network unreachable). Emit `freshness NOT guaranteed` notice.
+
+If a local sibling is detected during online resolution but NOT used, emit one-line stderr notice: "Found local clone at X but using GitHub-backed cache for freshness. Set KAILASH_COC_TEMPLATE_PATH=X to use the local clone instead."
+
+**Why the change**: pre-v2.9.1 the local sibling was step 1, silently shadowing the auto-updating cache forever and forcing users to `git pull` two repos before every downstream sync.
+
+### 2.5. Read obsoleted-paths manifest from the resolved template
+
+Read `<resolved-template>/.claude/.coc-obsoleted` (slim purpose-built file emitted by coc-sync). Each non-comment, non-blank line is a repo-relative path; trailing slash means directory. If the file is missing, the template predates v2.9.1 — log one-line warning, skip the purge, proceed.
+
+### 2.6. Purge obsoleted paths in this consumer (MUST, before merge)
+
+For each entry in `.coc-obsoleted`, recursively delete the matching path. This is the ONLY mechanism by which downstream consumers purge stale orphan directories from former COC layouts (`scripts/hooks/`, `.claude/scripts/`, `scripts/resolve-template.js`). Skipping it leaves `require("./lib/...")` resolving against the wrong sibling and ships hooks that fail at every CC session start with `MODULE_NOT_FOUND`.
 
 ### 3. Check SDK version compatibility
 
@@ -83,8 +98,7 @@ Compare `.coc-sync-marker` timestamps. If already fresh: "Already up to date."
 
 **Preserved** (never modified by sync):
 
-- `agents/project/**` — project-specific agents
-- `skills/project/**` — project-specific skills
+- `agents/project/**` and `skills/project/**` — project-specific (USE repos only; BUILD repos do not have these directories)
 - `learning/**` — per-repo learning data
 - `.proposals/**` — review artifacts
 - `settings.local.json` — per-repo settings
@@ -94,8 +108,8 @@ Compare `.coc-sync-marker` timestamps. If already fresh: "Already up to date."
 
 **Scripts** (updated from template):
 
-- `scripts/hooks/*.js` — updated
-- `scripts/hooks/lib/*.js` — updated
+- `.claude/hooks/*.js` — updated
+- `.claude/hooks/lib/*.js` — updated
 
 ### 6. Verify integrity
 
@@ -122,15 +136,12 @@ Your artifacts are current with the template.
 
 ## Pushing Changes Upstream
 
-If you created knowledge worth sharing (via `/codify`):
+BUILD repos and downstream USE repos behave differently when `/codify` runs:
 
-1. `/codify` creates `.claude/.proposals/latest.yaml`
-2. Open loom/ and run `/sync rb`
-3. Human classifies each change (global vs variant)
-4. `/sync` distributes to USE templates
-5. Other projects pull via their `/sync`
+- **BUILD repos** (kailash-py, kailash-rs, kailash-prism): `/codify` writes to canonical locations (`agents/frameworks/`, `skills/NN-name/`, `rules/*.md`) AND appends entries to `.claude/.proposals/latest.yaml` for upstream flow to loom/. Then open loom/ and run `/sync rb` — Gate 1 classifies each change (global vs variant), Gate 2 distributes to USE templates.
+- **Downstream USE repos** (consumer projects): `/codify` writes to `.claude/agents/project/` and `.claude/skills/project/` and stays LOCAL. No `.proposals/latest.yaml` is created; no upstream flow. These artifacts are preserved across `/sync` runs by the "Project-specific" rule above.
 
-**Never** edit the template directly. All changes flow through loom/.
+**Never** edit the template directly. All shared artifact changes flow through loom/.
 
 ## When to Run
 
