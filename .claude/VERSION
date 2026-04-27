@@ -1,16 +1,24 @@
 {
-  "version": "1.7.0",
+  "version": "1.7.1",
   "type": "coc-use-template",
   "description": "COC USE template for Ruby SDK projects (Magnus bindings)",
-  "released": "2026-04-26",
+  "released": "2026-04-27",
   "upstream": {
     "name": "loom",
     "type": "coc-source",
-    "version": "2.9.1",
+    "version": "2.9.3",
     "build_version": "3.9.0",
-    "synced_at": "2026-04-26T00:00:00+08:00"
+    "synced_at": "2026-04-27T00:00:00+00:00"
   },
   "changelog": [
+    {
+      "version": "1.7.1",
+      "date": "2026-04-27",
+      "summary": "PATCH: rename /send-it → /decisive (slang removal + directive realignment to autonomous-execution + permission-envelope). The slang command name 'send-it' was unfamiliar to non-technical COC users (motorsports/skate slang); renamed to 'decisive' which names the posture without slang. Directive body rewritten to align with the user's standing principle 'autonomous execution to full with my permission, with the most optimal, complete, root-cause approach for the long-term … rigorous, prudent as well.' Added: § Prudence (permission envelope — destructive/hard-to-reverse/visible-to-others ops still require confirmation; BUILD-repo + downstream-of-USE commit/push carve-out per standing user feedback) + § Rigor (verify-before-commit — mechanical sweeps, cite paths/lines, distinguish observed-vs-assumed). Old send-it.md/.toml purged via .coc-obsoleted; new decisive command emitted to .claude/commands/ + (multi-CLI templates only) .codex/prompts/ + .gemini/commands/.",
+      "changes": [
+        "ADDED: .claude/commands/decisive.md. PURGED: .claude/commands/send-it.md. OBSOLETED: appended 3 send-it paths to .claude/.coc-obsoleted."
+      ]
+    },
     {
       "version": "1.7.0",
       "date": "2026-04-26",
