@@ -10,3 +10,8 @@ scripts/resolve-template.js
 .claude/commands/send-it.md
 .codex/prompts/send-it.md
 .gemini/commands/send-it.toml
+
+# v2.9.4 — /decisive renamed to /autonomize (autonomous-execution alignment)
+.claude/commands/decisive.md
+.codex/prompts/decisive.md
+.gemini/commands/decisive.toml

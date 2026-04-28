@@ -1,16 +1,31 @@
 {
-  "version": "1.7.1",
+  "version": "1.7.2",
   "type": "coc-use-template",
   "description": "COC USE template for Ruby SDK projects (Magnus bindings)",
-  "released": "2026-04-27",
+  "released": "2026-04-28",
   "upstream": {
     "name": "loom",
     "type": "coc-source",
-    "version": "2.9.3",
+    "version": "2.9.5",
     "build_version": "3.9.0",
-    "synced_at": "2026-04-27T00:00:00+00:00"
+    "synced_at": "2026-04-28T00:00:00+00:00"
   },
   "changelog": [
+    {
+      "version": "1.7.2",
+      "date": "2026-04-28",
+      "summary": "Sync loom 2.9.4 + 2.9.5 — (1) /decisive renamed to /autonomize (autonomous-execution alignment + permission-envelope wording made explicit). Old decisive.md purged via .coc-obsoleted; new autonomize.md emitted to .claude/commands/. (2) /sweep added — generic project-scoped audit command (7 sweeps: workspace todos, journal, GH issues, PRs/branches, redteam-vs-specs gaps, workspace+worktree hygiene, process hygiene). (3) Slimmed rules: rules/agents.md (273→196 lines), rules/testing.md global (293→200 lines; rb variant unchanged at 132). (4) .coc-obsoleted updated with v2.9.4 entries (decisive.md/.toml + send-it.md/.toml). The rb USE template gets only .claude/commands/decisive.md purged (no .codex/ or .gemini/ trees to clean — CC-only).",
+      "changes": [
+        "ADDED: .claude/commands/autonomize.md (replacement for v2.9.3 decisive.md).",
+        "ADDED: .claude/commands/sweep.md (generic project-scoped audit, 7 sweeps).",
+        "PURGED: .claude/commands/decisive.md (renamed to autonomize.md; CC-only template — no .codex/ or .gemini/ paths exist).",
+        "UPDATED: rules/agents.md (slimmed 273→196 lines; clauses unchanged in semantics, evidence narratives moved to guides/rule-extracts/agents.md).",
+        "UPDATED: guides/co-setup/06-artifact-lifecycle.md (loom v2.9.4/2.9.5 narrative).",
+        "OBSOLETED: .coc-obsoleted now lists 9 entries (added v2.9.4 paths: .claude/commands/decisive.md + .codex/prompts/decisive.md + .gemini/commands/decisive.toml).",
+        "VARIANT OVERLAYS: 27 rb variant overlays applied (14 rules + 8 commands + 5 SKILL.md) — unchanged from v1.7.1 manifest.",
+        "VERSION: upstream version 2.9.3 → 2.9.5; template version 1.7.1 → 1.7.2."
+      ]
+    },
     {
       "version": "1.7.1",
       "date": "2026-04-27",

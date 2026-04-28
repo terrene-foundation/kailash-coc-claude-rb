@@ -1,68 +1,48 @@
 # COC Sync Marker — kailash-coc-claude-rb
-timestamp: 2026-04-26T16:11:20Z
+timestamp: 2026-04-28T06:57:04.612Z
 source: loom/.claude
-loom_version: 2.9.1
+loom_version: 2.9.5
 variant: rb
 clis: ["claude"]
 template_role: USE
 stats:
   artifacts:
-    updated: 86         # rsync-modified files in agents/commands/rules/skills/guides
-    created: 64         # net-new files in artifact subdirs (incl. some untracked dirs)
-    unchanged: 483      # = 633 total - 86 modified - 64 new (after restoring 4 preserved legacies)
-    total: 633
-    composed: 0         # rb has no slot-keyed variants — all rb overlays are full-file
-    preserved:          # template-owned, never overwritten
-      - CLAUDE.md
-      - .claude/agents/claude-code-architect.md       # legacy CC artifact, retained
-      - .claude/commands/checkpoint.md                # legacy command, retained
-      - .claude/commands/evolve.md                    # legacy command, retained
-      - .claude/skills/27-care-reference/SKILL.md     # legacy skill, retained
-  rb_variant_overlays_applied: 27   # full-file overlays (14 rules + 8 commands + 5 skill SKILL.md)
-  obsoleted_purge:                  # Step 4.5 — recursive delete from manifest::obsoleted
-    paths:
-      - scripts/hooks/              # already absent from this template (no-op)
-      - .claude/scripts/            # already absent from this template (no-op)
-      - scripts/resolve-template.js # already absent from this template (no-op)
-    paths_deleted: 0                # all 3 paths were already gone from prior partial run
-    coc_obsoleted_emitted: true     # .claude/.coc-obsoleted written for downstream Ruby /sync
-  hooks:
-    updated: 0
-    created: 20         # entire .claude/hooks/ tree untracked (new dir layout in v2.9.1)
-    unchanged: 0
-    total: 20
-  bin:
-    updated: 0
-    created: 6          # entire .claude/bin/ tree untracked (canonical resolver lives here in v2.9.1)
-    unchanged: 0
-    total: 6
-  scripts:
     updated: 0
     created: 0
-    unchanged: 6        # scripts/learning/ + scripts/plugin/ identical to loom
-    total: 6
-  settings_json: updated_then_normalized
-  settings_normalizations: 0  # zero scripts/hooks/ rewrites needed (loom already canonical)
-  settings_hook_paths_verified: 12  # all hook commands point to .claude/hooks/*.js
-  baselines_emitted:    # CC-only template — Step 6.5 SKIPPED
-    cc: 0               # CLAUDE.md preserved, not emitted
-    codex: SKIPPED      # not in clis list
-    gemini: SKIPPED     # not in clis list
-  cli_artifacts:        # CC-only template — Step 6.6 SKIPPED
-    codex: SKIPPED
-    gemini: SKIPPED
-  mcp_guard:
-    policies_populated: false  # rb is CC-only, no Codex MCP guard
+    unchanged: 651
+    total: 651
+    composed: 0       # rb has no slot-keyed variants (full-file overlays only)
+    preserved:        # template-owned, never overwritten
+      - CLAUDE.md
+    variant_overlays_applied: 27
+  settings_json: unchanged
+  settings_normalizations: 0
+  baselines_emitted:                # CC-only template; CLAUDE.md preserved
+    cc: 0
+    codex: 0
+    gemini: 0
+  cli_artifacts:                    # CC-only template; no Codex/Gemini trees
+    codex: null
+    gemini: null
+  obsoleted_purged: 0
+  obsoleted_paths:
+    - scripts/hooks/
+    - .claude/scripts/
+    - scripts/resolve-template.js
+    - .claude/commands/send-it.md
+    - .codex/prompts/send-it.md
+    - .gemini/commands/send-it.toml
+    - .claude/commands/decisive.md
+    - .codex/prompts/decisive.md
+    - .gemini/commands/decisive.toml
 verification:
-  step_8_checks:
-    settings_no_legacy_scripts_hooks_refs: PASS  # grep -F 'scripts/hooks' → 0 matches
-    obsoleted_dirs_purged: PASS                  # scripts/hooks/, .claude/scripts/ confirmed absent
-    coc_obsoleted_present: PASS                  # .claude/.coc-obsoleted exists with 3 entries
-    hook_files_resolve: PASS                     # 12/12 hook commands resolve to real .js
-    require_lib_resolves: PASS                   # all require('./lib/...') in hooks resolve
-    build_internal_path_leaks: 0                 # no src/kailash/, workspaces/, docs/00-authority/ refs
-content_adaptations:
-  rule_softening_applied: 0   # rb USE template already has softened versions; no global → USE rewrites needed this cycle
-  build_refs_stripped: 0
-  cross_refs_fixed: 0
-  cli_baseline_emission: SKIPPED  # CC-only template
+  hook_files_present: 12
+  hook_files_missing: 0
+  scripts_hooks_leak_in_settings: 0
+  scripts_hooks_dir_purged: true
+  coc_obsoleted_marker_exists: true
+  coc_obsoleted_entries: 9
+  decisive_md_purged: true
+  autonomize_md_present: true
+  sweep_md_present: true
+  build_path_leaks_count: 1
