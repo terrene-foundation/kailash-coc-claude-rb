@@ -1,48 +1,34 @@
 # COC Sync Marker — kailash-coc-claude-rb
-timestamp: 2026-04-28T06:57:04.612Z
+timestamp: 2026-04-29T11:17:46Z
 source: loom/.claude
-loom_version: 2.9.5
+loom_version: 2.10.2
 variant: rb
 clis: ["claude"]
-template_role: USE
+template_version: 1.7.3
 stats:
-  artifacts:
-    updated: 0
-    created: 0
-    unchanged: 651
-    total: 651
-    composed: 0       # rb has no slot-keyed variants (full-file overlays only)
-    preserved:        # template-owned, never overwritten
-      - CLAUDE.md
-    variant_overlays_applied: 27
-  settings_json: unchanged
-  settings_normalizations: 0
-  baselines_emitted:                # CC-only template; CLAUDE.md preserved
-    cc: 0
-    codex: 0
-    gemini: 0
-  cli_artifacts:                    # CC-only template; no Codex/Gemini trees
-    codex: null
-    gemini: null
-  obsoleted_purged: 0
-  obsoleted_paths:
-    - scripts/hooks/
-    - .claude/scripts/
-    - scripts/resolve-template.js
-    - .claude/commands/send-it.md
-    - .codex/prompts/send-it.md
-    - .gemini/commands/send-it.toml
-    - .claude/commands/decisive.md
-    - .codex/prompts/decisive.md
-    - .gemini/commands/decisive.toml
-verification:
-  hook_files_present: 12
-  hook_files_missing: 0
-  scripts_hooks_leak_in_settings: 0
-  scripts_hooks_dir_purged: true
-  coc_obsoleted_marker_exists: true
-  coc_obsoleted_entries: 9
-  decisive_md_purged: true
-  autonomize_md_present: true
-  sweep_md_present: true
-  build_path_leaks_count: 1
+  files_updated_this_sync:
+    - .claude/commands/codify.md (cc-architect rename completion; loom 2.10.2 source fix)
+  files_added_this_sync: []
+  files_purged:
+    - .claude/agents/claude-code-architect.md (obsoleted)
+    - .claude/projects/ (obsoleted)
+    - .claude/scheduled_tasks.lock (obsoleted)
+    - .claude/test-harness/ (obsoleted)
+    - .claude/learning/ (one-shot; loom-leaked, manifest-excluded but no auto-purge mechanism)
+    - .claude/rules/cross-sdk-inspection.md (one-shot; excluded from sync, stale before exclusion)
+  manifest_changes:
+    obsoleted_added:
+      - .claude/agents/claude-code-architect.md
+      - .claude/projects/
+      - .claude/scheduled_tasks.lock
+      - .claude/test-harness/
+    exclude_added:
+      - "projects/**"
+      - "scheduled_tasks.lock"
+      - "test-harness/**"
+  coc_obsoleted_emitted: 13 paths (16-line file with header)
+notes: |
+  Surgical sync-hygiene patch (loom 2.10.2). Only modified artifact is
+  commands/codify.md (cc-architect rename completion). Stale state purged
+  across all 8 BUILD/USE consumers via new .coc-obsoleted entries.
+  No SDK pin updates this cycle (pure metadata + sync-hygiene patch).
