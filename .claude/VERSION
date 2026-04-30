@@ -1,16 +1,32 @@
 {
-  "version": "1.7.3",
+  "version": "1.8.0",
   "type": "coc-use-template",
   "description": "COC USE template for Ruby SDK projects (Magnus bindings)",
-  "released": "2026-04-29",
+  "released": "2026-04-30",
   "upstream": {
     "name": "loom",
     "type": "coc-source",
-    "version": "2.10.2",
+    "version": "2.11.0",
     "build_version": "3.9.0",
-    "synced_at": "2026-04-29T11:17:06Z"
+    "synced_at": "2026-04-30T00:00:00Z"
   },
   "changelog": [
+    {
+      "version": "1.8.0",
+      "date": "2026-04-30",
+      "summary": "Sync loom 2.11.0 \u2014 USE-template downstream-context leakage remediation. (1) NEW rule rules/upstream-issue-hygiene.md (priority:0 / scope:baseline) \u2014 three MUSTs: human-gate before gh issue create against any SDK repo, downstream-context redaction (no consumer project name, internal paths, workspace IDs, finding tags), minimal-repro shape (5 required sections only). (2) ~37 anonymized rules/skills/agents/extracts \u2014 Origin lines + cross-SDK footers + absolute-path examples scrubbed of consumer/SDK identifiers. (3) Manifest-side use_exclude tier added at loom (BUILD-only artifacts dropped from new sync diffs): rules/cross-sdk-inspection.md, rules/documentation.md, skills/30-claude-code-patterns/sdk-upstream-donation.md, guides/co-setup/**, guides/deterministic-quality/**, guides/automated-maintenance.md, guides/rule-extracts/{git,independence-rs}.md. Pre-existing copies of newly use_excluded paths in this template (documentation.md, sdk-upstream-donation.md, guides/co-setup/, guides/deterministic-quality/) are PRESERVED on this sync \u2014 additive merge semantics \u2014 and will require explicit obsoleted: entries in a future loom release for downstream purge. Privacy posture: USE-template-distributed surface no longer carries cross-SDK awareness, sibling-SDK identifiers, or auto-cross-file instructions; the new upstream-issue-hygiene rule is the active tripwire.",
+      "changes": [
+        "NEW RULE: .claude/rules/upstream-issue-hygiene.md (~186 lines, priority:0 baseline) \u2014 human gate + context redaction + minimal-repro shape.",
+        "ANONYMIZED RULES: agents.md, artifact-flow.md, autonomous-execution.md, build-repo-release-discipline.md, ci-runners.md, dataflow-classification.md, dataflow-identifier-safety.md, event-payload-classification.md, framework-first.md, git.md, nexus-http-status-convention.md, nexus-webhook-hmac.md, orphan-detection.md, tenant-isolation.md, worktree-isolation.md.",
+        "ANONYMIZED SKILLS: 01-core-sdk/runtime-lifecycle.md, 02-dataflow/migration-scaffold.md, 03-nexus/nexus-extractors.md, 03-nexus/nexus-http-status-convention.md, 04-kaizen/kaizen-llm-deployment.md, 10-deployment-git/ci-runner-troubleshooting.md, 10-deployment-git/todo-github-sync.md, 12-testing-strategies/impossibility-surface.md, 13-architecture-decisions/allowlist-extension-pattern.md, 16-validation-patterns/orphan-audit-playbook.md, 18-security-patterns/SKILL.md + dataflow-rls-posture.md + rls-security-definer-preauth-carveout.md, 31-error-troubleshooting/SKILL.md, spec-compliance/SKILL.md, test-skip-discipline/SKILL.md.",
+        "ANONYMIZED AGENTS: agents/frameworks/kaizen-specialist.md, agents/frameworks/pact-specialist.md.",
+        "ANONYMIZED EXTRACTS: guides/rule-extracts/agents.md, observability.md, testing.md, worktree-isolation.md.",
+        "PRESERVED (loom-side use_excluded but pre-existing in target): rules/documentation.md, skills/30-claude-code-patterns/sdk-upstream-donation.md, guides/co-setup/ (10 files), guides/deterministic-quality/ (10 files). Additive-merge semantics \u2014 purge requires explicit obsoleted: in a future release.",
+        "PRESERVED: CLAUDE.md (template-owned).",
+        ".coc-obsoleted regenerated (13 entries unchanged from 2.10.2).",
+        "VERSION: template 1.7.3 \u2192 1.8.0; upstream loom 2.10.2 \u2192 2.11.0."
+      ]
+    },
     {
       "version": "1.7.3",
       "date": "2026-04-29",

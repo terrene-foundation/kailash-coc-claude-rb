@@ -1,34 +1,25 @@
 # COC Sync Marker — kailash-coc-claude-rb
-timestamp: 2026-04-29T11:17:46Z
+timestamp: 2026-04-30T05:51:36Z
 source: loom/.claude
-loom_version: 2.10.2
+loom_version: 2.11.0
 variant: rb
 clis: ["claude"]
-template_version: 1.7.3
 stats:
-  files_updated_this_sync:
-    - .claude/commands/codify.md (cc-architect rename completion; loom 2.10.2 source fix)
-  files_added_this_sync: []
-  files_purged:
-    - .claude/agents/claude-code-architect.md (obsoleted)
-    - .claude/projects/ (obsoleted)
-    - .claude/scheduled_tasks.lock (obsoleted)
-    - .claude/test-harness/ (obsoleted)
-    - .claude/learning/ (one-shot; loom-leaked, manifest-excluded but no auto-purge mechanism)
-    - .claude/rules/cross-sdk-inspection.md (one-shot; excluded from sync, stale before exclusion)
-  manifest_changes:
-    obsoleted_added:
-      - .claude/agents/claude-code-architect.md
-      - .claude/projects/
-      - .claude/scheduled_tasks.lock
-      - .claude/test-harness/
-    exclude_added:
-      - "projects/**"
-      - "scheduled_tasks.lock"
-      - "test-harness/**"
-  coc_obsoleted_emitted: 13 paths (16-line file with header)
-notes: |
-  Surgical sync-hygiene patch (loom 2.10.2). Only modified artifact is
-  commands/codify.md (cc-architect rename completion). Stale state purged
-  across all 8 BUILD/USE consumers via new .coc-obsoleted entries.
-  No SDK pin updates this cycle (pure metadata + sync-hygiene patch).
+  updated: 40           # 24 rules + 4 extracts + 12 skills + 2 agents + .coc-obsoleted + .coc-sync-marker (auto)
+  created: 1            # rules/upstream-issue-hygiene.md
+  unchanged: ~590
+  composed: 27          # rb full-file overlay replacements (legacy non-slot-keyed)
+  preserved: 0
+  errors: 0
+  obsoleted_purged: 0   # all obsoleted paths already absent from rb target
+  flagged_use_excluded_pre_existing: 4
+flagged_use_excluded:
+  - rules/documentation.md
+  - skills/30-claude-code-patterns/sdk-upstream-donation.md
+  - guides/co-setup/                  # 10 files; loom-side use_excluded as of 2.11.0; preserved on this sync
+  - guides/deterministic-quality/     # 10 files; loom-side use_excluded as of 2.11.0; preserved on this sync
+flagged_note: |
+  These paths are now in loom's manifest use_exclude: list (BUILD-only). Pre-existing
+  copies in this USE template are NOT auto-deleted by additive-merge semantics. To
+  purge them across all downstream consumers, add explicit obsoleted: entries to
+  loom's sync-manifest.yaml in a follow-up release.
