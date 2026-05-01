@@ -1,5 +1,5 @@
 {
-  "version": "1.10.0",
+  "version": "1.10.1",
   "type": "coc-use-template",
   "description": "COC USE template for Ruby SDK projects (Magnus bindings)",
   "released": "2026-05-01",
@@ -8,9 +8,21 @@
     "type": "coc-source",
     "version": "2.14.0",
     "build_version": "2.14.0",
-    "synced_at": "2026-05-01T05:30:00Z"
+    "synced_at": "2026-05-01T06:58:24Z"
   },
   "changelog": [
+    {
+      "version": "1.10.1",
+      "date": "2026-05-01",
+      "summary": "PATCH: sync loom commit 370d560 — zero-tolerance.md rb-overlay retirement + Rule 1c addition. STRUCTURAL CHANGE for rb target: the prior 60-line Ruby-specific zero-tolerance.md (path-scoped to **/*.rb / **/Gemfile / **/*.gemspec, with Ruby-specific Why lines) has been replaced by the loom global zero-tolerance.md (317 lines, priority:0 / scope:baseline). The rb-overlay form was a legacy whole-file replacement pre-dating the slot-marker contract (variant-authoring.md MUST Rule 1); compose.mjs returns exit 1 on it. Rather than carry a dead overlay forward, this sync ships the global directly. (1) ADDED to rb target via global emission: Rule 1a 'Scanner-Surface Symmetry' (PR scan vs main scan parity), Rule 1b 'Scanner Deferral Requires Tracking Issue + Runtime-Safety Proof' (4-condition deferral gate), Rule 1c '\"Pre-Existing\" Is Unprovable After Context Boundary' (NEW — closes the rationalization loophole that wrapper-default scope-discipline creates after /clear or auto-compaction), Rule 3a 'Typed Delegate Guards For None Backing Objects' (lazy-init guard pattern), Rule 3c 'Documented Kwargs Accepted But Unused' (silent-fallback at API surface), Rule 6a 'Remove Fully — Public-API Removal Requires Deprecation Cycle' (deprecation-shim contract). (2) SCOPE SHIFT: rb's zero-tolerance.md is now baseline-emitted (always-on at AGENTS.md/CLAUDE.md) instead of Ruby-files-only. This matches py and rs targets and is structurally correct — zero-tolerance is a baseline concern across all languages, not Ruby-files-only. (3) LOST: Ruby-specific Why lines (e.g., 'Ruby silently returns `nil` from empty methods', 'monkey-patches are globally visible'). These can be reintroduced via slot markers when the slot refactor lands as its own workstream. (4) NO SDK pin updates — RB target has no gemspec/Gemfile. (5) The rb variant overlay file (loom/.claude/variants/rb/rules/zero-tolerance.md) is unchanged in this sync — structural cleanup deferred to the slot-marker refactor workstream.",
+      "changes": [
+        "RULE REPLACEMENT: .claude/rules/zero-tolerance.md — 60 LOC Ruby-specific path-scoped overlay → 317 LOC loom global priority:0/scope:baseline. Adds Rule 1a, 1b, 1c (NEW), 3a, 3c, 6a previously missing on rb target.",
+        "NEW SUB-RULE (loom 370d560): Rule 1c '\"Pre-Existing\" Is Unprovable After Context Boundary' — requires SHA-grounded provenance proof for any 'pre-existing / out of scope' claim; otherwise BLOCKED. Closes the rationalization loophole created by CC's wrapper-default scope-discipline (prompts.ts:201-203) after /clear or auto-compaction.",
+        "SCOPE SHIFT: rb zero-tolerance.md priority:0 / scope:baseline (was: paths: [**/*.rb, **/Gemfile, **/*.gemspec]). Rule now emits to AGENTS.md/CLAUDE.md always-on surface, matching py and rs targets.",
+        "VERSION: template 1.10.0 → 1.10.1; upstream loom version stays 2.14.0; upstream.synced_at refreshed.",
+        "NO settings.json / hooks / agents / commands changes — this is a single-rule sync."
+      ]
+    },
     {
       "version": "1.10.0",
       "date": "2026-05-01",

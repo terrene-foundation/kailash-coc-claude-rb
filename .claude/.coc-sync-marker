@@ -1,15 +1,15 @@
 # COC Sync Marker — kailash-coc-claude-rb
-timestamp: 2026-05-01T05:30:00Z
+timestamp: 2026-05-01T06:58:24Z
 source: loom/.claude
 loom_version: 2.14.0
-loom_sha: d4b4672
+loom_sha: 370d560
 variant: rb
 clis: ["claude"]
 stats:
-  updated: 1            # rules/deploy-hygiene.md (Rule 11 added)
+  updated: 1            # rules/zero-tolerance.md (rb-overlay retired; global with Rule 1c shipped)
   created: 0
   unchanged: ~600
-  composed: 0           # rb has no slot-keyed overlays affecting this sync's files
+  composed: 0           # rb-overlay form is legacy whole-file; compose.mjs returns exit 1; global ships verbatim
   preserved: 1          # CLAUDE.md (template-owned, never overwritten)
   errors: 0
   obsoleted_purged: 0   # all 13 universal obsoleted: paths already absent from prior syncs
@@ -21,24 +21,39 @@ hook_resolution:
   total: 8
   ok: 8
   missing: 0
-build_path_leak_scan: 0   # zero matches for src/kailash/ | packages/kailash- | crates/kailash- in changed files
+build_path_leak_scan: 0   # Rule 1c references ~/repos/contrib/claude-code-source-code/src/constants/prompts.ts (public CC source, not BUILD repo internal); zero matches for src/kailash/ | packages/kailash- | crates/kailash-
 allowlist_refresh: skipped     # rb USE template does not ship .github/coc-sdk-refs-allowlist.txt (no contamination gate)
+structural_findings:
+  - rb_overlay_zero_tolerance_legacy: |
+      loom/.claude/variants/rb/rules/zero-tolerance.md is a legacy whole-file overlay
+      (60 LOC, path-scoped to **/*.rb / **/Gemfile / **/*.gemspec) pre-dating the
+      slot-marker contract from variant-authoring.md MUST Rule 1. compose.mjs returns
+      exit 1 on this overlay shape. This sync ships the global directly, treating the
+      overlay as functionally retired. The overlay file itself is left in place at
+      loom for future slot-marker refactor — structural cleanup deferred to a separate
+      workstream.
 notes: |
-  Sync triggered by loom v2.14.0 (committed at SHA d4b4672).
-  rb target previously sat at loom 2.13.0; this sync is a small delta.
+  Sync triggered by loom commit 370d560 (Rule 1c addition to zero-tolerance.md).
+  rb target previously sat at loom 2.14.0 / d4b4672; this sync is a single-rule delta.
 
   Files changed in this sync:
     UPDATED:
-      - .claude/rules/deploy-hygiene.md           # MUST Rule 11 added (push-triggered cancel-in-progress + ssh keep-alive + non-idempotent exception with audit comment)
+      - .claude/rules/zero-tolerance.md          # 60 LOC rb-overlay (path-scoped) → 317 LOC loom global (priority:0/scope:baseline)
+
+  Adds the following sub-rules previously missing from rb target:
+    - Rule 1a: Scanner-Surface Symmetry
+    - Rule 1b: Scanner Deferral Requires Tracking Issue + Runtime-Safety Proof
+    - Rule 1c: "Pre-Existing" Is Unprovable After Context Boundary  (NEW — loom 370d560)
+    - Rule 3a: Typed Delegate Guards For None Backing Objects
+    - Rule 3c: Documented Kwargs Accepted But Unused
+    - Rule 6a: Remove Fully — Public-API Removal Requires Deprecation Cycle
+
+  Scope shift on rb: zero-tolerance.md path-scoped (Ruby files only) → baseline (always-on).
 
   Excluded from this sync (per sync-manifest.yaml::use_exclude):
       - .claude/rules/loom-csq-boundary.md        # loom↔csq paired-rule mirror — meta-rule about loom's relationship with csq's coc-eval/ harness; USE templates have no test-harness/ or coc-eval/ surface
-  Excluded from this sync (per exclude tier — test-harness/**):
-      - .claude/test-harness/README.md            # loom-only multi-CLI parity fixtures pointer
 
   Hook integrity: 8/8 hook commands in settings.json resolve to scripts on disk.
-  No new hooks; no new workspace template scaffold; .coc-obsoleted unchanged (20 entries).
+  No new hooks; no settings.json changes; .coc-obsoleted unchanged (20 entries).
   rb target has no SDK pin files (gemspec / Gemfile absent); SDK pin step skipped.
-  No baselines emitted (CC-only template per repos.rb.templates.baseline_files: [CLAUDE.md]).
-  No CLI emitter invoked (clis: [claude] only).
   CLAUDE.md preserved (template-owned).
