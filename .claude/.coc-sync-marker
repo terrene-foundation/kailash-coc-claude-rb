@@ -1,59 +1,57 @@
 # COC Sync Marker — kailash-coc-claude-rb
-timestamp: 2026-05-01T06:58:24Z
+timestamp: 2026-05-02T00:00:00Z
 source: loom/.claude
-loom_version: 2.14.0
-loom_sha: 370d560
+loom_version: 2.14.1
+loom_sha: 77b7cda
 variant: rb
 clis: ["claude"]
 stats:
-  updated: 1            # rules/zero-tolerance.md (rb-overlay retired; global with Rule 1c shipped)
+  updated: 3            # rules/git.md, rules/build-repo-release-discipline.md, rules/autonomous-execution.md
   created: 0
   unchanged: ~600
-  composed: 0           # rb-overlay form is legacy whole-file; compose.mjs returns exit 1; global ships verbatim
-  preserved: 1          # CLAUDE.md (template-owned, never overwritten)
+  composed: 0
+  preserved: 1          # CLAUDE.md (template-owned)
   errors: 0
-  obsoleted_purged: 0   # all 13 universal obsoleted: paths already absent from prior syncs
-  use_obsoleted_purged: 0  # all 7 use_obsoleted paths already purged in prior 1.8.1 sync
+  obsoleted_purged: 0
+  use_obsoleted_purged: 0
   flagged_use_excluded_pre_existing: 0
-  use_excluded_skipped: 1  # rules/loom-csq-boundary.md — correctly excluded; verified absent from target
-emitted_obsoleted_total: 20    # 13 universal + 7 use-only (unchanged)
+  use_excluded_skipped: 1  # rules/loom-csq-boundary.md
+emitted_obsoleted_total: 20
 hook_resolution:
   total: 8
   ok: 8
   missing: 0
-build_path_leak_scan: 0   # Rule 1c references ~/repos/contrib/claude-code-source-code/src/constants/prompts.ts (public CC source, not BUILD repo internal); zero matches for src/kailash/ | packages/kailash- | crates/kailash-
-allowlist_refresh: skipped     # rb USE template does not ship .github/coc-sdk-refs-allowlist.txt (no contamination gate)
+build_path_leak_scan: 0
+allowlist_refresh: skipped
+deltas_post_370d560:
+  - rules/git.md                            # § Discipline += `Pre-commit comment-syntax matchers` bullet (loom 897b6f9)
+  - rules/build-repo-release-discipline.md  # § MUST Rule 2 += `uv index-cache override` paragraph (loom 897b6f9)
+  - rules/autonomous-execution.md           # Rule 4 Origin += rustdoc cross-class evidence (loom 8bfea7e)
 structural_findings:
-  - rb_overlay_zero_tolerance_legacy: |
-      loom/.claude/variants/rb/rules/zero-tolerance.md is a legacy whole-file overlay
-      (60 LOC, path-scoped to **/*.rb / **/Gemfile / **/*.gemspec) pre-dating the
-      slot-marker contract from variant-authoring.md MUST Rule 1. compose.mjs returns
-      exit 1 on this overlay shape. This sync ships the global directly, treating the
-      overlay as functionally retired. The overlay file itself is left in place at
-      loom for future slot-marker refactor — structural cleanup deferred to a separate
-      workstream.
+  - rb_overlay_zero_tolerance_RESOLVED: |
+      The dead slot-keyed overlay at loom/.claude/variants/rb/rules/zero-tolerance.md
+      was DELETED at loom 77b7cda (parallel to the rs-variant cleanup at 7c4e7ed
+      earlier today). Yesterday's e38b918 sync flagged it as deferred to a separate
+      slot-marker refactor workstream; today's /sync rs absorbed that workstream.
+      compose.mjs no longer trips exit 1 on rb-axis emission. No functional impact
+      on rb target — claude-rb already received the loom global per yesterday's sync.
+verification:
+  zero_tolerance_rule_1c_present: true            # carried from prior sync
+  pre_commit_pygrep_bullet_present: true          # NEW today
+  uv_refresh_paragraph_present: true              # NEW today
+  rule_4_origin_rustdoc_evidence_present: true    # NEW today
+  rb_dead_overlay_deleted_at_loom: true           # 77b7cda
+  loom_csq_boundary_md_absent: true
+  hook_integrity_ok: true
 notes: |
-  Sync triggered by loom commit 370d560 (Rule 1c addition to zero-tolerance.md).
-  rb target previously sat at loom 2.14.0 / d4b4672; this sync is a single-rule delta.
-
-  Files changed in this sync:
-    UPDATED:
-      - .claude/rules/zero-tolerance.md          # 60 LOC rb-overlay (path-scoped) → 317 LOC loom global (priority:0/scope:baseline)
-
-  Adds the following sub-rules previously missing from rb target:
-    - Rule 1a: Scanner-Surface Symmetry
-    - Rule 1b: Scanner Deferral Requires Tracking Issue + Runtime-Safety Proof
-    - Rule 1c: "Pre-Existing" Is Unprovable After Context Boundary  (NEW — loom 370d560)
-    - Rule 3a: Typed Delegate Guards For None Backing Objects
-    - Rule 3c: Documented Kwargs Accepted But Unused
-    - Rule 6a: Remove Fully — Public-API Removal Requires Deprecation Cycle
-
-  Scope shift on rb: zero-tolerance.md path-scoped (Ruby files only) → baseline (always-on).
+  Three-rule delta from loom 2.14.1 (commits 897b6f9 + 8bfea7e + 77b7cda).
+  Two from kailash-py /codify (pre-commit pygrep + uv --refresh, classified GLOBAL),
+  one from kailash-rs /codify (autonomous-execution Rule 4 Origin, classified GLOBAL).
+  loom-side structural cleanup: rb-variant zero-tolerance.md DELETED parallel to
+  the rs-variant deletion earlier today; no impact on rb target since the global
+  already shipped here. CLAUDE.md preserved (template-owned).
 
   Excluded from this sync (per sync-manifest.yaml::use_exclude):
-      - .claude/rules/loom-csq-boundary.md        # loom↔csq paired-rule mirror — meta-rule about loom's relationship with csq's coc-eval/ harness; USE templates have no test-harness/ or coc-eval/ surface
+      - .claude/rules/loom-csq-boundary.md        # loom-only meta-rule
 
-  Hook integrity: 8/8 hook commands in settings.json resolve to scripts on disk.
-  No new hooks; no settings.json changes; .coc-obsoleted unchanged (20 entries).
   rb target has no SDK pin files (gemspec / Gemfile absent); SDK pin step skipped.
-  CLAUDE.md preserved (template-owned).

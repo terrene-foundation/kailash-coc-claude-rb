@@ -1,16 +1,30 @@
 {
-  "version": "1.10.1",
+  "version": "1.10.2",
   "type": "coc-use-template",
   "description": "COC USE template for Ruby SDK projects (Magnus bindings)",
-  "released": "2026-05-01",
+  "released": "2026-05-02",
   "upstream": {
     "name": "loom",
     "type": "coc-source",
-    "version": "2.14.0",
-    "build_version": "2.14.0",
-    "synced_at": "2026-05-01T06:58:24Z"
+    "version": "2.14.1",
+    "build_version": "2.14.1",
+    "synced_at": "2026-05-02T00:00:00Z"
   },
   "changelog": [
+    {
+      "version": "1.10.2",
+      "date": "2026-05-02",
+      "summary": "PATCH: sync loom 2.14.1 (commits 897b6f9 + 8bfea7e + 77b7cda). Three GLOBAL rule additions/augmentations on top of yesterday's Rule 1c sync (e38b918). All classified GLOBAL via /sync rs Gate 1. (1) rules/git.md § Discipline += `Pre-commit comment-syntax matchers` bullet — python-use-type-annotations regex matches `# type` (NOT `# type:`); reword `# type` substrings to avoid false positives. Lifted from kailash-py /codify. (2) rules/build-repo-release-discipline.md § MUST Rule 2 += `uv index-cache override` paragraph — `uv pip install --refresh` overrides uv's local index cache when pypi.org/.../json returns new metadata but uv reports `No solution found`. Lifted from kailash-py /codify. (3) rules/autonomous-execution.md Rule 4 Origin += rustdoc cross-class evidence — three additional same-shard fix-immediately evidence points across two distinct rule-violation classes (rustdoc broken-intra-doc-link feature-gated; rustdoc private_intra_doc_links on PyO3) confirm Rule 4 generalizes beyond null-bind sibling sweeps. Lifted from kailash-rs /codify. (4) STRUCTURAL CLEANUP at loom: variants/rb/rules/zero-tolerance.md DELETED — the dead slot-keyed overlay deferred from yesterday's e38b918 commit. compose.mjs no longer trips exit 1 on rb-axis emission; cleanup parity with rs-axis (where the equivalent variant was deleted earlier today). No functional impact on rb target — zero-tolerance.md global already shipped here per yesterday's sync. (5) NO SDK pin updates — RB target has no gemspec/Gemfile. (6) NO settings.json / hooks / agents / commands changes.",
+      "changes": [
+        "RULE UPDATE: .claude/rules/git.md § Discipline += `Pre-commit comment-syntax matchers` bullet (~407 B). Lifted from kailash-py /codify proposal id pre-commit-comment-matcher-quirk. Classification: GLOBAL.",
+        "RULE UPDATE: .claude/rules/build-repo-release-discipline.md § MUST Rule 2 += `uv index-cache override` paragraph (~636 B). Lifted from kailash-py /codify proposal id uv-index-cache-refresh. Classification: GLOBAL.",
+        "RULE UPDATE: .claude/rules/autonomous-execution.md Rule 4 Origin += rustdoc cross-class evidence (~660 B raw). Lifted from kailash-rs /codify proposal id same-shard-rustdoc-fix-immediately-evidence. Classification: GLOBAL.",
+        "STRUCTURAL CLEANUP (loom-side, not template-side): variants/rb/rules/zero-tolerance.md DELETED — dead slot-keyed overlay (loom commit 77b7cda). Deferred from yesterday's e38b918 sync; no functional impact on rb target.",
+        "VERSION: template 1.10.1 → 1.10.2; upstream loom version 2.14.0 → 2.14.1; build_version 2.14.0 → 2.14.1.",
+        "NO SDK pin updates — RB target has no gemspec/Gemfile.",
+        "NO settings.json / hooks / agents / commands changes."
+      ]
+    },
     {
       "version": "1.10.1",
       "date": "2026-05-01",
