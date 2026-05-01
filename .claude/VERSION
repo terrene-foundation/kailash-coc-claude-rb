@@ -1,16 +1,34 @@
 {
-  "version": "1.8.1",
+  "version": "1.9.0",
   "type": "coc-use-template",
   "description": "COC USE template for Ruby SDK projects (Magnus bindings)",
-  "released": "2026-04-30",
+  "released": "2026-05-01",
   "upstream": {
     "name": "loom",
     "type": "coc-source",
-    "version": "2.11.2",
-    "build_version": "3.9.0",
-    "synced_at": "2026-04-30T15:30:00Z"
+    "version": "2.13.0",
+    "build_version": "2.13.0",
+    "synced_at": "2026-05-01T04:45:41Z"
   },
   "changelog": [
+    {
+      "version": "1.9.0",
+      "date": "2026-05-01",
+      "summary": "MINOR: sync loom 2.13.0 (procedure safety + cap-headroom restoration) + carry-forward loom 2.12.0 (spec-accuracy rule) skipped on prior cycle. (1) DEMOTION: rules/cross-cli-parity.md frontmatter changed from priority:0/scope:baseline to priority:10/scope:path-scoped (paths: **/.claude/rules/**, **/.claude/variants/**) — same Phase F4 precedent as 2026-04-22 rule-authoring.md/variant-authoring.md demotions. The rule is structurally meta-authoring guidance; it now fires only when editing rules or variant overlays, not on every session. (2) NEW HOOK gitignored-claude-warn.js (PreToolUse / Edit|Write matcher, 5s timeout) — fires when an agent writes to a path under .claude/** that git check-ignore -v confirms is gitignored. Fires meaningfully ONLY in downstream consumer environments (where .claude/ is gitignored to prevent drift from sync source); silent in this USE template (where .claude/ is tracked). Registered in settings.json::hooks.PreToolUse alongside the existing validate-bash-command Bash matcher. (3) NEW HOOK pre-commit-branch-scope.js (standalone advisory, chmod +x) — wired into validate-bash-command.js: when an agent invokes `git commit ...` via the Bash tool, the validator spawns the scope checker which lists staged files outside the branch's declared scope (PR Scope: line preferred, falls back to conservative branch-name regex). Warn-only on every code path; never blocks the commit. (4) UPDATED HOOK validate-bash-command.js — extended with git-commit detection block that delegates to pre-commit-branch-scope.js. (5) UPDATED commands/ws.md — workspace dashboard now emits `!! MISSING:` flags at the top of /ws output for absent canonical phase dirs (advisory; never blocks). (6) NEW (carry-forward from loom 2.12.0): rules/spec-accuracy.md (priority:10 / scope:path-scoped — paths: specs/**, workspaces/**/specs/**, 02-plans/**, briefs/**) — six MUST clauses (citations resolve, no split-state, out-of-scope is not a gap, work trackers outside specs, incremental extension, historical change logs permitted past-tense), five MUST NOT (phantom citations, Phase-1/2 framings, gap-honesty as virtue, permanent gap trackers, spec for unimplemented behavior), three structural carve-outs (out-of-scope sections, append-only change logs, reserved-for-future-work numbering anchors). Companion guides/rule-extracts/spec-accuracy.md (10,731 B) carries the 2026-04-21 phantom-Databricks post-mortem, gap-tracker migration playbook, BLOCKED-rationalization with-Why list, relationship-to-other-rules table, and 3-sweep audit protocol. NOT shipped on the 1.8.0/1.8.1 cycle because the rb sync skipped 2.12.0; this cycle catches up. STRUCTURAL CLASSIFICATION CHOICE for spec-accuracy: path-scoped per rule-authoring.md MUST Rule 5 — failure mode (phantom citations) only fires when editing spec files. (7) NO obsoleted purges — the 4 use_obsoleted: paths active in 2.11.2 were already purged on the prior sync; the 13+7=20 .coc-obsoleted entries are unchanged from the prior cycle. (8) RB target has no SDK pin files (gemspec / Gemfile absent); SDK pin step skipped.",
+      "changes": [
+        "RULE UPDATE: .claude/rules/cross-cli-parity.md — frontmatter demotion to priority:10/scope:path-scoped (paths: **/.claude/rules/**, **/.claude/variants/**). Body unchanged; only the loading scope changes.",
+        "NEW RULE: .claude/rules/spec-accuracy.md (10,581 B raw, 196 LOC) — priority:10 / scope:path-scoped. Carry-forward from loom 2.12.0 (skipped on prior rb sync cycle). Six MUST clauses + five MUST NOT + three structural carve-outs.",
+        "NEW EXTRACT: .claude/guides/rule-extracts/spec-accuracy.md (10,731 B) — phantom-Databricks post-mortem + 4-step migration playbook + BLOCKED rationalizations + relationship-to-other-rules + 3-sweep audit protocol.",
+        "NEW HOOK: .claude/hooks/gitignored-claude-warn.js (3,899 B) — PreToolUse Edit|Write matcher; warns on writes to gitignored .claude/** paths in downstream consumer environments. Silent in this USE template.",
+        "NEW HOOK: .claude/hooks/pre-commit-branch-scope.js (8,249 B, chmod +x) — standalone advisory invoked by validate-bash-command.js when agent runs `git commit ...`; lists staged files outside the branch's declared scope. Warn-only.",
+        "UPDATED HOOK: .claude/hooks/validate-bash-command.js (8,600 B; was 7,852 B) — extended with git-commit detection block that delegates to pre-commit-branch-scope.js and surfaces stderr as a PreToolUse validation message.",
+        "COMMAND UPDATE: .claude/commands/ws.md — missing-phase scan emits `!! MISSING:` flags at the top of /ws output for absent canonical phase dirs (advisory; never blocks).",
+        "NEW SCAFFOLD: workspaces/_template/ — eight phase dirs (briefs/, 01-analysis/, 02-plans/, 03-user-flows/, 04-validate/, journal/, todos/active/, todos/completed/) each with .gitkeep, plus README.md (66 LOC) documenting phase contract, phase order, and missing-phase signals. Outside .claude/.",
+        "SETTINGS: .claude/settings.json — added PreToolUse Edit|Write hook entry for gitignored-claude-warn.js (5s timeout). Existing PreToolUse Bash entry for validate-bash-command.js preserved.",
+        ".coc-obsoleted: unchanged (20 entries — 13 universal + 7 use-only); all listed paths already absent from prior syncs.",
+        "VERSION: template 1.8.1 → 1.9.0; upstream loom 2.11.2 → 2.13.0; build_version 3.9.0 → 2.13.0 (build_version is loom's source-of-truth version per existing convention)."
+      ]
+    },
     {
       "version": "1.8.1",
       "date": "2026-04-30",
