@@ -1,16 +1,29 @@
 {
-  "version": "1.8.0",
+  "version": "1.8.1",
   "type": "coc-use-template",
   "description": "COC USE template for Ruby SDK projects (Magnus bindings)",
   "released": "2026-04-30",
   "upstream": {
     "name": "loom",
     "type": "coc-source",
-    "version": "2.11.0",
+    "version": "2.11.2",
     "build_version": "3.9.0",
-    "synced_at": "2026-04-30T00:00:00Z"
+    "synced_at": "2026-04-30T15:30:00Z"
   },
   "changelog": [
+    {
+      "version": "1.8.1",
+      "date": "2026-04-30",
+      "summary": "PATCH: sync loom 2.11.2 — git.md trim + active purge of 4 use_obsoleted paths. (1) rules/git.md updated: § Discipline section collapses three secondary subsections (Issue Closure / Pre-Commit Hook Workarounds / Commit-Message Claim Accuracy) into a tight bullet list. Load-bearing MUST clauses preserved as bullets; combined Why retained; full DO/DO NOT examples routed to guides/rule-extracts/git.md (BUILD-only at loom). (2) NEW manifest tier use_obsoleted: triggered active purge of 4 pre-existing-in-USE-template paths flagged by 2.11.0 sync as use_excluded but not yet auto-deleted: .claude/rules/documentation.md, .claude/skills/30-claude-code-patterns/sdk-upstream-donation.md, .claude/guides/co-setup/ (10 files), .claude/guides/deterministic-quality/ (10 files). The other 3 use_obsoleted paths (guides/automated-maintenance.md, guides/rule-extracts/git.md, guides/rule-extracts/independence-rs.md) were absent from this target — listed in emitted .coc-obsoleted for downstream consumer purge. (3) .coc-obsoleted regenerated as union of loom obsoleted: + use_obsoleted: (13 + 7 = 20 entries; downstream consumer apps' next /sync inherits the purge contract).",
+      "changes": [
+        "RULE UPDATE: .claude/rules/git.md — § Discipline section restructured to bullet list per loom 2.11.2 trim.",
+        "PURGE: .claude/rules/documentation.md (use_obsoleted; was BUILD-only — terrene-foundation/kailash-py URL hardcoded).",
+        "PURGE: .claude/skills/30-claude-code-patterns/sdk-upstream-donation.md (use_obsoleted; maintainer cross-SDK workflow).",
+        "PURGE: .claude/guides/co-setup/ (use_obsoleted; loom→BUILD→USE flow internals — consumers are the audience for OUTPUT, not internals).",
+        "PURGE: .claude/guides/deterministic-quality/ (use_obsoleted; SDK-maintainer rule-authoring guides).",
+        "EMIT: .claude/.coc-obsoleted regenerated as union of obsoleted: ∪ use_obsoleted: (20 entries) — downstream consumer /sync will inherit purge contract."
+      ]
+    },
     {
       "version": "1.8.0",
       "date": "2026-04-30",

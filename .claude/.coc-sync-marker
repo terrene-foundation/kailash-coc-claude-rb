@@ -1,25 +1,36 @@
 # COC Sync Marker — kailash-coc-claude-rb
-timestamp: 2026-04-30T05:51:36Z
+timestamp: 2026-04-30T15:30:00Z
 source: loom/.claude
-loom_version: 2.11.0
+loom_version: 2.11.2
+loom_sha: 25a0501
 variant: rb
 clis: ["claude"]
 stats:
-  updated: 40           # 24 rules + 4 extracts + 12 skills + 2 agents + .coc-obsoleted + .coc-sync-marker (auto)
-  created: 1            # rules/upstream-issue-hygiene.md
+  updated: 2            # rules/git.md (trim) + .coc-obsoleted (union)
+  created: 0
   unchanged: ~590
-  composed: 27          # rb full-file overlay replacements (legacy non-slot-keyed)
-  preserved: 0
+  composed: 0           # rb has no slot-keyed overlays for this sync's affected files
+  preserved: 1          # CLAUDE.md (template-owned, never overwritten)
   errors: 0
-  obsoleted_purged: 0   # all obsoleted paths already absent from rb target
-  flagged_use_excluded_pre_existing: 4
-flagged_use_excluded:
-  - rules/documentation.md
-  - skills/30-claude-code-patterns/sdk-upstream-donation.md
-  - guides/co-setup/                  # 10 files; loom-side use_excluded as of 2.11.0; preserved on this sync
-  - guides/deterministic-quality/     # 10 files; loom-side use_excluded as of 2.11.0; preserved on this sync
-flagged_note: |
-  These paths are now in loom's manifest use_exclude: list (BUILD-only). Pre-existing
-  copies in this USE template are NOT auto-deleted by additive-merge semantics. To
-  purge them across all downstream consumers, add explicit obsoleted: entries to
-  loom's sync-manifest.yaml in a follow-up release.
+  obsoleted_purged: 0   # universal obsoleted: paths already absent from prior syncs
+  use_obsoleted_purged: 4
+  flagged_use_excluded_pre_existing: 0   # all use_obsoleted paths now actively purged
+purged_use_obsoleted:
+  - .claude/rules/documentation.md
+  - .claude/skills/30-claude-code-patterns/sdk-upstream-donation.md
+  - .claude/guides/co-setup/                  # ~10 files
+  - .claude/guides/deterministic-quality/     # ~10 files
+absent_use_obsoleted:                          # listed in .coc-obsoleted for downstream propagation
+  - .claude/guides/automated-maintenance.md
+  - .claude/guides/rule-extracts/git.md
+  - .claude/guides/rule-extracts/independence-rs.md
+emitted_obsoleted_total: 20                    # 13 universal + 7 use-only
+notes: |
+  Sync triggered by loom v2.11.2 (committed at SHA 25a0501).
+  Two changes since 2.11.0:
+    1. rules/git.md § Discipline trim (collapsed 3 subsections → bullet list).
+    2. NEW use_obsoleted: manifest tier — Step 4.5 unions obsoleted: + use_obsoleted:
+       for both purge AND emitted .coc-obsoleted.
+  Audit on this target found 4 of 7 use_obsoleted: paths PRESENT (now purged).
+  All 7 enumerated in .coc-obsoleted for downstream consumer /sync propagation.
+  rb target has no SDK pin files (gemspec / Gemfile absent); SDK pin step skipped.
