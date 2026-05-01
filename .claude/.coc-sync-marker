@@ -1,59 +1,44 @@
 # COC Sync Marker — kailash-coc-claude-rb
-timestamp: 2026-05-01T04:45:41Z
+timestamp: 2026-05-01T05:30:00Z
 source: loom/.claude
-loom_version: 2.13.0
-loom_sha: 36db224
+loom_version: 2.14.0
+loom_sha: d4b4672
 variant: rb
 clis: ["claude"]
 stats:
-  updated: 4            # rules/cross-cli-parity.md, commands/ws.md, hooks/validate-bash-command.js, settings.json
-  created: 13           # rules/spec-accuracy.md (carry-fwd), guides/rule-extracts/spec-accuracy.md (carry-fwd), hooks/gitignored-claude-warn.js, hooks/pre-commit-branch-scope.js, workspaces/_template/ (9 files: README.md + 8 .gitkeep)
-  unchanged: ~588
+  updated: 1            # rules/deploy-hygiene.md (Rule 11 added)
+  created: 0
+  unchanged: ~600
   composed: 0           # rb has no slot-keyed overlays affecting this sync's files
   preserved: 1          # CLAUDE.md (template-owned, never overwritten)
   errors: 0
-  obsoleted_purged: 0   # universal obsoleted: paths already absent from prior syncs
+  obsoleted_purged: 0   # all 13 universal obsoleted: paths already absent from prior syncs
   use_obsoleted_purged: 0  # all 7 use_obsoleted paths already purged in prior 1.8.1 sync
   flagged_use_excluded_pre_existing: 0
+  use_excluded_skipped: 1  # rules/loom-csq-boundary.md — correctly excluded; verified absent from target
 emitted_obsoleted_total: 20    # 13 universal + 7 use-only (unchanged)
 hook_resolution:
-  total: 13
-  ok: 13
+  total: 8
+  ok: 8
   missing: 0
-  new_entry: PreToolUse Edit|Write → gitignored-claude-warn.js (5s)
-  extended: PreToolUse Bash → validate-bash-command.js (now delegates to pre-commit-branch-scope.js on `git commit`)
 build_path_leak_scan: 0   # zero matches for src/kailash/ | packages/kailash- | crates/kailash- in changed files
 allowlist_refresh: skipped     # rb USE template does not ship .github/coc-sdk-refs-allowlist.txt (no contamination gate)
 notes: |
-  Sync triggered by loom v2.13.0 (committed at SHA 36db224).
-  rb target previously sat at loom 2.11.2; this sync carries forward 2.12.0 + 2.13.0.
+  Sync triggered by loom v2.14.0 (committed at SHA d4b4672).
+  rb target previously sat at loom 2.13.0; this sync is a small delta.
 
   Files changed in this sync:
     UPDATED:
-      - .claude/rules/cross-cli-parity.md         # frontmatter demoted to path-scoped
-      - .claude/commands/ws.md                    # missing-phase scan added
-      - .claude/hooks/validate-bash-command.js    # extended for git-commit detection
-      - .claude/settings.json                     # new PreToolUse Edit|Write hook entry
-    CREATED:
-      - .claude/rules/spec-accuracy.md            # carry-fwd from 2.12.0 (skipped on prior cycle)
-      - .claude/guides/rule-extracts/spec-accuracy.md  # carry-fwd from 2.12.0
-      - .claude/hooks/gitignored-claude-warn.js   # new PreToolUse Edit|Write hook
-      - .claude/hooks/pre-commit-branch-scope.js  # new advisory script (chmod +x)
-      - workspaces/_template/README.md            # new scaffold root
-      - workspaces/_template/briefs/.gitkeep
-      - workspaces/_template/01-analysis/.gitkeep
-      - workspaces/_template/02-plans/.gitkeep
-      - workspaces/_template/03-user-flows/.gitkeep
-      - workspaces/_template/04-validate/.gitkeep
-      - workspaces/_template/journal/.gitkeep
-      - workspaces/_template/todos/active/.gitkeep
-      - workspaces/_template/todos/completed/.gitkeep
+      - .claude/rules/deploy-hygiene.md           # MUST Rule 11 added (push-triggered cancel-in-progress + ssh keep-alive + non-idempotent exception with audit comment)
 
-  Hook integrity: 13/13 commands resolve to scripts on disk.
-  Workspace template: emitted under workspaces/_template/ (outside .claude/).
-  Settings.json: gitignored-claude-warn.js wired as PreToolUse Edit|Write matcher
-                 (5s timeout). All hook command paths use $CLAUDE_PROJECT_DIR/.claude/hooks/*.js
-                 (canonical Anthropic-documented location since v2.9.1).
+  Excluded from this sync (per sync-manifest.yaml::use_exclude):
+      - .claude/rules/loom-csq-boundary.md        # loom↔csq paired-rule mirror — meta-rule about loom's relationship with csq's coc-eval/ harness; USE templates have no test-harness/ or coc-eval/ surface
+  Excluded from this sync (per exclude tier — test-harness/**):
+      - .claude/test-harness/README.md            # loom-only multi-CLI parity fixtures pointer
+
+  Hook integrity: 8/8 hook commands in settings.json resolve to scripts on disk.
+  No new hooks; no new workspace template scaffold; .coc-obsoleted unchanged (20 entries).
   rb target has no SDK pin files (gemspec / Gemfile absent); SDK pin step skipped.
   No baselines emitted (CC-only template per repos.rb.templates.baseline_files: [CLAUDE.md]).
   No CLI emitter invoked (clis: [claude] only).
+  CLAUDE.md preserved (template-owned).
