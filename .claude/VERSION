@@ -1,17 +1,30 @@
 {
-  "version": "1.10.3",
+  "version": "1.10.4",
   "type": "coc-use-template",
   "description": "COC USE template for Ruby SDK projects (Magnus bindings)",
   "released": "2026-05-02",
   "upstream": {
     "name": "loom",
     "type": "coc-source",
-    "version": "2.14.3",
-    "build_version": "2.14.3",
-    "synced_at": "2026-05-02T06:09:41Z",
-    "loom_sha": "02e69bf"
+    "version": "2.14.4",
+    "build_version": "2.14.4",
+    "synced_at": "2026-05-02T14:17:19Z",
+    "loom_sha": "e8083e8"
   },
   "changelog": [
+    {
+      "version": "1.10.4",
+      "date": "2026-05-02",
+      "summary": "PATCH: sync loom 2.14.4 (commit e8083e8) — cc-artifacts Hooks Rule 8 + workspace-utils underscore-skip. Two GLOBAL changes lifted from kailash-rs /codify second cycle (proposal id hook-skip-leading-underscore-workspace-meta-dirs); classified GLOBAL via /sync rs Gate 1 (second cycle, 2026-05-02). (1) RULE ADDITION: rules/cc-artifacts.md § Hooks += Rule 8 'Workspace-Walking Hooks Filter Leading-Underscore Meta-Dirs' (~1900 B raw) — hooks enumerating workspaces/<name>/ MUST filter directories whose name starts with underscore (`_archive`, `_template`, `_draft`) alongside existing `instructions` skip. Without this filter, `git mv workspaces/X workspaces/_archive/X` bumps `_archive/`'s mtime to most-recently-modified; `detectActiveWorkspace` surfaces `_archive` as active workspace; SessionEnd routes journal stubs into `workspaces/_archive/journal/.pending/` — invisible drift the next session must triage. Same failure mode applies to `findAllSessionNotes` (SessionStart drift dashboards). (2) HOOK FIX: .claude/hooks/lib/workspace-utils.js — added `!e.name.startsWith('_')` filter at `detectActiveWorkspace` (line ~23) AND `findAllSessionNotes` (line ~158). Origin: kailash-rs PR #759 (2026-05-02) — git mv of 4 workspaces into _archive/ caused 3 SessionEnd stubs to land in workspaces/_archive/journal/.pending/. NOT SHIPPED: rules/cross-sdk-inspection.md Rule 4a (sibling-canonical fixture vendoring discipline) — correctly classified at sync-manifest.yaml::use_exclude as BUILD-only (cross-SDK parity is a maintainer concern; consumers don't run cross-SDK inspection). NO SDK pin updates — RB target has no Gemfile/*.gemspec at template root. NO settings.json / agents / commands changes.",
+      "changes": [
+        "RULE UPDATE: .claude/rules/cc-artifacts.md § Hooks += Rule 8 'Workspace-Walking Hooks Filter Leading-Underscore Meta-Dirs' (~1900 B raw). Lifted from kailash-rs /codify proposal id hook-skip-leading-underscore-workspace-meta-dirs. Classification: GLOBAL via /sync rs Gate 1 (second cycle).",
+        "HOOK FIX: .claude/hooks/lib/workspace-utils.js — added `!e.name.startsWith('_')` filter at `detectActiveWorkspace` (line ~23) AND `findAllSessionNotes` (line ~158). Without filter, archival ops bump `_archive/` mtime → SessionEnd stubs route into `workspaces/_archive/journal/.pending/` (invisible drift). Origin: kailash-rs PR #759.",
+        "EXCLUDED (not shipped per use_exclude): .claude/rules/cross-sdk-inspection.md Rule 4a (sibling-canonical fixture vendoring discipline) — BUILD-only meta-rule about SDK maintainer cross-SDK parity workflow.",
+        "VERSION: template 1.10.3 → 1.10.4; upstream loom 2.14.3 → 2.14.4; build_version 2.14.3 → 2.14.4; loom_sha 02e69bf → e8083e8.",
+        "NO SDK pin updates — RB target has no Gemfile / *.gemspec at the template root.",
+        "NO settings.json / agents / commands changes."
+      ]
+    },
     {
       "version": "1.10.3",
       "date": "2026-05-02",
