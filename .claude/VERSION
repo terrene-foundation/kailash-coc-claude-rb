@@ -1,16 +1,30 @@
 {
-  "version": "1.10.2",
+  "version": "1.10.3",
   "type": "coc-use-template",
   "description": "COC USE template for Ruby SDK projects (Magnus bindings)",
   "released": "2026-05-02",
   "upstream": {
     "name": "loom",
     "type": "coc-source",
-    "version": "2.14.1",
-    "build_version": "2.14.1",
-    "synced_at": "2026-05-02T00:00:00Z"
+    "version": "2.14.3",
+    "build_version": "2.14.3",
+    "synced_at": "2026-05-02T06:09:41Z",
+    "loom_sha": "02e69bf"
   },
   "changelog": [
+    {
+      "version": "1.10.3",
+      "date": "2026-05-02",
+      "summary": "PATCH: sync loom 2.14.3 (commit 02e69bf) — build-repo-release-discipline § 'uv index-cache override' paragraph += pip-fallback sentence (~360 B raw). Lifted from kailash-py /codify proposal id uv-pip-refresh-fallback; classified GLOBAL via /sync py Gate 1 (consistent with the 2.14.1 --refresh clarification at the same paragraph). When `uv pip install --refresh` STILL reports unresolvable while `pypi.org/.../json` returns new metadata, fall back to `python -m ensurepip --upgrade && python -m pip install --no-cache-dir \"<pkg>==<ver>\"`; pip's index TTL is shorter than uv's deeper index-state cache. Evidence: kailash-dataflow 2.7.5 release verify (2026-05-01). VERSION metadata catch-up note: prior sync (1.10.2) recorded upstream.version: 2.14.1 but the actual content shipped at commit 1a644fe was already at the 2.14.2 anchor (autonomous-execution.md Rule 4 Origin += rustdoc cross-class evidence; variants/rb/rules/zero-tolerance.md cleanup at loom). Inspection confirmed: rb template's autonomous-execution.md is byte-identical to loom 2.14.3 (the 2.14.2 content already landed); no `.claude/variants/` exists at the rb template (templates ship composed output, not overlays). VERSION metadata is now repaired to upstream.version: 2.14.3 + build_version: 2.14.3. NO SDK pin updates — RB target has no Gemfile / *.gemspec at the template root. NO settings.json / hooks / agents / commands changes.",
+      "changes": [
+        "RULE UPDATE: .claude/rules/build-repo-release-discipline.md § MUST Rule 2 § 'uv index-cache override' paragraph += pip-fallback sentence (~360 B raw). Lifted from kailash-py /codify proposal id uv-pip-refresh-fallback. Classification: GLOBAL via /sync py Gate 1.",
+        "VERSION METADATA REPAIR: prior 1.10.2 sync recorded upstream.version: 2.14.1 even though commit 1a644fe carried the 2.14.2 content delta. Inspection confirms autonomous-execution.md Rule 4 Origin += rustdoc cross-class evidence already landed at the rb template; this sync brings the metadata into alignment with reality.",
+        "VERIFIED ABSENT: .claude/variants/ tree at the rb template (templates ship composed output, not slot overlays — the variants/rb/rules/zero-tolerance.md deletion at loom 2.14.2 has no equivalent target-side cleanup).",
+        "VERSION: template 1.10.2 → 1.10.3; upstream loom 2.14.1 → 2.14.3 (catch-up through 2.14.2 + 2.14.3); build_version 2.14.1 → 2.14.3; loom_sha: 02e69bf.",
+        "NO SDK pin updates — RB target has no Gemfile / *.gemspec at the template root.",
+        "NO settings.json / hooks / agents / commands changes."
+      ]
+    },
     {
       "version": "1.10.2",
       "date": "2026-05-02",
