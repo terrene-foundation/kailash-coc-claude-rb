@@ -1,14 +1,14 @@
 # COC Sync Marker — kailash-coc-claude-rb
-timestamp: 2026-05-02T00:00:00Z
+timestamp: 2026-05-03T23:35:00Z
 source: loom/.claude
-loom_version: 2.14.1
-loom_sha: 77b7cda
+loom_version: 2.15.1
+loom_sha: 6bef70b
 variant: rb
 clis: ["claude"]
 stats:
-  updated: 3            # rules/git.md, rules/build-repo-release-discipline.md, rules/autonomous-execution.md
-  created: 0
-  unchanged: ~600
+  updated: 1            # skills/16-validation-patterns/SKILL.md (description + index)
+  created: 3            # rules/repo-scope-discipline.md, guides/rule-extracts/repo-scope-discipline.md, skills/16-validation-patterns/validate-codebase-hygiene-markers.md
+  unchanged: ~602
   composed: 0
   preserved: 1          # CLAUDE.md (template-owned)
   errors: 0
@@ -23,35 +23,39 @@ hook_resolution:
   missing: 0
 build_path_leak_scan: 0
 allowlist_refresh: skipped
-deltas_post_370d560:
-  - rules/git.md                            # § Discipline += `Pre-commit comment-syntax matchers` bullet (loom 897b6f9)
-  - rules/build-repo-release-discipline.md  # § MUST Rule 2 += `uv index-cache override` paragraph (loom 897b6f9)
-  - rules/autonomous-execution.md           # Rule 4 Origin += rustdoc cross-class evidence (loom 8bfea7e)
-structural_findings:
-  - rb_overlay_zero_tolerance_RESOLVED: |
-      The dead slot-keyed overlay at loom/.claude/variants/rb/rules/zero-tolerance.md
-      was DELETED at loom 77b7cda (parallel to the rs-variant cleanup at 7c4e7ed
-      earlier today). Yesterday's e38b918 sync flagged it as deferred to a separate
-      slot-marker refactor workstream; today's /sync rs absorbed that workstream.
-      compose.mjs no longer trips exit 1 on rb-axis emission. No functional impact
-      on rb target — claude-rb already received the loom global per yesterday's sync.
+deltas_post_2.14.6:
+  - rules/repo-scope-discipline.md          # NEW global baseline rule (priority:0/scope:baseline, 3,290 B raw — from loom 2.15.0)
+  - guides/rule-extracts/repo-scope-discipline.md  # NEW extract guide (6,932 B — from loom 2.15.0)
+  - skills/16-validation-patterns/validate-codebase-hygiene-markers.md  # NEW global skill (~10,800 B / 232 lines — from loom 2.15.1)
+  - skills/16-validation-patterns/SKILL.md  # MODIFIED (extended description + new index section — from loom 2.15.1)
 verification:
-  zero_tolerance_rule_1c_present: true            # carried from prior sync
-  pre_commit_pygrep_bullet_present: true          # NEW today
-  uv_refresh_paragraph_present: true              # NEW today
-  rule_4_origin_rustdoc_evidence_present: true    # NEW today
-  rb_dead_overlay_deleted_at_loom: true           # 77b7cda
+  zero_tolerance_rule_1c_present: true
+  pre_commit_pygrep_bullet_present: true
+  uv_refresh_paragraph_present: true
+  rule_4_origin_rustdoc_evidence_present: true
+  rb_dead_overlay_deleted_at_loom: true
   loom_csq_boundary_md_absent: true
   hook_integrity_ok: true
+  repo_scope_discipline_rule_present: true        # NEW (from 2.15.0 catch-up)
+  validate_codebase_hygiene_markers_skill_present: true  # NEW (from 2.15.1)
 notes: |
-  Three-rule delta from loom 2.14.1 (commits 897b6f9 + 8bfea7e + 77b7cda).
-  Two from kailash-py /codify (pre-commit pygrep + uv --refresh, classified GLOBAL),
-  one from kailash-rs /codify (autonomous-execution Rule 4 Origin, classified GLOBAL).
-  loom-side structural cleanup: rb-variant zero-tolerance.md DELETED parallel to
-  the rs-variant deletion earlier today; no impact on rb target since the global
-  already shipped here. CLAUDE.md preserved (template-owned).
+  Catch-up sync 2.14.6 → 2.15.1 (skipping 2.15.0 distribution which was
+  outstanding at end of prior session per session-notes; same content
+  re-distributed here in single cycle). Three content additions from
+  loom 2.15.0 (rules/repo-scope-discipline.md + extract guide) plus
+  one content addition + one modification from loom 2.15.1
+  (skills/16-validation-patterns/validate-codebase-hygiene-markers.md
+  NEW + skills/16-validation-patterns/SKILL.md MODIFIED).
+
+  Repo-scope-discipline rule is GLOBAL — language-agnostic, CLI-agnostic.
+  Hygiene-markers skill is GLOBAL — methodology language-agnostic with
+  Python tooling examples (uv, pytest, pre-commit, .egg-info, pyright)
+  as illustrative concrete forms. Ruby translation: bundle exec rspec
+  for the regression layer; bash hook at the same .git/hooks/ paths.
 
   Excluded from this sync (per sync-manifest.yaml::use_exclude):
       - .claude/rules/loom-csq-boundary.md        # loom-only meta-rule
 
   rb target has no SDK pin files (gemspec / Gemfile absent); SDK pin step skipped.
+  CC-only template — no AGENTS.md / GEMINI.md emit, so cap-headroom not applicable
+  to rb axis (the 10-rule baseline shipped same as py/rs but no emit byte count here).

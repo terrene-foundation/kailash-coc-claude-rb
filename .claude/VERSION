@@ -1,17 +1,22 @@
 {
-  "version": "1.10.5",
+  "version": "1.10.6",
   "type": "coc-use-template",
   "description": "COC USE template for Ruby SDK projects (Magnus bindings)",
   "released": "2026-05-03",
   "upstream": {
     "name": "loom",
     "type": "coc-source",
-    "version": "2.14.6",
-    "build_version": "2.14.6",
-    "synced_at": "2026-05-03T08:30:12Z",
-    "loom_sha": "f1c9803"
+    "version": "2.15.1",
+    "build_version": "2.15.1",
+    "synced_at": "2026-05-03T23:35:00Z",
+    "loom_sha": "6bef70b"
   },
   "changelog": [
+    {
+      "version": "1.10.6",
+      "date": "2026-05-03",
+      "summary": "PATCH: catch-up sync to loom 2.15.1 (commit 6bef70b). 1.10.5 was at loom 2.14.6; this cycle catches up across BOTH 2.15.0 (NEW BASELINE rule) AND 2.15.1 (NEW skill sub-file). FOUR content additions: (1) NEW RULE: rules/repo-scope-discipline.md (3,290 B raw, priority:0/scope:baseline) — 'Repo Scope Discipline — Stay In This Repo' — 3 MUST NOT clauses + per-clause Why lines + 4-item BLOCKED-rationalization snippet + NONE-for-action exception with orchestration-root carve-out (loom/, ~/repos/ exempt — /sync, /sync-to-build, /inspect, /repos cross repos by design). The repo whose root is the session's CWD defines the agent's entire scope; an agent operating in this repo MUST NOT touch, edit, push to, file issues against, comment on, read source from, or even propose work in any other repository. Origin: 2026-05-03 — agent in a kailash-rs session surfaced 'next-turn pick: kailash-py#803 / #781' from inside the rs repo; user response: 'NEVER TOUCH kailash-py or any other repositories! ALWAYS STAY IN YOUR LANE!' Rule lifted from kailash-rs BUILD-local /codify proposal, generalized for cross-SDK applicability. (2) NEW EXTRACT: guides/rule-extracts/repo-scope-discipline.md (6,932 B) — full BLOCKED-rationalization enumeration (10 items), extended DO/DO NOT examples, secondary-cost Why paragraph, full origin post-mortem with verbatim user response, cross-repo applicability section, and counterfactual. (3) NEW SKILL: skills/16-validation-patterns/validate-codebase-hygiene-markers.md (~10,800 B / 232 lines) — captures the issue #781 TODO-NNN cleanup methodology: 4-class disposition catalog (Class 1a header banner / 1b docstring provenance / 2 active iterative / 3 cross-reference) + three-layer hygiene gate pattern (pre-commit hook + shared bash script + Tier-2 regression test) + synthetic-PR validation protocol + multi-shard cleanup strategy + release-cycle integration checklist + authoring gotchas. Methodology language-agnostic; Python tooling examples (uv, pytest, pre-commit, .egg-info, pyright) are illustrative — Ruby translates uv→bundle, pytest→rspec, .egg-info→.bundle/, pre-commit→bash hook at the same paths. (4) MODIFIED SKILL: skills/16-validation-patterns/SKILL.md — extended description keyword list with 'codebase hygiene', 'TODO marker scrub', 'marker cleanup', 'three-layer gate', 'regex gate' for semantic skill-loader matching + adds 'Codebase Hygiene Validations' index section + indexes previously-orphaned orphan-audit-playbook.md. NO SDK pin updates — RB target has no Gemfile/*.gemspec at the template root. NO settings.json / hooks / agents / commands changes. NO baseline emit (CC-only template — no AGENTS.md/GEMINI.md). cap-headroom NOT applicable to rb axis emit but the 10-rule baseline (up from 9 after 2.14.6 demotion) shipped same as py/rs."
+    },
     {
       "version": "1.10.5",
       "date": "2026-05-03",
