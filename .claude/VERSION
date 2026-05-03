@@ -1,17 +1,30 @@
 {
-  "version": "1.10.4",
+  "version": "1.10.5",
   "type": "coc-use-template",
   "description": "COC USE template for Ruby SDK projects (Magnus bindings)",
-  "released": "2026-05-02",
+  "released": "2026-05-03",
   "upstream": {
     "name": "loom",
     "type": "coc-source",
-    "version": "2.14.4",
-    "build_version": "2.14.4",
-    "synced_at": "2026-05-02T14:17:19Z",
-    "loom_sha": "e8083e8"
+    "version": "2.14.6",
+    "build_version": "2.14.6",
+    "synced_at": "2026-05-03T08:30:12Z",
+    "loom_sha": "f1c9803"
   },
   "changelog": [
+    {
+      "version": "1.10.5",
+      "date": "2026-05-03",
+      "summary": "PATCH: sync loom 2.14.6 (commit f1c9803, skipping 2.14.5 which was hard-blocked at Gate 2 emitter cap-check on rs-axis and never distributed). 2.14.6 contains structural cap-headroom remediation lifted from kailash-rs /codify (proposal id verify-resource-existence-before-debugging-access; classified GLOBAL via /sync rs Gate 1, 2026-05-03). Three intentional content changes: (1) NEW RULE: rules/verify-resource-existence.md (3,909 B raw, priority:0/scope:baseline, language-agnostic + CLI-agnostic) — three MUST clauses (existence-check-precedes-permission-debugging, existence-check-cites-the-endpoint-not-the-documentation, default-disposition-is-delete-or-stub-not-provision) + two MUST NOT (no-credential-creation-before-existence-check, no-permission-scope-loops-without-existence-recheck). Closes the failure mode where a 403 against an absent resource produces unbounded credential-rotation cycles. (2) NEW EXTRACT: guides/rule-extracts/verify-resource-existence.md (6,501 B) — full DO/DO NOT examples per MUST clause, full BLOCKED-rationalization enumerations, the three-layer-defense detail, and the full ci-queue-monitor PAT-thrash post-mortem. (3) FRONTMATTER DEMOTION: rules/upstream-issue-hygiene.md priority:0/scope:baseline → priority:10/scope:path-scoped + paths array (**/.github/**, **/CONTRIBUTING.md, **/SECURITY.md, **/.session-notes, **/journal/**, **/workspaces/**). Body unchanged (the rule's MUST clauses still fire; only the loading scope changes — now session-on-issue-filing-paths instead of always-on baseline, freeing ~3,728 B of baseline emission for downstream consumers that do compose CLI-baseline files; rb is CC-only so no AGENTS.md/GEMINI.md cap pressure here, but the structural scope shift carries through). NO SDK pin updates — RB target has no Gemfile/*.gemspec at the template root. NO settings.json / hooks / agents / commands changes.",
+      "changes": [
+        "NEW RULE: .claude/rules/verify-resource-existence.md (3,909 B raw, priority:0/scope:baseline). Three MUST + two MUST NOT clauses. Lifted from kailash-rs /codify proposal id verify-resource-existence-before-debugging-access. Classification: GLOBAL via /sync rs Gate 1 (2026-05-03).",
+        "NEW EXTRACT: .claude/guides/rule-extracts/verify-resource-existence.md (6,501 B). Companion guide carrying full DO/DO NOT examples, BLOCKED-rationalization enumerations per MUST clause, three-layer-defense detail, and the full ci-queue-monitor PAT-thrash post-mortem.",
+        "RULE FRONTMATTER DEMOTION: .claude/rules/upstream-issue-hygiene.md priority:0/scope:baseline → priority:10/scope:path-scoped + paths array (**/.github/**, **/CONTRIBUTING.md, **/SECURITY.md, **/.session-notes, **/journal/**, **/workspaces/**). Body unchanged. Same Phase F4 precedent as 2026-04-22 rule-authoring.md/variant-authoring.md demotions and 2026-05-01 cross-cli-parity.md demotion. The rule is structurally about issue-filing hygiene; it now fires only when the agent is editing in the relevant paths, not on every session.",
+        "VERSION: template 1.10.4 → 1.10.5; upstream loom 2.14.4 → 2.14.6 (skipping 2.14.5 — hard-blocked at rs-axis Gate 2 cap-check, never distributed); build_version 2.14.4 → 2.14.6; loom_sha e8083e8 → f1c9803.",
+        "NO SDK pin updates — RB target has no Gemfile / *.gemspec at the template root.",
+        "NO settings.json / hooks / agents / commands changes — pure rule-tier sync."
+      ]
+    },
     {
       "version": "1.10.4",
       "date": "2026-05-02",
@@ -313,5 +326,5 @@
       ]
     }
   ],
-  "updated": "2026-05-01"
+  "updated": "2026-05-03"
 }
