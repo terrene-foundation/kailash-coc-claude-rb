@@ -1,5 +1,5 @@
 {
-  "version": "1.10.6",
+  "version": "1.10.7",
   "type": "coc-use-template",
   "description": "COC USE template for Ruby SDK projects (Magnus bindings)",
   "released": "2026-05-03",
@@ -7,147 +7,153 @@
     "name": "loom",
     "type": "coc-source",
     "version": "2.15.1",
-    "build_version": "2.15.1",
+    "build_version": "2.16.0",
     "synced_at": "2026-05-03T23:35:00Z",
-    "loom_sha": "6bef70b"
+    "loom_sha": "6bef70b",
+    "source_commit": "e2ba484"
   },
   "changelog": [
     {
+      "version": "1.10.7",
+      "date": "2026-05-04",
+      "summary": "loom 2.16.0 sync: NEW BASELINE rules/sweep-completeness.md (kailash-rs /codify 2026-05-04 sweep substitution-without-asking) + commands/sweep.md Sweep 5 prose tightening (mandate tools/sweep-redteam.py + sentinel embed) + DEMOTION rules/independence.md priority:0/scope:baseline -> priority:10/scope:path-scoped (cap-headroom remediation, frees 2.5KB). rs-axis cap-headroom 0.11% -> 1.94% (1,193 B free). 10 rules baseline (UNCHANGED). Hook (sentinel-enforcement-hook) DEFERRED per proposal phased-landing guidance."
+    },
+    {
       "version": "1.10.6",
       "date": "2026-05-03",
-      "summary": "PATCH: catch-up sync to loom 2.15.1 (commit 6bef70b). 1.10.5 was at loom 2.14.6; this cycle catches up across BOTH 2.15.0 (NEW BASELINE rule) AND 2.15.1 (NEW skill sub-file). FOUR content additions: (1) NEW RULE: rules/repo-scope-discipline.md (3,290 B raw, priority:0/scope:baseline) — 'Repo Scope Discipline — Stay In This Repo' — 3 MUST NOT clauses + per-clause Why lines + 4-item BLOCKED-rationalization snippet + NONE-for-action exception with orchestration-root carve-out (loom/, ~/repos/ exempt — /sync, /sync-to-build, /inspect, /repos cross repos by design). The repo whose root is the session's CWD defines the agent's entire scope; an agent operating in this repo MUST NOT touch, edit, push to, file issues against, comment on, read source from, or even propose work in any other repository. Origin: 2026-05-03 — agent in a kailash-rs session surfaced 'next-turn pick: kailash-py#803 / #781' from inside the rs repo; user response: 'NEVER TOUCH kailash-py or any other repositories! ALWAYS STAY IN YOUR LANE!' Rule lifted from kailash-rs BUILD-local /codify proposal, generalized for cross-SDK applicability. (2) NEW EXTRACT: guides/rule-extracts/repo-scope-discipline.md (6,932 B) — full BLOCKED-rationalization enumeration (10 items), extended DO/DO NOT examples, secondary-cost Why paragraph, full origin post-mortem with verbatim user response, cross-repo applicability section, and counterfactual. (3) NEW SKILL: skills/16-validation-patterns/validate-codebase-hygiene-markers.md (~10,800 B / 232 lines) — captures the issue #781 TODO-NNN cleanup methodology: 4-class disposition catalog (Class 1a header banner / 1b docstring provenance / 2 active iterative / 3 cross-reference) + three-layer hygiene gate pattern (pre-commit hook + shared bash script + Tier-2 regression test) + synthetic-PR validation protocol + multi-shard cleanup strategy + release-cycle integration checklist + authoring gotchas. Methodology language-agnostic; Python tooling examples (uv, pytest, pre-commit, .egg-info, pyright) are illustrative — Ruby translates uv→bundle, pytest→rspec, .egg-info→.bundle/, pre-commit→bash hook at the same paths. (4) MODIFIED SKILL: skills/16-validation-patterns/SKILL.md — extended description keyword list with 'codebase hygiene', 'TODO marker scrub', 'marker cleanup', 'three-layer gate', 'regex gate' for semantic skill-loader matching + adds 'Codebase Hygiene Validations' index section + indexes previously-orphaned orphan-audit-playbook.md. NO SDK pin updates — RB target has no Gemfile/*.gemspec at the template root. NO settings.json / hooks / agents / commands changes. NO baseline emit (CC-only template — no AGENTS.md/GEMINI.md). cap-headroom NOT applicable to rb axis emit but the 10-rule baseline (up from 9 after 2.14.6 demotion) shipped same as py/rs."
+      "summary": "PATCH: catch-up sync to loom 2.15.1 (commit 6bef70b). 1.10.5 was at loom 2.14.6; this cycle catches up across BOTH 2.15.0 (NEW BASELINE rule) AND 2.15.1 (NEW skill sub-file). FOUR content additions: (1) NEW RULE: rules/repo-scope-discipline.md (3,290 B raw, priority:0/scope:baseline) \u2014 'Repo Scope Discipline \u2014 Stay In This Repo' \u2014 3 MUST NOT clauses + per-clause Why lines + 4-item BLOCKED-rationalization snippet + NONE-for-action exception with orchestration-root carve-out (loom/, ~/repos/ exempt \u2014 /sync, /sync-to-build, /inspect, /repos cross repos by design). The repo whose root is the session's CWD defines the agent's entire scope; an agent operating in this repo MUST NOT touch, edit, push to, file issues against, comment on, read source from, or even propose work in any other repository. Origin: 2026-05-03 \u2014 agent in a kailash-rs session surfaced 'next-turn pick: kailash-py#803 / #781' from inside the rs repo; user response: 'NEVER TOUCH kailash-py or any other repositories! ALWAYS STAY IN YOUR LANE!' Rule lifted from kailash-rs BUILD-local /codify proposal, generalized for cross-SDK applicability. (2) NEW EXTRACT: guides/rule-extracts/repo-scope-discipline.md (6,932 B) \u2014 full BLOCKED-rationalization enumeration (10 items), extended DO/DO NOT examples, secondary-cost Why paragraph, full origin post-mortem with verbatim user response, cross-repo applicability section, and counterfactual. (3) NEW SKILL: skills/16-validation-patterns/validate-codebase-hygiene-markers.md (~10,800 B / 232 lines) \u2014 captures the issue #781 TODO-NNN cleanup methodology: 4-class disposition catalog (Class 1a header banner / 1b docstring provenance / 2 active iterative / 3 cross-reference) + three-layer hygiene gate pattern (pre-commit hook + shared bash script + Tier-2 regression test) + synthetic-PR validation protocol + multi-shard cleanup strategy + release-cycle integration checklist + authoring gotchas. Methodology language-agnostic; Python tooling examples (uv, pytest, pre-commit, .egg-info, pyright) are illustrative \u2014 Ruby translates uv\u2192bundle, pytest\u2192rspec, .egg-info\u2192.bundle/, pre-commit\u2192bash hook at the same paths. (4) MODIFIED SKILL: skills/16-validation-patterns/SKILL.md \u2014 extended description keyword list with 'codebase hygiene', 'TODO marker scrub', 'marker cleanup', 'three-layer gate', 'regex gate' for semantic skill-loader matching + adds 'Codebase Hygiene Validations' index section + indexes previously-orphaned orphan-audit-playbook.md. NO SDK pin updates \u2014 RB target has no Gemfile/*.gemspec at the template root. NO settings.json / hooks / agents / commands changes. NO baseline emit (CC-only template \u2014 no AGENTS.md/GEMINI.md). cap-headroom NOT applicable to rb axis emit but the 10-rule baseline (up from 9 after 2.14.6 demotion) shipped same as py/rs."
     },
     {
       "version": "1.10.5",
       "date": "2026-05-03",
-      "summary": "PATCH: sync loom 2.14.6 (commit f1c9803, skipping 2.14.5 which was hard-blocked at Gate 2 emitter cap-check on rs-axis and never distributed). 2.14.6 contains structural cap-headroom remediation lifted from kailash-rs /codify (proposal id verify-resource-existence-before-debugging-access; classified GLOBAL via /sync rs Gate 1, 2026-05-03). Three intentional content changes: (1) NEW RULE: rules/verify-resource-existence.md (3,909 B raw, priority:0/scope:baseline, language-agnostic + CLI-agnostic) — three MUST clauses (existence-check-precedes-permission-debugging, existence-check-cites-the-endpoint-not-the-documentation, default-disposition-is-delete-or-stub-not-provision) + two MUST NOT (no-credential-creation-before-existence-check, no-permission-scope-loops-without-existence-recheck). Closes the failure mode where a 403 against an absent resource produces unbounded credential-rotation cycles. (2) NEW EXTRACT: guides/rule-extracts/verify-resource-existence.md (6,501 B) — full DO/DO NOT examples per MUST clause, full BLOCKED-rationalization enumerations, the three-layer-defense detail, and the full ci-queue-monitor PAT-thrash post-mortem. (3) FRONTMATTER DEMOTION: rules/upstream-issue-hygiene.md priority:0/scope:baseline → priority:10/scope:path-scoped + paths array (**/.github/**, **/CONTRIBUTING.md, **/SECURITY.md, **/.session-notes, **/journal/**, **/workspaces/**). Body unchanged (the rule's MUST clauses still fire; only the loading scope changes — now session-on-issue-filing-paths instead of always-on baseline, freeing ~3,728 B of baseline emission for downstream consumers that do compose CLI-baseline files; rb is CC-only so no AGENTS.md/GEMINI.md cap pressure here, but the structural scope shift carries through). NO SDK pin updates — RB target has no Gemfile/*.gemspec at the template root. NO settings.json / hooks / agents / commands changes.",
+      "summary": "PATCH: sync loom 2.14.6 (commit f1c9803, skipping 2.14.5 which was hard-blocked at Gate 2 emitter cap-check on rs-axis and never distributed). 2.14.6 contains structural cap-headroom remediation lifted from kailash-rs /codify (proposal id verify-resource-existence-before-debugging-access; classified GLOBAL via /sync rs Gate 1, 2026-05-03). Three intentional content changes: (1) NEW RULE: rules/verify-resource-existence.md (3,909 B raw, priority:0/scope:baseline, language-agnostic + CLI-agnostic) \u2014 three MUST clauses (existence-check-precedes-permission-debugging, existence-check-cites-the-endpoint-not-the-documentation, default-disposition-is-delete-or-stub-not-provision) + two MUST NOT (no-credential-creation-before-existence-check, no-permission-scope-loops-without-existence-recheck). Closes the failure mode where a 403 against an absent resource produces unbounded credential-rotation cycles. (2) NEW EXTRACT: guides/rule-extracts/verify-resource-existence.md (6,501 B) \u2014 full DO/DO NOT examples per MUST clause, full BLOCKED-rationalization enumerations, the three-layer-defense detail, and the full ci-queue-monitor PAT-thrash post-mortem. (3) FRONTMATTER DEMOTION: rules/upstream-issue-hygiene.md priority:0/scope:baseline \u2192 priority:10/scope:path-scoped + paths array (**/.github/**, **/CONTRIBUTING.md, **/SECURITY.md, **/.session-notes, **/journal/**, **/workspaces/**). Body unchanged (the rule's MUST clauses still fire; only the loading scope changes \u2014 now session-on-issue-filing-paths instead of always-on baseline, freeing ~3,728 B of baseline emission for downstream consumers that do compose CLI-baseline files; rb is CC-only so no AGENTS.md/GEMINI.md cap pressure here, but the structural scope shift carries through). NO SDK pin updates \u2014 RB target has no Gemfile/*.gemspec at the template root. NO settings.json / hooks / agents / commands changes.",
       "changes": [
         "NEW RULE: .claude/rules/verify-resource-existence.md (3,909 B raw, priority:0/scope:baseline). Three MUST + two MUST NOT clauses. Lifted from kailash-rs /codify proposal id verify-resource-existence-before-debugging-access. Classification: GLOBAL via /sync rs Gate 1 (2026-05-03).",
         "NEW EXTRACT: .claude/guides/rule-extracts/verify-resource-existence.md (6,501 B). Companion guide carrying full DO/DO NOT examples, BLOCKED-rationalization enumerations per MUST clause, three-layer-defense detail, and the full ci-queue-monitor PAT-thrash post-mortem.",
-        "RULE FRONTMATTER DEMOTION: .claude/rules/upstream-issue-hygiene.md priority:0/scope:baseline → priority:10/scope:path-scoped + paths array (**/.github/**, **/CONTRIBUTING.md, **/SECURITY.md, **/.session-notes, **/journal/**, **/workspaces/**). Body unchanged. Same Phase F4 precedent as 2026-04-22 rule-authoring.md/variant-authoring.md demotions and 2026-05-01 cross-cli-parity.md demotion. The rule is structurally about issue-filing hygiene; it now fires only when the agent is editing in the relevant paths, not on every session.",
-        "VERSION: template 1.10.4 → 1.10.5; upstream loom 2.14.4 → 2.14.6 (skipping 2.14.5 — hard-blocked at rs-axis Gate 2 cap-check, never distributed); build_version 2.14.4 → 2.14.6; loom_sha e8083e8 → f1c9803.",
-        "NO SDK pin updates — RB target has no Gemfile / *.gemspec at the template root.",
-        "NO settings.json / hooks / agents / commands changes — pure rule-tier sync."
+        "RULE FRONTMATTER DEMOTION: .claude/rules/upstream-issue-hygiene.md priority:0/scope:baseline \u2192 priority:10/scope:path-scoped + paths array (**/.github/**, **/CONTRIBUTING.md, **/SECURITY.md, **/.session-notes, **/journal/**, **/workspaces/**). Body unchanged. Same Phase F4 precedent as 2026-04-22 rule-authoring.md/variant-authoring.md demotions and 2026-05-01 cross-cli-parity.md demotion. The rule is structurally about issue-filing hygiene; it now fires only when the agent is editing in the relevant paths, not on every session.",
+        "VERSION: template 1.10.4 \u2192 1.10.5; upstream loom 2.14.4 \u2192 2.14.6 (skipping 2.14.5 \u2014 hard-blocked at rs-axis Gate 2 cap-check, never distributed); build_version 2.14.4 \u2192 2.14.6; loom_sha e8083e8 \u2192 f1c9803.",
+        "NO SDK pin updates \u2014 RB target has no Gemfile / *.gemspec at the template root.",
+        "NO settings.json / hooks / agents / commands changes \u2014 pure rule-tier sync."
       ]
     },
     {
       "version": "1.10.4",
       "date": "2026-05-02",
-      "summary": "PATCH: sync loom 2.14.4 (commit e8083e8) — cc-artifacts Hooks Rule 8 + workspace-utils underscore-skip. Two GLOBAL changes lifted from kailash-rs /codify second cycle (proposal id hook-skip-leading-underscore-workspace-meta-dirs); classified GLOBAL via /sync rs Gate 1 (second cycle, 2026-05-02). (1) RULE ADDITION: rules/cc-artifacts.md § Hooks += Rule 8 'Workspace-Walking Hooks Filter Leading-Underscore Meta-Dirs' (~1900 B raw) — hooks enumerating workspaces/<name>/ MUST filter directories whose name starts with underscore (`_archive`, `_template`, `_draft`) alongside existing `instructions` skip. Without this filter, `git mv workspaces/X workspaces/_archive/X` bumps `_archive/`'s mtime to most-recently-modified; `detectActiveWorkspace` surfaces `_archive` as active workspace; SessionEnd routes journal stubs into `workspaces/_archive/journal/.pending/` — invisible drift the next session must triage. Same failure mode applies to `findAllSessionNotes` (SessionStart drift dashboards). (2) HOOK FIX: .claude/hooks/lib/workspace-utils.js — added `!e.name.startsWith('_')` filter at `detectActiveWorkspace` (line ~23) AND `findAllSessionNotes` (line ~158). Origin: kailash-rs PR #759 (2026-05-02) — git mv of 4 workspaces into _archive/ caused 3 SessionEnd stubs to land in workspaces/_archive/journal/.pending/. NOT SHIPPED: rules/cross-sdk-inspection.md Rule 4a (sibling-canonical fixture vendoring discipline) — correctly classified at sync-manifest.yaml::use_exclude as BUILD-only (cross-SDK parity is a maintainer concern; consumers don't run cross-SDK inspection). NO SDK pin updates — RB target has no Gemfile/*.gemspec at template root. NO settings.json / agents / commands changes.",
+      "summary": "PATCH: sync loom 2.14.4 (commit e8083e8) \u2014 cc-artifacts Hooks Rule 8 + workspace-utils underscore-skip. Two GLOBAL changes lifted from kailash-rs /codify second cycle (proposal id hook-skip-leading-underscore-workspace-meta-dirs); classified GLOBAL via /sync rs Gate 1 (second cycle, 2026-05-02). (1) RULE ADDITION: rules/cc-artifacts.md \u00a7 Hooks += Rule 8 'Workspace-Walking Hooks Filter Leading-Underscore Meta-Dirs' (~1900 B raw) \u2014 hooks enumerating workspaces/<name>/ MUST filter directories whose name starts with underscore (`_archive`, `_template`, `_draft`) alongside existing `instructions` skip. Without this filter, `git mv workspaces/X workspaces/_archive/X` bumps `_archive/`'s mtime to most-recently-modified; `detectActiveWorkspace` surfaces `_archive` as active workspace; SessionEnd routes journal stubs into `workspaces/_archive/journal/.pending/` \u2014 invisible drift the next session must triage. Same failure mode applies to `findAllSessionNotes` (SessionStart drift dashboards). (2) HOOK FIX: .claude/hooks/lib/workspace-utils.js \u2014 added `!e.name.startsWith('_')` filter at `detectActiveWorkspace` (line ~23) AND `findAllSessionNotes` (line ~158). Origin: kailash-rs PR #759 (2026-05-02) \u2014 git mv of 4 workspaces into _archive/ caused 3 SessionEnd stubs to land in workspaces/_archive/journal/.pending/. NOT SHIPPED: rules/cross-sdk-inspection.md Rule 4a (sibling-canonical fixture vendoring discipline) \u2014 correctly classified at sync-manifest.yaml::use_exclude as BUILD-only (cross-SDK parity is a maintainer concern; consumers don't run cross-SDK inspection). NO SDK pin updates \u2014 RB target has no Gemfile/*.gemspec at template root. NO settings.json / agents / commands changes.",
       "changes": [
-        "RULE UPDATE: .claude/rules/cc-artifacts.md § Hooks += Rule 8 'Workspace-Walking Hooks Filter Leading-Underscore Meta-Dirs' (~1900 B raw). Lifted from kailash-rs /codify proposal id hook-skip-leading-underscore-workspace-meta-dirs. Classification: GLOBAL via /sync rs Gate 1 (second cycle).",
-        "HOOK FIX: .claude/hooks/lib/workspace-utils.js — added `!e.name.startsWith('_')` filter at `detectActiveWorkspace` (line ~23) AND `findAllSessionNotes` (line ~158). Without filter, archival ops bump `_archive/` mtime → SessionEnd stubs route into `workspaces/_archive/journal/.pending/` (invisible drift). Origin: kailash-rs PR #759.",
-        "EXCLUDED (not shipped per use_exclude): .claude/rules/cross-sdk-inspection.md Rule 4a (sibling-canonical fixture vendoring discipline) — BUILD-only meta-rule about SDK maintainer cross-SDK parity workflow.",
-        "VERSION: template 1.10.3 → 1.10.4; upstream loom 2.14.3 → 2.14.4; build_version 2.14.3 → 2.14.4; loom_sha 02e69bf → e8083e8.",
-        "NO SDK pin updates — RB target has no Gemfile / *.gemspec at the template root.",
+        "RULE UPDATE: .claude/rules/cc-artifacts.md \u00a7 Hooks += Rule 8 'Workspace-Walking Hooks Filter Leading-Underscore Meta-Dirs' (~1900 B raw). Lifted from kailash-rs /codify proposal id hook-skip-leading-underscore-workspace-meta-dirs. Classification: GLOBAL via /sync rs Gate 1 (second cycle).",
+        "HOOK FIX: .claude/hooks/lib/workspace-utils.js \u2014 added `!e.name.startsWith('_')` filter at `detectActiveWorkspace` (line ~23) AND `findAllSessionNotes` (line ~158). Without filter, archival ops bump `_archive/` mtime \u2192 SessionEnd stubs route into `workspaces/_archive/journal/.pending/` (invisible drift). Origin: kailash-rs PR #759.",
+        "EXCLUDED (not shipped per use_exclude): .claude/rules/cross-sdk-inspection.md Rule 4a (sibling-canonical fixture vendoring discipline) \u2014 BUILD-only meta-rule about SDK maintainer cross-SDK parity workflow.",
+        "VERSION: template 1.10.3 \u2192 1.10.4; upstream loom 2.14.3 \u2192 2.14.4; build_version 2.14.3 \u2192 2.14.4; loom_sha 02e69bf \u2192 e8083e8.",
+        "NO SDK pin updates \u2014 RB target has no Gemfile / *.gemspec at the template root.",
         "NO settings.json / agents / commands changes."
       ]
     },
     {
       "version": "1.10.3",
       "date": "2026-05-02",
-      "summary": "PATCH: sync loom 2.14.3 (commit 02e69bf) — build-repo-release-discipline § 'uv index-cache override' paragraph += pip-fallback sentence (~360 B raw). Lifted from kailash-py /codify proposal id uv-pip-refresh-fallback; classified GLOBAL via /sync py Gate 1 (consistent with the 2.14.1 --refresh clarification at the same paragraph). When `uv pip install --refresh` STILL reports unresolvable while `pypi.org/.../json` returns new metadata, fall back to `python -m ensurepip --upgrade && python -m pip install --no-cache-dir \"<pkg>==<ver>\"`; pip's index TTL is shorter than uv's deeper index-state cache. Evidence: kailash-dataflow 2.7.5 release verify (2026-05-01). VERSION metadata catch-up note: prior sync (1.10.2) recorded upstream.version: 2.14.1 but the actual content shipped at commit 1a644fe was already at the 2.14.2 anchor (autonomous-execution.md Rule 4 Origin += rustdoc cross-class evidence; variants/rb/rules/zero-tolerance.md cleanup at loom). Inspection confirmed: rb template's autonomous-execution.md is byte-identical to loom 2.14.3 (the 2.14.2 content already landed); no `.claude/variants/` exists at the rb template (templates ship composed output, not overlays). VERSION metadata is now repaired to upstream.version: 2.14.3 + build_version: 2.14.3. NO SDK pin updates — RB target has no Gemfile / *.gemspec at the template root. NO settings.json / hooks / agents / commands changes.",
+      "summary": "PATCH: sync loom 2.14.3 (commit 02e69bf) \u2014 build-repo-release-discipline \u00a7 'uv index-cache override' paragraph += pip-fallback sentence (~360 B raw). Lifted from kailash-py /codify proposal id uv-pip-refresh-fallback; classified GLOBAL via /sync py Gate 1 (consistent with the 2.14.1 --refresh clarification at the same paragraph). When `uv pip install --refresh` STILL reports unresolvable while `pypi.org/.../json` returns new metadata, fall back to `python -m ensurepip --upgrade && python -m pip install --no-cache-dir \"<pkg>==<ver>\"`; pip's index TTL is shorter than uv's deeper index-state cache. Evidence: kailash-dataflow 2.7.5 release verify (2026-05-01). VERSION metadata catch-up note: prior sync (1.10.2) recorded upstream.version: 2.14.1 but the actual content shipped at commit 1a644fe was already at the 2.14.2 anchor (autonomous-execution.md Rule 4 Origin += rustdoc cross-class evidence; variants/rb/rules/zero-tolerance.md cleanup at loom). Inspection confirmed: rb template's autonomous-execution.md is byte-identical to loom 2.14.3 (the 2.14.2 content already landed); no `.claude/variants/` exists at the rb template (templates ship composed output, not overlays). VERSION metadata is now repaired to upstream.version: 2.14.3 + build_version: 2.14.3. NO SDK pin updates \u2014 RB target has no Gemfile / *.gemspec at the template root. NO settings.json / hooks / agents / commands changes.",
       "changes": [
-        "RULE UPDATE: .claude/rules/build-repo-release-discipline.md § MUST Rule 2 § 'uv index-cache override' paragraph += pip-fallback sentence (~360 B raw). Lifted from kailash-py /codify proposal id uv-pip-refresh-fallback. Classification: GLOBAL via /sync py Gate 1.",
+        "RULE UPDATE: .claude/rules/build-repo-release-discipline.md \u00a7 MUST Rule 2 \u00a7 'uv index-cache override' paragraph += pip-fallback sentence (~360 B raw). Lifted from kailash-py /codify proposal id uv-pip-refresh-fallback. Classification: GLOBAL via /sync py Gate 1.",
         "VERSION METADATA REPAIR: prior 1.10.2 sync recorded upstream.version: 2.14.1 even though commit 1a644fe carried the 2.14.2 content delta. Inspection confirms autonomous-execution.md Rule 4 Origin += rustdoc cross-class evidence already landed at the rb template; this sync brings the metadata into alignment with reality.",
-        "VERIFIED ABSENT: .claude/variants/ tree at the rb template (templates ship composed output, not slot overlays — the variants/rb/rules/zero-tolerance.md deletion at loom 2.14.2 has no equivalent target-side cleanup).",
-        "VERSION: template 1.10.2 → 1.10.3; upstream loom 2.14.1 → 2.14.3 (catch-up through 2.14.2 + 2.14.3); build_version 2.14.1 → 2.14.3; loom_sha: 02e69bf.",
-        "NO SDK pin updates — RB target has no Gemfile / *.gemspec at the template root.",
+        "VERIFIED ABSENT: .claude/variants/ tree at the rb template (templates ship composed output, not slot overlays \u2014 the variants/rb/rules/zero-tolerance.md deletion at loom 2.14.2 has no equivalent target-side cleanup).",
+        "VERSION: template 1.10.2 \u2192 1.10.3; upstream loom 2.14.1 \u2192 2.14.3 (catch-up through 2.14.2 + 2.14.3); build_version 2.14.1 \u2192 2.14.3; loom_sha: 02e69bf.",
+        "NO SDK pin updates \u2014 RB target has no Gemfile / *.gemspec at the template root.",
         "NO settings.json / hooks / agents / commands changes."
       ]
     },
     {
       "version": "1.10.2",
       "date": "2026-05-02",
-      "summary": "PATCH: sync loom 2.14.1 (commits 897b6f9 + 8bfea7e + 77b7cda). Three GLOBAL rule additions/augmentations on top of yesterday's Rule 1c sync (e38b918). All classified GLOBAL via /sync rs Gate 1. (1) rules/git.md § Discipline += `Pre-commit comment-syntax matchers` bullet — python-use-type-annotations regex matches `# type` (NOT `# type:`); reword `# type` substrings to avoid false positives. Lifted from kailash-py /codify. (2) rules/build-repo-release-discipline.md § MUST Rule 2 += `uv index-cache override` paragraph — `uv pip install --refresh` overrides uv's local index cache when pypi.org/.../json returns new metadata but uv reports `No solution found`. Lifted from kailash-py /codify. (3) rules/autonomous-execution.md Rule 4 Origin += rustdoc cross-class evidence — three additional same-shard fix-immediately evidence points across two distinct rule-violation classes (rustdoc broken-intra-doc-link feature-gated; rustdoc private_intra_doc_links on PyO3) confirm Rule 4 generalizes beyond null-bind sibling sweeps. Lifted from kailash-rs /codify. (4) STRUCTURAL CLEANUP at loom: variants/rb/rules/zero-tolerance.md DELETED — the dead slot-keyed overlay deferred from yesterday's e38b918 commit. compose.mjs no longer trips exit 1 on rb-axis emission; cleanup parity with rs-axis (where the equivalent variant was deleted earlier today). No functional impact on rb target — zero-tolerance.md global already shipped here per yesterday's sync. (5) NO SDK pin updates — RB target has no gemspec/Gemfile. (6) NO settings.json / hooks / agents / commands changes.",
+      "summary": "PATCH: sync loom 2.14.1 (commits 897b6f9 + 8bfea7e + 77b7cda). Three GLOBAL rule additions/augmentations on top of yesterday's Rule 1c sync (e38b918). All classified GLOBAL via /sync rs Gate 1. (1) rules/git.md \u00a7 Discipline += `Pre-commit comment-syntax matchers` bullet \u2014 python-use-type-annotations regex matches `# type` (NOT `# type:`); reword `# type` substrings to avoid false positives. Lifted from kailash-py /codify. (2) rules/build-repo-release-discipline.md \u00a7 MUST Rule 2 += `uv index-cache override` paragraph \u2014 `uv pip install --refresh` overrides uv's local index cache when pypi.org/.../json returns new metadata but uv reports `No solution found`. Lifted from kailash-py /codify. (3) rules/autonomous-execution.md Rule 4 Origin += rustdoc cross-class evidence \u2014 three additional same-shard fix-immediately evidence points across two distinct rule-violation classes (rustdoc broken-intra-doc-link feature-gated; rustdoc private_intra_doc_links on PyO3) confirm Rule 4 generalizes beyond null-bind sibling sweeps. Lifted from kailash-rs /codify. (4) STRUCTURAL CLEANUP at loom: variants/rb/rules/zero-tolerance.md DELETED \u2014 the dead slot-keyed overlay deferred from yesterday's e38b918 commit. compose.mjs no longer trips exit 1 on rb-axis emission; cleanup parity with rs-axis (where the equivalent variant was deleted earlier today). No functional impact on rb target \u2014 zero-tolerance.md global already shipped here per yesterday's sync. (5) NO SDK pin updates \u2014 RB target has no gemspec/Gemfile. (6) NO settings.json / hooks / agents / commands changes.",
       "changes": [
-        "RULE UPDATE: .claude/rules/git.md § Discipline += `Pre-commit comment-syntax matchers` bullet (~407 B). Lifted from kailash-py /codify proposal id pre-commit-comment-matcher-quirk. Classification: GLOBAL.",
-        "RULE UPDATE: .claude/rules/build-repo-release-discipline.md § MUST Rule 2 += `uv index-cache override` paragraph (~636 B). Lifted from kailash-py /codify proposal id uv-index-cache-refresh. Classification: GLOBAL.",
+        "RULE UPDATE: .claude/rules/git.md \u00a7 Discipline += `Pre-commit comment-syntax matchers` bullet (~407 B). Lifted from kailash-py /codify proposal id pre-commit-comment-matcher-quirk. Classification: GLOBAL.",
+        "RULE UPDATE: .claude/rules/build-repo-release-discipline.md \u00a7 MUST Rule 2 += `uv index-cache override` paragraph (~636 B). Lifted from kailash-py /codify proposal id uv-index-cache-refresh. Classification: GLOBAL.",
         "RULE UPDATE: .claude/rules/autonomous-execution.md Rule 4 Origin += rustdoc cross-class evidence (~660 B raw). Lifted from kailash-rs /codify proposal id same-shard-rustdoc-fix-immediately-evidence. Classification: GLOBAL.",
-        "STRUCTURAL CLEANUP (loom-side, not template-side): variants/rb/rules/zero-tolerance.md DELETED — dead slot-keyed overlay (loom commit 77b7cda). Deferred from yesterday's e38b918 sync; no functional impact on rb target.",
-        "VERSION: template 1.10.1 → 1.10.2; upstream loom version 2.14.0 → 2.14.1; build_version 2.14.0 → 2.14.1.",
-        "NO SDK pin updates — RB target has no gemspec/Gemfile.",
+        "STRUCTURAL CLEANUP (loom-side, not template-side): variants/rb/rules/zero-tolerance.md DELETED \u2014 dead slot-keyed overlay (loom commit 77b7cda). Deferred from yesterday's e38b918 sync; no functional impact on rb target.",
+        "VERSION: template 1.10.1 \u2192 1.10.2; upstream loom version 2.14.0 \u2192 2.14.1; build_version 2.14.0 \u2192 2.14.1.",
+        "NO SDK pin updates \u2014 RB target has no gemspec/Gemfile.",
         "NO settings.json / hooks / agents / commands changes."
       ]
     },
     {
       "version": "1.10.1",
       "date": "2026-05-01",
-      "summary": "PATCH: sync loom commit 370d560 — zero-tolerance.md rb-overlay retirement + Rule 1c addition. STRUCTURAL CHANGE for rb target: the prior 60-line Ruby-specific zero-tolerance.md (path-scoped to **/*.rb / **/Gemfile / **/*.gemspec, with Ruby-specific Why lines) has been replaced by the loom global zero-tolerance.md (317 lines, priority:0 / scope:baseline). The rb-overlay form was a legacy whole-file replacement pre-dating the slot-marker contract (variant-authoring.md MUST Rule 1); compose.mjs returns exit 1 on it. Rather than carry a dead overlay forward, this sync ships the global directly. (1) ADDED to rb target via global emission: Rule 1a 'Scanner-Surface Symmetry' (PR scan vs main scan parity), Rule 1b 'Scanner Deferral Requires Tracking Issue + Runtime-Safety Proof' (4-condition deferral gate), Rule 1c '\"Pre-Existing\" Is Unprovable After Context Boundary' (NEW — closes the rationalization loophole that wrapper-default scope-discipline creates after /clear or auto-compaction), Rule 3a 'Typed Delegate Guards For None Backing Objects' (lazy-init guard pattern), Rule 3c 'Documented Kwargs Accepted But Unused' (silent-fallback at API surface), Rule 6a 'Remove Fully — Public-API Removal Requires Deprecation Cycle' (deprecation-shim contract). (2) SCOPE SHIFT: rb's zero-tolerance.md is now baseline-emitted (always-on at AGENTS.md/CLAUDE.md) instead of Ruby-files-only. This matches py and rs targets and is structurally correct — zero-tolerance is a baseline concern across all languages, not Ruby-files-only. (3) LOST: Ruby-specific Why lines (e.g., 'Ruby silently returns `nil` from empty methods', 'monkey-patches are globally visible'). These can be reintroduced via slot markers when the slot refactor lands as its own workstream. (4) NO SDK pin updates — RB target has no gemspec/Gemfile. (5) The rb variant overlay file (loom/.claude/variants/rb/rules/zero-tolerance.md) is unchanged in this sync — structural cleanup deferred to the slot-marker refactor workstream.",
+      "summary": "PATCH: sync loom commit 370d560 \u2014 zero-tolerance.md rb-overlay retirement + Rule 1c addition. STRUCTURAL CHANGE for rb target: the prior 60-line Ruby-specific zero-tolerance.md (path-scoped to **/*.rb / **/Gemfile / **/*.gemspec, with Ruby-specific Why lines) has been replaced by the loom global zero-tolerance.md (317 lines, priority:0 / scope:baseline). The rb-overlay form was a legacy whole-file replacement pre-dating the slot-marker contract (variant-authoring.md MUST Rule 1); compose.mjs returns exit 1 on it. Rather than carry a dead overlay forward, this sync ships the global directly. (1) ADDED to rb target via global emission: Rule 1a 'Scanner-Surface Symmetry' (PR scan vs main scan parity), Rule 1b 'Scanner Deferral Requires Tracking Issue + Runtime-Safety Proof' (4-condition deferral gate), Rule 1c '\"Pre-Existing\" Is Unprovable After Context Boundary' (NEW \u2014 closes the rationalization loophole that wrapper-default scope-discipline creates after /clear or auto-compaction), Rule 3a 'Typed Delegate Guards For None Backing Objects' (lazy-init guard pattern), Rule 3c 'Documented Kwargs Accepted But Unused' (silent-fallback at API surface), Rule 6a 'Remove Fully \u2014 Public-API Removal Requires Deprecation Cycle' (deprecation-shim contract). (2) SCOPE SHIFT: rb's zero-tolerance.md is now baseline-emitted (always-on at AGENTS.md/CLAUDE.md) instead of Ruby-files-only. This matches py and rs targets and is structurally correct \u2014 zero-tolerance is a baseline concern across all languages, not Ruby-files-only. (3) LOST: Ruby-specific Why lines (e.g., 'Ruby silently returns `nil` from empty methods', 'monkey-patches are globally visible'). These can be reintroduced via slot markers when the slot refactor lands as its own workstream. (4) NO SDK pin updates \u2014 RB target has no gemspec/Gemfile. (5) The rb variant overlay file (loom/.claude/variants/rb/rules/zero-tolerance.md) is unchanged in this sync \u2014 structural cleanup deferred to the slot-marker refactor workstream.",
       "changes": [
-        "RULE REPLACEMENT: .claude/rules/zero-tolerance.md — 60 LOC Ruby-specific path-scoped overlay → 317 LOC loom global priority:0/scope:baseline. Adds Rule 1a, 1b, 1c (NEW), 3a, 3c, 6a previously missing on rb target.",
-        "NEW SUB-RULE (loom 370d560): Rule 1c '\"Pre-Existing\" Is Unprovable After Context Boundary' — requires SHA-grounded provenance proof for any 'pre-existing / out of scope' claim; otherwise BLOCKED. Closes the rationalization loophole created by CC's wrapper-default scope-discipline (prompts.ts:201-203) after /clear or auto-compaction.",
+        "RULE REPLACEMENT: .claude/rules/zero-tolerance.md \u2014 60 LOC Ruby-specific path-scoped overlay \u2192 317 LOC loom global priority:0/scope:baseline. Adds Rule 1a, 1b, 1c (NEW), 3a, 3c, 6a previously missing on rb target.",
+        "NEW SUB-RULE (loom 370d560): Rule 1c '\"Pre-Existing\" Is Unprovable After Context Boundary' \u2014 requires SHA-grounded provenance proof for any 'pre-existing / out of scope' claim; otherwise BLOCKED. Closes the rationalization loophole created by CC's wrapper-default scope-discipline (prompts.ts:201-203) after /clear or auto-compaction.",
         "SCOPE SHIFT: rb zero-tolerance.md priority:0 / scope:baseline (was: paths: [**/*.rb, **/Gemfile, **/*.gemspec]). Rule now emits to AGENTS.md/CLAUDE.md always-on surface, matching py and rs targets.",
-        "VERSION: template 1.10.0 → 1.10.1; upstream loom version stays 2.14.0; upstream.synced_at refreshed.",
-        "NO settings.json / hooks / agents / commands changes — this is a single-rule sync."
+        "VERSION: template 1.10.0 \u2192 1.10.1; upstream loom version stays 2.14.0; upstream.synced_at refreshed.",
+        "NO settings.json / hooks / agents / commands changes \u2014 this is a single-rule sync."
       ]
     },
     {
       "version": "1.10.0",
       "date": "2026-05-01",
-      "summary": "MINOR: sync loom 2.14.0 — paired-rule mirror (loom #21) + deploy-hygiene Rule 11 generalization (loom #23). Small release: only one rule update lands at this CC-only Ruby USE template; the new loom-csq-boundary rule is correctly use_excluded and does NOT ship. (1) UPDATED rules/deploy-hygiene.md — added MUST Rule 11 'Push-Triggered Deploy Workflows MUST Cancel In-Progress Runs' (~62 LOC of insertion: cancel-in-progress: true requirement on deploy-branch push triggers + ssh ServerAliveInterval=15/ServerAliveCountMax=3 keep-alive flags requirement + narrow exception for non-idempotent destructive operations with mandatory same-file audit-trail comment naming the specific non-idempotent step). Same audit-trail-as-comment principle as dataflow-identifier-safety.md Rule 4 (DROP) and git.md `git reset --hard`. Generalized from a downstream-surfacing per upstream-issue-hygiene.md anonymization. (2) NOT SHIPPED: rules/loom-csq-boundary.md (loom #21 paired-rule mirror of csq's csq-loom-boundary.md). Correctly classified at sync-manifest.yaml::use_exclude — meta-rule about loom's relationship with the csq multi-CLI evaluator harness; USE templates and downstream consumers don't have a coc-eval/ or test-harness/ surface so the rule's path conditions never match. Same loom-only-meta-rule classification as cross-cli-parity.md was given path-scoping in 2.13.0. (3) NOT SHIPPED: test-harness/README.md update (loom-only fixture infra, excluded via test-harness/**). (4) NO obsoleted purges this cycle — the 13 universal + 7 use-only entries already absent from prior syncs. .coc-obsoleted unchanged. (5) NO settings.json changes — hook surface unchanged from 2.13.0. (6) NO new hooks. (7) NO SDK pin updates — RB target has no gemspec/Gemfile.",
+      "summary": "MINOR: sync loom 2.14.0 \u2014 paired-rule mirror (loom #21) + deploy-hygiene Rule 11 generalization (loom #23). Small release: only one rule update lands at this CC-only Ruby USE template; the new loom-csq-boundary rule is correctly use_excluded and does NOT ship. (1) UPDATED rules/deploy-hygiene.md \u2014 added MUST Rule 11 'Push-Triggered Deploy Workflows MUST Cancel In-Progress Runs' (~62 LOC of insertion: cancel-in-progress: true requirement on deploy-branch push triggers + ssh ServerAliveInterval=15/ServerAliveCountMax=3 keep-alive flags requirement + narrow exception for non-idempotent destructive operations with mandatory same-file audit-trail comment naming the specific non-idempotent step). Same audit-trail-as-comment principle as dataflow-identifier-safety.md Rule 4 (DROP) and git.md `git reset --hard`. Generalized from a downstream-surfacing per upstream-issue-hygiene.md anonymization. (2) NOT SHIPPED: rules/loom-csq-boundary.md (loom #21 paired-rule mirror of csq's csq-loom-boundary.md). Correctly classified at sync-manifest.yaml::use_exclude \u2014 meta-rule about loom's relationship with the csq multi-CLI evaluator harness; USE templates and downstream consumers don't have a coc-eval/ or test-harness/ surface so the rule's path conditions never match. Same loom-only-meta-rule classification as cross-cli-parity.md was given path-scoping in 2.13.0. (3) NOT SHIPPED: test-harness/README.md update (loom-only fixture infra, excluded via test-harness/**). (4) NO obsoleted purges this cycle \u2014 the 13 universal + 7 use-only entries already absent from prior syncs. .coc-obsoleted unchanged. (5) NO settings.json changes \u2014 hook surface unchanged from 2.13.0. (6) NO new hooks. (7) NO SDK pin updates \u2014 RB target has no gemspec/Gemfile.",
       "changes": [
-        "RULE UPDATE: .claude/rules/deploy-hygiene.md — added MUST Rule 11 'Push-Triggered Deploy Workflows MUST Cancel In-Progress Runs' (62 LOC). Five BLOCKED rationalizations + structural audit-comment exception clause for non-idempotent destructive ops.",
-        "EXCLUDED (not shipped per use_exclude): .claude/rules/loom-csq-boundary.md — loom-only meta-rule about loom↔csq paired-rule contract; path conditions never match at consumer/USE surface.",
-        "EXCLUDED (not shipped per test-harness/**): .claude/test-harness/README.md update — loom multi-CLI parity fixtures.",
-        ".coc-obsoleted: unchanged (20 entries — 13 universal + 7 use-only); all listed paths already absent.",
-        "settings.json: unchanged — hook surface from 2.13.0 preserved (8 hook entries; all resolve on disk).",
-        "VERSION: template 1.9.0 → 1.10.0; upstream loom 2.13.0 → 2.14.0; build_version 2.13.0 → 2.14.0."
+        "RULE UPDATE: .claude/rules/deploy-hygiene.md \u2014 added MUST Rule 11 'Push-Triggered Deploy Workflows MUST Cancel In-Progress Runs' (62 LOC). Five BLOCKED rationalizations + structural audit-comment exception clause for non-idempotent destructive ops.",
+        "EXCLUDED (not shipped per use_exclude): .claude/rules/loom-csq-boundary.md \u2014 loom-only meta-rule about loom\u2194csq paired-rule contract; path conditions never match at consumer/USE surface.",
+        "EXCLUDED (not shipped per test-harness/**): .claude/test-harness/README.md update \u2014 loom multi-CLI parity fixtures.",
+        ".coc-obsoleted: unchanged (20 entries \u2014 13 universal + 7 use-only); all listed paths already absent.",
+        "settings.json: unchanged \u2014 hook surface from 2.13.0 preserved (8 hook entries; all resolve on disk).",
+        "VERSION: template 1.9.0 \u2192 1.10.0; upstream loom 2.13.0 \u2192 2.14.0; build_version 2.13.0 \u2192 2.14.0."
       ]
     },
     {
       "version": "1.9.0",
       "date": "2026-05-01",
-      "summary": "MINOR: sync loom 2.13.0 (procedure safety + cap-headroom restoration) + carry-forward loom 2.12.0 (spec-accuracy rule) skipped on prior cycle. (1) DEMOTION: rules/cross-cli-parity.md frontmatter changed from priority:0/scope:baseline to priority:10/scope:path-scoped (paths: **/.claude/rules/**, **/.claude/variants/**) — same Phase F4 precedent as 2026-04-22 rule-authoring.md/variant-authoring.md demotions. The rule is structurally meta-authoring guidance; it now fires only when editing rules or variant overlays, not on every session. (2) NEW HOOK gitignored-claude-warn.js (PreToolUse / Edit|Write matcher, 5s timeout) — fires when an agent writes to a path under .claude/** that git check-ignore -v confirms is gitignored. Fires meaningfully ONLY in downstream consumer environments (where .claude/ is gitignored to prevent drift from sync source); silent in this USE template (where .claude/ is tracked). Registered in settings.json::hooks.PreToolUse alongside the existing validate-bash-command Bash matcher. (3) NEW HOOK pre-commit-branch-scope.js (standalone advisory, chmod +x) — wired into validate-bash-command.js: when an agent invokes `git commit ...` via the Bash tool, the validator spawns the scope checker which lists staged files outside the branch's declared scope (PR Scope: line preferred, falls back to conservative branch-name regex). Warn-only on every code path; never blocks the commit. (4) UPDATED HOOK validate-bash-command.js — extended with git-commit detection block that delegates to pre-commit-branch-scope.js. (5) UPDATED commands/ws.md — workspace dashboard now emits `!! MISSING:` flags at the top of /ws output for absent canonical phase dirs (advisory; never blocks). (6) NEW (carry-forward from loom 2.12.0): rules/spec-accuracy.md (priority:10 / scope:path-scoped — paths: specs/**, workspaces/**/specs/**, 02-plans/**, briefs/**) — six MUST clauses (citations resolve, no split-state, out-of-scope is not a gap, work trackers outside specs, incremental extension, historical change logs permitted past-tense), five MUST NOT (phantom citations, Phase-1/2 framings, gap-honesty as virtue, permanent gap trackers, spec for unimplemented behavior), three structural carve-outs (out-of-scope sections, append-only change logs, reserved-for-future-work numbering anchors). Companion guides/rule-extracts/spec-accuracy.md (10,731 B) carries the 2026-04-21 phantom-Databricks post-mortem, gap-tracker migration playbook, BLOCKED-rationalization with-Why list, relationship-to-other-rules table, and 3-sweep audit protocol. NOT shipped on the 1.8.0/1.8.1 cycle because the rb sync skipped 2.12.0; this cycle catches up. STRUCTURAL CLASSIFICATION CHOICE for spec-accuracy: path-scoped per rule-authoring.md MUST Rule 5 — failure mode (phantom citations) only fires when editing spec files. (7) NO obsoleted purges — the 4 use_obsoleted: paths active in 2.11.2 were already purged on the prior sync; the 13+7=20 .coc-obsoleted entries are unchanged from the prior cycle. (8) RB target has no SDK pin files (gemspec / Gemfile absent); SDK pin step skipped.",
+      "summary": "MINOR: sync loom 2.13.0 (procedure safety + cap-headroom restoration) + carry-forward loom 2.12.0 (spec-accuracy rule) skipped on prior cycle. (1) DEMOTION: rules/cross-cli-parity.md frontmatter changed from priority:0/scope:baseline to priority:10/scope:path-scoped (paths: **/.claude/rules/**, **/.claude/variants/**) \u2014 same Phase F4 precedent as 2026-04-22 rule-authoring.md/variant-authoring.md demotions. The rule is structurally meta-authoring guidance; it now fires only when editing rules or variant overlays, not on every session. (2) NEW HOOK gitignored-claude-warn.js (PreToolUse / Edit|Write matcher, 5s timeout) \u2014 fires when an agent writes to a path under .claude/** that git check-ignore -v confirms is gitignored. Fires meaningfully ONLY in downstream consumer environments (where .claude/ is gitignored to prevent drift from sync source); silent in this USE template (where .claude/ is tracked). Registered in settings.json::hooks.PreToolUse alongside the existing validate-bash-command Bash matcher. (3) NEW HOOK pre-commit-branch-scope.js (standalone advisory, chmod +x) \u2014 wired into validate-bash-command.js: when an agent invokes `git commit ...` via the Bash tool, the validator spawns the scope checker which lists staged files outside the branch's declared scope (PR Scope: line preferred, falls back to conservative branch-name regex). Warn-only on every code path; never blocks the commit. (4) UPDATED HOOK validate-bash-command.js \u2014 extended with git-commit detection block that delegates to pre-commit-branch-scope.js. (5) UPDATED commands/ws.md \u2014 workspace dashboard now emits `!! MISSING:` flags at the top of /ws output for absent canonical phase dirs (advisory; never blocks). (6) NEW (carry-forward from loom 2.12.0): rules/spec-accuracy.md (priority:10 / scope:path-scoped \u2014 paths: specs/**, workspaces/**/specs/**, 02-plans/**, briefs/**) \u2014 six MUST clauses (citations resolve, no split-state, out-of-scope is not a gap, work trackers outside specs, incremental extension, historical change logs permitted past-tense), five MUST NOT (phantom citations, Phase-1/2 framings, gap-honesty as virtue, permanent gap trackers, spec for unimplemented behavior), three structural carve-outs (out-of-scope sections, append-only change logs, reserved-for-future-work numbering anchors). Companion guides/rule-extracts/spec-accuracy.md (10,731 B) carries the 2026-04-21 phantom-Databricks post-mortem, gap-tracker migration playbook, BLOCKED-rationalization with-Why list, relationship-to-other-rules table, and 3-sweep audit protocol. NOT shipped on the 1.8.0/1.8.1 cycle because the rb sync skipped 2.12.0; this cycle catches up. STRUCTURAL CLASSIFICATION CHOICE for spec-accuracy: path-scoped per rule-authoring.md MUST Rule 5 \u2014 failure mode (phantom citations) only fires when editing spec files. (7) NO obsoleted purges \u2014 the 4 use_obsoleted: paths active in 2.11.2 were already purged on the prior sync; the 13+7=20 .coc-obsoleted entries are unchanged from the prior cycle. (8) RB target has no SDK pin files (gemspec / Gemfile absent); SDK pin step skipped.",
       "changes": [
-        "RULE UPDATE: .claude/rules/cross-cli-parity.md — frontmatter demotion to priority:10/scope:path-scoped (paths: **/.claude/rules/**, **/.claude/variants/**). Body unchanged; only the loading scope changes.",
-        "NEW RULE: .claude/rules/spec-accuracy.md (10,581 B raw, 196 LOC) — priority:10 / scope:path-scoped. Carry-forward from loom 2.12.0 (skipped on prior rb sync cycle). Six MUST clauses + five MUST NOT + three structural carve-outs.",
-        "NEW EXTRACT: .claude/guides/rule-extracts/spec-accuracy.md (10,731 B) — phantom-Databricks post-mortem + 4-step migration playbook + BLOCKED rationalizations + relationship-to-other-rules + 3-sweep audit protocol.",
-        "NEW HOOK: .claude/hooks/gitignored-claude-warn.js (3,899 B) — PreToolUse Edit|Write matcher; warns on writes to gitignored .claude/** paths in downstream consumer environments. Silent in this USE template.",
-        "NEW HOOK: .claude/hooks/pre-commit-branch-scope.js (8,249 B, chmod +x) — standalone advisory invoked by validate-bash-command.js when agent runs `git commit ...`; lists staged files outside the branch's declared scope. Warn-only.",
-        "UPDATED HOOK: .claude/hooks/validate-bash-command.js (8,600 B; was 7,852 B) — extended with git-commit detection block that delegates to pre-commit-branch-scope.js and surfaces stderr as a PreToolUse validation message.",
-        "COMMAND UPDATE: .claude/commands/ws.md — missing-phase scan emits `!! MISSING:` flags at the top of /ws output for absent canonical phase dirs (advisory; never blocks).",
-        "NEW SCAFFOLD: workspaces/_template/ — eight phase dirs (briefs/, 01-analysis/, 02-plans/, 03-user-flows/, 04-validate/, journal/, todos/active/, todos/completed/) each with .gitkeep, plus README.md (66 LOC) documenting phase contract, phase order, and missing-phase signals. Outside .claude/.",
-        "SETTINGS: .claude/settings.json — added PreToolUse Edit|Write hook entry for gitignored-claude-warn.js (5s timeout). Existing PreToolUse Bash entry for validate-bash-command.js preserved.",
-        ".coc-obsoleted: unchanged (20 entries — 13 universal + 7 use-only); all listed paths already absent from prior syncs.",
-        "VERSION: template 1.8.1 → 1.9.0; upstream loom 2.11.2 → 2.13.0; build_version 3.9.0 → 2.13.0 (build_version is loom's source-of-truth version per existing convention)."
+        "RULE UPDATE: .claude/rules/cross-cli-parity.md \u2014 frontmatter demotion to priority:10/scope:path-scoped (paths: **/.claude/rules/**, **/.claude/variants/**). Body unchanged; only the loading scope changes.",
+        "NEW RULE: .claude/rules/spec-accuracy.md (10,581 B raw, 196 LOC) \u2014 priority:10 / scope:path-scoped. Carry-forward from loom 2.12.0 (skipped on prior rb sync cycle). Six MUST clauses + five MUST NOT + three structural carve-outs.",
+        "NEW EXTRACT: .claude/guides/rule-extracts/spec-accuracy.md (10,731 B) \u2014 phantom-Databricks post-mortem + 4-step migration playbook + BLOCKED rationalizations + relationship-to-other-rules + 3-sweep audit protocol.",
+        "NEW HOOK: .claude/hooks/gitignored-claude-warn.js (3,899 B) \u2014 PreToolUse Edit|Write matcher; warns on writes to gitignored .claude/** paths in downstream consumer environments. Silent in this USE template.",
+        "NEW HOOK: .claude/hooks/pre-commit-branch-scope.js (8,249 B, chmod +x) \u2014 standalone advisory invoked by validate-bash-command.js when agent runs `git commit ...`; lists staged files outside the branch's declared scope. Warn-only.",
+        "UPDATED HOOK: .claude/hooks/validate-bash-command.js (8,600 B; was 7,852 B) \u2014 extended with git-commit detection block that delegates to pre-commit-branch-scope.js and surfaces stderr as a PreToolUse validation message.",
+        "COMMAND UPDATE: .claude/commands/ws.md \u2014 missing-phase scan emits `!! MISSING:` flags at the top of /ws output for absent canonical phase dirs (advisory; never blocks).",
+        "NEW SCAFFOLD: workspaces/_template/ \u2014 eight phase dirs (briefs/, 01-analysis/, 02-plans/, 03-user-flows/, 04-validate/, journal/, todos/active/, todos/completed/) each with .gitkeep, plus README.md (66 LOC) documenting phase contract, phase order, and missing-phase signals. Outside .claude/.",
+        "SETTINGS: .claude/settings.json \u2014 added PreToolUse Edit|Write hook entry for gitignored-claude-warn.js (5s timeout). Existing PreToolUse Bash entry for validate-bash-command.js preserved.",
+        ".coc-obsoleted: unchanged (20 entries \u2014 13 universal + 7 use-only); all listed paths already absent from prior syncs.",
+        "VERSION: template 1.8.1 \u2192 1.9.0; upstream loom 2.11.2 \u2192 2.13.0; build_version 3.9.0 \u2192 2.13.0 (build_version is loom's source-of-truth version per existing convention)."
       ]
     },
     {
       "version": "1.8.1",
       "date": "2026-04-30",
-      "summary": "PATCH: sync loom 2.11.2 — git.md trim + active purge of 4 use_obsoleted paths. (1) rules/git.md updated: § Discipline section collapses three secondary subsections (Issue Closure / Pre-Commit Hook Workarounds / Commit-Message Claim Accuracy) into a tight bullet list. Load-bearing MUST clauses preserved as bullets; combined Why retained; full DO/DO NOT examples routed to guides/rule-extracts/git.md (BUILD-only at loom). (2) NEW manifest tier use_obsoleted: triggered active purge of 4 pre-existing-in-USE-template paths flagged by 2.11.0 sync as use_excluded but not yet auto-deleted: .claude/rules/documentation.md, .claude/skills/30-claude-code-patterns/sdk-upstream-donation.md, .claude/guides/co-setup/ (10 files), .claude/guides/deterministic-quality/ (10 files). The other 3 use_obsoleted paths (guides/automated-maintenance.md, guides/rule-extracts/git.md, guides/rule-extracts/independence-rs.md) were absent from this target — listed in emitted .coc-obsoleted for downstream consumer purge. (3) .coc-obsoleted regenerated as union of loom obsoleted: + use_obsoleted: (13 + 7 = 20 entries; downstream consumer apps' next /sync inherits the purge contract).",
+      "summary": "PATCH: sync loom 2.11.2 \u2014 git.md trim + active purge of 4 use_obsoleted paths. (1) rules/git.md updated: \u00a7 Discipline section collapses three secondary subsections (Issue Closure / Pre-Commit Hook Workarounds / Commit-Message Claim Accuracy) into a tight bullet list. Load-bearing MUST clauses preserved as bullets; combined Why retained; full DO/DO NOT examples routed to guides/rule-extracts/git.md (BUILD-only at loom). (2) NEW manifest tier use_obsoleted: triggered active purge of 4 pre-existing-in-USE-template paths flagged by 2.11.0 sync as use_excluded but not yet auto-deleted: .claude/rules/documentation.md, .claude/skills/30-claude-code-patterns/sdk-upstream-donation.md, .claude/guides/co-setup/ (10 files), .claude/guides/deterministic-quality/ (10 files). The other 3 use_obsoleted paths (guides/automated-maintenance.md, guides/rule-extracts/git.md, guides/rule-extracts/independence-rs.md) were absent from this target \u2014 listed in emitted .coc-obsoleted for downstream consumer purge. (3) .coc-obsoleted regenerated as union of loom obsoleted: + use_obsoleted: (13 + 7 = 20 entries; downstream consumer apps' next /sync inherits the purge contract).",
       "changes": [
-        "RULE UPDATE: .claude/rules/git.md — § Discipline section restructured to bullet list per loom 2.11.2 trim.",
-        "PURGE: .claude/rules/documentation.md (use_obsoleted; was BUILD-only — terrene-foundation/kailash-py URL hardcoded).",
+        "RULE UPDATE: .claude/rules/git.md \u2014 \u00a7 Discipline section restructured to bullet list per loom 2.11.2 trim.",
+        "PURGE: .claude/rules/documentation.md (use_obsoleted; was BUILD-only \u2014 terrene-foundation/kailash-py URL hardcoded).",
         "PURGE: .claude/skills/30-claude-code-patterns/sdk-upstream-donation.md (use_obsoleted; maintainer cross-SDK workflow).",
-        "PURGE: .claude/guides/co-setup/ (use_obsoleted; loom→BUILD→USE flow internals — consumers are the audience for OUTPUT, not internals).",
+        "PURGE: .claude/guides/co-setup/ (use_obsoleted; loom\u2192BUILD\u2192USE flow internals \u2014 consumers are the audience for OUTPUT, not internals).",
         "PURGE: .claude/guides/deterministic-quality/ (use_obsoleted; SDK-maintainer rule-authoring guides).",
-        "EMIT: .claude/.coc-obsoleted regenerated as union of obsoleted: ∪ use_obsoleted: (20 entries) — downstream consumer /sync will inherit purge contract."
+        "EMIT: .claude/.coc-obsoleted regenerated as union of obsoleted: \u222a use_obsoleted: (20 entries) \u2014 downstream consumer /sync will inherit purge contract."
       ]
     },
     {
       "version": "1.8.0",
       "date": "2026-04-30",
-      "summary": "Sync loom 2.11.0 — USE-template downstream-context leakage remediation. (1) NEW rule rules/upstream-issue-hygiene.md (priority:0 / scope:baseline) — three MUSTs: human-gate before gh issue create against any SDK repo, downstream-context redaction (no consumer project name, internal paths, workspace IDs, finding tags), minimal-repro shape (5 required sections only). (2) ~37 anonymized rules/skills/agents/extracts — Origin lines + cross-SDK footers + absolute-path examples scrubbed of consumer/SDK identifiers. (3) Manifest-side use_exclude tier added at loom (BUILD-only artifacts dropped from new sync diffs): rules/cross-sdk-inspection.md, rules/documentation.md, skills/30-claude-code-patterns/sdk-upstream-donation.md, guides/co-setup/**, guides/deterministic-quality/**, guides/automated-maintenance.md, guides/rule-extracts/{git,independence-rs}.md. Pre-existing copies of newly use_excluded paths in this template (documentation.md, sdk-upstream-donation.md, guides/co-setup/, guides/deterministic-quality/) are PRESERVED on this sync — additive merge semantics — and will require explicit obsoleted: entries in a future loom release for downstream purge. Privacy posture: USE-template-distributed surface no longer carries cross-SDK awareness, sibling-SDK identifiers, or auto-cross-file instructions; the new upstream-issue-hygiene rule is the active tripwire.",
+      "summary": "Sync loom 2.11.0 \u2014 USE-template downstream-context leakage remediation. (1) NEW rule rules/upstream-issue-hygiene.md (priority:0 / scope:baseline) \u2014 three MUSTs: human-gate before gh issue create against any SDK repo, downstream-context redaction (no consumer project name, internal paths, workspace IDs, finding tags), minimal-repro shape (5 required sections only). (2) ~37 anonymized rules/skills/agents/extracts \u2014 Origin lines + cross-SDK footers + absolute-path examples scrubbed of consumer/SDK identifiers. (3) Manifest-side use_exclude tier added at loom (BUILD-only artifacts dropped from new sync diffs): rules/cross-sdk-inspection.md, rules/documentation.md, skills/30-claude-code-patterns/sdk-upstream-donation.md, guides/co-setup/**, guides/deterministic-quality/**, guides/automated-maintenance.md, guides/rule-extracts/{git,independence-rs}.md. Pre-existing copies of newly use_excluded paths in this template (documentation.md, sdk-upstream-donation.md, guides/co-setup/, guides/deterministic-quality/) are PRESERVED on this sync \u2014 additive merge semantics \u2014 and will require explicit obsoleted: entries in a future loom release for downstream purge. Privacy posture: USE-template-distributed surface no longer carries cross-SDK awareness, sibling-SDK identifiers, or auto-cross-file instructions; the new upstream-issue-hygiene rule is the active tripwire.",
       "changes": [
-        "NEW RULE: .claude/rules/upstream-issue-hygiene.md (~186 lines, priority:0 baseline) — human gate + context redaction + minimal-repro shape.",
+        "NEW RULE: .claude/rules/upstream-issue-hygiene.md (~186 lines, priority:0 baseline) \u2014 human gate + context redaction + minimal-repro shape.",
         "ANONYMIZED RULES: agents.md, artifact-flow.md, autonomous-execution.md, build-repo-release-discipline.md, ci-runners.md, dataflow-classification.md, dataflow-identifier-safety.md, event-payload-classification.md, framework-first.md, git.md, nexus-http-status-convention.md, nexus-webhook-hmac.md, orphan-detection.md, tenant-isolation.md, worktree-isolation.md.",
         "ANONYMIZED SKILLS: 01-core-sdk/runtime-lifecycle.md, 02-dataflow/migration-scaffold.md, 03-nexus/nexus-extractors.md, 03-nexus/nexus-http-status-convention.md, 04-kaizen/kaizen-llm-deployment.md, 10-deployment-git/ci-runner-troubleshooting.md, 10-deployment-git/todo-github-sync.md, 12-testing-strategies/impossibility-surface.md, 13-architecture-decisions/allowlist-extension-pattern.md, 16-validation-patterns/orphan-audit-playbook.md, 18-security-patterns/SKILL.md + dataflow-rls-posture.md + rls-security-definer-preauth-carveout.md, 31-error-troubleshooting/SKILL.md, spec-compliance/SKILL.md, test-skip-discipline/SKILL.md.",
         "ANONYMIZED AGENTS: agents/frameworks/kaizen-specialist.md, agents/frameworks/pact-specialist.md.",
         "ANONYMIZED EXTRACTS: guides/rule-extracts/agents.md, observability.md, testing.md, worktree-isolation.md.",
-        "PRESERVED (loom-side use_excluded but pre-existing in target): rules/documentation.md, skills/30-claude-code-patterns/sdk-upstream-donation.md, guides/co-setup/ (10 files), guides/deterministic-quality/ (10 files). Additive-merge semantics — purge requires explicit obsoleted: in a future release.",
+        "PRESERVED (loom-side use_excluded but pre-existing in target): rules/documentation.md, skills/30-claude-code-patterns/sdk-upstream-donation.md, guides/co-setup/ (10 files), guides/deterministic-quality/ (10 files). Additive-merge semantics \u2014 purge requires explicit obsoleted: in a future release.",
         "PRESERVED: CLAUDE.md (template-owned).",
         ".coc-obsoleted regenerated (13 entries unchanged from 2.10.2).",
-        "VERSION: template 1.7.3 → 1.8.0; upstream loom 2.10.2 → 2.11.0."
+        "VERSION: template 1.7.3 \u2192 1.8.0; upstream loom 2.10.2 \u2192 2.11.0."
       ]
     },
     {
       "version": "1.7.3",
       "date": "2026-04-29",
-      "summary": "Sync loom 2.10.2 — sync-hygiene remediation. (1) commands/codify.md cc-architect rename completion (lines 101 + 128 missed in v2.9.x rename). (2) 4 obsoleted-paths added to .coc-obsoleted: agents/claude-code-architect.md (rename), .claude/projects/, .claude/scheduled_tasks.lock, .claude/test-harness/ (loom-local pollution). (3) Paired exclude entries (projects/**, scheduled_tasks.lock, test-harness/**) so /sync prevents re-introduction. Surgical patch — only commands/codify.md changed in artifact set. Stale state purged via .coc-obsoleted contract.",
+      "summary": "Sync loom 2.10.2 \u2014 sync-hygiene remediation. (1) commands/codify.md cc-architect rename completion (lines 101 + 128 missed in v2.9.x rename). (2) 4 obsoleted-paths added to .coc-obsoleted: agents/claude-code-architect.md (rename), .claude/projects/, .claude/scheduled_tasks.lock, .claude/test-harness/ (loom-local pollution). (3) Paired exclude entries (projects/**, scheduled_tasks.lock, test-harness/**) so /sync prevents re-introduction. Surgical patch \u2014 only commands/codify.md changed in artifact set. Stale state purged via .coc-obsoleted contract.",
       "changes": [
-        "FIX: .claude/commands/codify.md — cc-architect rename completion (loom 2.10.2 source fix; lines 101+128 in narrative).",
+        "FIX: .claude/commands/codify.md \u2014 cc-architect rename completion (loom 2.10.2 source fix; lines 101+128 in narrative).",
         "PURGED via .coc-obsoleted: .claude/agents/claude-code-architect.md (rename remediation; agent file lingered post-rename).",
         "PURGED via .coc-obsoleted: .claude/projects/ (Claude Code per-user state cache; never artifact-managed).",
         "PURGED via .coc-obsoleted: .claude/scheduled_tasks.lock (Claude Code scheduled-task lock; never artifact-managed).",
@@ -155,28 +161,28 @@
         "ONE-SHOT PURGE: .claude/learning/ (loom-leaked from 2026-03-02; manifest excluded but no auto-purge mechanism for excluded paths).",
         "ONE-SHOT PURGE: .claude/rules/cross-sdk-inspection.md (excluded from sync; stale leftover from before exclusion was added).",
         ".coc-obsoleted regenerated (16 lines = 13 obsoleted paths) so downstream consumers inherit the purge contract on next /sync.",
-        "VERSION: template 1.7.2 → 1.7.3; upstream loom 2.9.5 → 2.10.2."
+        "VERSION: template 1.7.2 \u2192 1.7.3; upstream loom 2.9.5 \u2192 2.10.2."
       ]
     },
     {
       "version": "1.7.2",
       "date": "2026-04-28",
-      "summary": "Sync loom 2.9.4 + 2.9.5 — (1) /decisive renamed to /autonomize (autonomous-execution alignment + permission-envelope wording made explicit). Old decisive.md purged via .coc-obsoleted; new autonomize.md emitted to .claude/commands/. (2) /sweep added — generic project-scoped audit command (7 sweeps: workspace todos, journal, GH issues, PRs/branches, redteam-vs-specs gaps, workspace+worktree hygiene, process hygiene). (3) Slimmed rules: rules/agents.md (273→196 lines), rules/testing.md global (293→200 lines; rb variant unchanged at 132). (4) .coc-obsoleted updated with v2.9.4 entries (decisive.md/.toml + send-it.md/.toml). The rb USE template gets only .claude/commands/decisive.md purged (no .codex/ or .gemini/ trees to clean — CC-only).",
+      "summary": "Sync loom 2.9.4 + 2.9.5 \u2014 (1) /decisive renamed to /autonomize (autonomous-execution alignment + permission-envelope wording made explicit). Old decisive.md purged via .coc-obsoleted; new autonomize.md emitted to .claude/commands/. (2) /sweep added \u2014 generic project-scoped audit command (7 sweeps: workspace todos, journal, GH issues, PRs/branches, redteam-vs-specs gaps, workspace+worktree hygiene, process hygiene). (3) Slimmed rules: rules/agents.md (273\u2192196 lines), rules/testing.md global (293\u2192200 lines; rb variant unchanged at 132). (4) .coc-obsoleted updated with v2.9.4 entries (decisive.md/.toml + send-it.md/.toml). The rb USE template gets only .claude/commands/decisive.md purged (no .codex/ or .gemini/ trees to clean \u2014 CC-only).",
       "changes": [
         "ADDED: .claude/commands/autonomize.md (replacement for v2.9.3 decisive.md).",
         "ADDED: .claude/commands/sweep.md (generic project-scoped audit, 7 sweeps).",
-        "PURGED: .claude/commands/decisive.md (renamed to autonomize.md; CC-only template — no .codex/ or .gemini/ paths exist).",
-        "UPDATED: rules/agents.md (slimmed 273→196 lines; clauses unchanged in semantics, evidence narratives moved to guides/rule-extracts/agents.md).",
+        "PURGED: .claude/commands/decisive.md (renamed to autonomize.md; CC-only template \u2014 no .codex/ or .gemini/ paths exist).",
+        "UPDATED: rules/agents.md (slimmed 273\u2192196 lines; clauses unchanged in semantics, evidence narratives moved to guides/rule-extracts/agents.md).",
         "UPDATED: guides/co-setup/06-artifact-lifecycle.md (loom v2.9.4/2.9.5 narrative).",
         "OBSOLETED: .coc-obsoleted now lists 9 entries (added v2.9.4 paths: .claude/commands/decisive.md + .codex/prompts/decisive.md + .gemini/commands/decisive.toml).",
-        "VARIANT OVERLAYS: 27 rb variant overlays applied (14 rules + 8 commands + 5 SKILL.md) — unchanged from v1.7.1 manifest.",
-        "VERSION: upstream version 2.9.3 → 2.9.5; template version 1.7.1 → 1.7.2."
+        "VARIANT OVERLAYS: 27 rb variant overlays applied (14 rules + 8 commands + 5 SKILL.md) \u2014 unchanged from v1.7.1 manifest.",
+        "VERSION: upstream version 2.9.3 \u2192 2.9.5; template version 1.7.1 \u2192 1.7.2."
       ]
     },
     {
       "version": "1.7.1",
       "date": "2026-04-27",
-      "summary": "PATCH: rename /send-it → /decisive (slang removal + directive realignment to autonomous-execution + permission-envelope). The slang command name 'send-it' was unfamiliar to non-technical COC users (motorsports/skate slang); renamed to 'decisive' which names the posture without slang. Directive body rewritten to align with the user's standing principle 'autonomous execution to full with my permission, with the most optimal, complete, root-cause approach for the long-term … rigorous, prudent as well.' Added: § Prudence (permission envelope — destructive/hard-to-reverse/visible-to-others ops still require confirmation; BUILD-repo + downstream-of-USE commit/push carve-out per standing user feedback) + § Rigor (verify-before-commit — mechanical sweeps, cite paths/lines, distinguish observed-vs-assumed). Old send-it.md/.toml purged via .coc-obsoleted; new decisive command emitted to .claude/commands/ + (multi-CLI templates only) .codex/prompts/ + .gemini/commands/.",
+      "summary": "PATCH: rename /send-it \u2192 /decisive (slang removal + directive realignment to autonomous-execution + permission-envelope). The slang command name 'send-it' was unfamiliar to non-technical COC users (motorsports/skate slang); renamed to 'decisive' which names the posture without slang. Directive body rewritten to align with the user's standing principle 'autonomous execution to full with my permission, with the most optimal, complete, root-cause approach for the long-term \u2026 rigorous, prudent as well.' Added: \u00a7 Prudence (permission envelope \u2014 destructive/hard-to-reverse/visible-to-others ops still require confirmation; BUILD-repo + downstream-of-USE commit/push carve-out per standing user feedback) + \u00a7 Rigor (verify-before-commit \u2014 mechanical sweeps, cite paths/lines, distinguish observed-vs-assumed). Old send-it.md/.toml purged via .coc-obsoleted; new decisive command emitted to .claude/commands/ + (multi-CLI templates only) .codex/prompts/ + .gemini/commands/.",
       "changes": [
         "ADDED: .claude/commands/decisive.md. PURGED: .claude/commands/send-it.md. OBSOLETED: appended 3 send-it paths to .claude/.coc-obsoleted."
       ]
@@ -184,21 +190,21 @@
     {
       "version": "1.7.0",
       "date": "2026-04-26",
-      "summary": "Sync loom 2.9.1 — STRUCTURAL hooks consolidation (.claude/hooks/ canonical) + sync template-resolver UX fix (env-override-first, GitHub-cache-first, sibling demoted to offline-only fallback) + new declarative obsoleted-paths purge mechanism. Step 4.5 fired: removed legacy scripts/resolve-template.js (scripts/hooks/ + .claude/scripts/ already absent). Emitted .claude/.coc-obsoleted with 3 entries so downstream Ruby consumers purge stale orphan paths on next /sync.",
+      "summary": "Sync loom 2.9.1 \u2014 STRUCTURAL hooks consolidation (.claude/hooks/ canonical) + sync template-resolver UX fix (env-override-first, GitHub-cache-first, sibling demoted to offline-only fallback) + new declarative obsoleted-paths purge mechanism. Step 4.5 fired: removed legacy scripts/resolve-template.js (scripts/hooks/ + .claude/scripts/ already absent). Emitted .claude/.coc-obsoleted with 3 entries so downstream Ruby consumers purge stale orphan paths on next /sync.",
       "changes": [
-        "PURGED: scripts/resolve-template.js (legacy shim — replaced by canonical .claude/bin/resolve-template.js in v2.9.1).",
+        "PURGED: scripts/resolve-template.js (legacy shim \u2014 replaced by canonical .claude/bin/resolve-template.js in v2.9.1).",
         "VERIFIED ABSENT: scripts/hooks/, .claude/scripts/ (already gone in this template; obsoleted manifest still emitted to relay purge to Ruby downstream consumers).",
-        "NEW: .claude/.coc-obsoleted — slim purge manifest with 3 entries; downstream /sync reads this to clean stale orphans.",
-        "NEW: .claude/bin/ — canonical resolve-template.js + emit.mjs + compose.mjs + emit-cli-artifacts.mjs + repin-downstream.mjs + lib/slot-parser.mjs.",
-        "COMMAND: variants/rb/commands/sync.md — full-file overlay with env-override-first resolution + obsoleted-paths purge step (2.5/2.6).",
+        "NEW: .claude/.coc-obsoleted \u2014 slim purge manifest with 3 entries; downstream /sync reads this to clean stale orphans.",
+        "NEW: .claude/bin/ \u2014 canonical resolve-template.js + emit.mjs + compose.mjs + emit-cli-artifacts.mjs + repin-downstream.mjs + lib/slot-parser.mjs.",
+        "COMMAND: variants/rb/commands/sync.md \u2014 full-file overlay with env-override-first resolution + obsoleted-paths purge step (2.5/2.6).",
         "RULES: 14 rb variant overlays (agent-reasoning, connection-pool, dataflow-pool, deployment, e2e-god-mode, eatp, infrastructure-sql, observability, pact-governance, patterns, schema-migration, testing, trust-plane-security, zero-tolerance).",
-        "RULES: ~48 global rules updated (full sync to loom 2.9.1 baseline) including new ones — build-repo-release-discipline, ci-runners, cross-cli-parity, dataflow-classification, dataflow-identifier-safety, event-payload-classification, facade-manager-detection, nexus-http-status-convention, nexus-webhook-hmac, orphan-detection, tenant-isolation, ui-backend-defense, variant-authoring, worktree-isolation.",
-        "AGENTS: cc-architect, cli-orchestrator, codex-architect, gemini-architect added (descriptive only — rb template is CC-only, codex/gemini agents land as documentation).",
+        "RULES: ~48 global rules updated (full sync to loom 2.9.1 baseline) including new ones \u2014 build-repo-release-discipline, ci-runners, cross-cli-parity, dataflow-classification, dataflow-identifier-safety, event-payload-classification, facade-manager-detection, nexus-http-status-convention, nexus-webhook-hmac, orphan-detection, tenant-isolation, ui-backend-defense, variant-authoring, worktree-isolation.",
+        "AGENTS: cc-architect, cli-orchestrator, codex-architect, gemini-architect added (descriptive only \u2014 rb template is CC-only, codex/gemini agents land as documentation).",
         "COMMANDS: cli-audit, send-it added; sync.md updated to env-override-first resolver per v2.9.1.",
-        "HOOKS: full .claude/hooks/ tree refreshed (13 hook scripts + 7 lib utilities). settings.json already canonical (.claude/hooks/ paths) — no normalization needed.",
+        "HOOKS: full .claude/hooks/ tree refreshed (13 hook scripts + 7 lib utilities). settings.json already canonical (.claude/hooks/ paths) \u2014 no normalization needed.",
         "SKILLS: ~50 new/updated skills across 01-core-sdk through 35-kailash-align (kaizen, ml, align, deployment, security-patterns, claude-code-patterns, etc).",
         "PRESERVED: CLAUDE.md (project-specific), settings.json description ('Kailash COC Claude (Ruby)'), legacy commands not in current loom (checkpoint.md, evolve.md, journal.md, start.md), legacy agent claude-code-architect.md, legacy skill 27-care-reference.",
-        "VERSION: upstream version 2.8.2 → 2.9.1; template version 1.6.2 → 1.7.0."
+        "VERSION: upstream version 2.8.2 \u2192 2.9.1; template version 1.6.2 \u2192 1.7.0."
       ]
     },
     {
@@ -206,10 +212,10 @@
       "date": "2026-04-14",
       "summary": "Framework-first enforcement hook + Nexus activation improvements.",
       "changes": [
-        "HOOK: enforce-framework-first.js — blocks raw imports (FastAPI, SQLAlchemy, OpenAI, sklearn, transformers) in production code, redirects to Kailash frameworks.",
-        "AGENT: nexus-specialist description rewritten for semantic activation — user-facing terms (API endpoint, web service, REST API) instead of insider jargon.",
-        "SKILL: 03-nexus/nexus-for-fastapi-users.md — translation guide for route-first developers.",
-        "RULE: CLAUDE.md framework-first directive updated — no specific framework names."
+        "HOOK: enforce-framework-first.js \u2014 blocks raw imports (FastAPI, SQLAlchemy, OpenAI, sklearn, transformers) in production code, redirects to Kailash frameworks.",
+        "AGENT: nexus-specialist description rewritten for semantic activation \u2014 user-facing terms (API endpoint, web service, REST API) instead of insider jargon.",
+        "SKILL: 03-nexus/nexus-for-fastapi-users.md \u2014 translation guide for route-first developers.",
+        "RULE: CLAUDE.md framework-first directive updated \u2014 no specific framework names."
       ]
     },
     {
@@ -223,17 +229,17 @@
     {
       "version": "1.6.0",
       "date": "2026-04-08",
-      "summary": "Sync loom 2.7.0 — Framework mandate enforcement wave. New rules: observability.md (rb variant, Ruby logging), schema-migration.md (rb variant, ActiveRecord migrations). Extended: zero-tolerance.md (rb variant, warnings scope), framework-first.md (global, mandate table), dependencies.md, agents.md (worktree stripped). New hooks: integration-hygiene.js, log-triage-gate.js + 9 updated hooks. 8 framework agent descriptions rewritten. 8 SKILL.md descriptions rewritten. Updated: reviewer.md, testing-specialist.md, implement.md, redteam.md. Catch-up: 53 artifact updates from loom 2.6.2-2.7.0 delta.",
+      "summary": "Sync loom 2.7.0 \u2014 Framework mandate enforcement wave. New rules: observability.md (rb variant, Ruby logging), schema-migration.md (rb variant, ActiveRecord migrations). Extended: zero-tolerance.md (rb variant, warnings scope), framework-first.md (global, mandate table), dependencies.md, agents.md (worktree stripped). New hooks: integration-hygiene.js, log-triage-gate.js + 9 updated hooks. 8 framework agent descriptions rewritten. 8 SKILL.md descriptions rewritten. Updated: reviewer.md, testing-specialist.md, implement.md, redteam.md. Catch-up: 53 artifact updates from loom 2.6.2-2.7.0 delta.",
       "changes": [
-        "NEW: rules/observability.md — rb variant (SemanticLogger/Rails.logger, tagged logging, Ruby log-triage gate)",
-        "NEW: rules/schema-migration.md — rb variant (ActiveRecord migrations, db/migrate, change vs up/down)",
-        "NEW: rules/python-environment.md — Python venv isolation (global, carried forward from loom)",
-        "EXTENDED: rules/framework-first.md — work-domain binding table, specialist consultation",
-        "EXTENDED: rules/dependencies.md — declared=imported section",
-        "ADAPTED: rules/agents.md — worktree section stripped (Ruby users do not compile Rust)",
+        "NEW: rules/observability.md \u2014 rb variant (SemanticLogger/Rails.logger, tagged logging, Ruby log-triage gate)",
+        "NEW: rules/schema-migration.md \u2014 rb variant (ActiveRecord migrations, db/migrate, change vs up/down)",
+        "NEW: rules/python-environment.md \u2014 Python venv isolation (global, carried forward from loom)",
+        "EXTENDED: rules/framework-first.md \u2014 work-domain binding table, specialist consultation",
+        "EXTENDED: rules/dependencies.md \u2014 declared=imported section",
+        "ADAPTED: rules/agents.md \u2014 worktree section stripped (Ruby users do not compile Rust)",
         "NEW: scripts/hooks/integration-hygiene.js and log-triage-gate.js",
         "UPDATED: 9 existing hook/lib scripts",
-        "UPDATED: settings.json — registered new hooks",
+        "UPDATED: settings.json \u2014 registered new hooks",
         "DESCRIPTION REWRITE: 8 framework agents + 8 SKILL.md files",
         "UPDATED: reviewer.md, testing-specialist.md, implement.md, redteam.md",
         "CATCH-UP: 53 artifact updates across agents, commands, guides, rules, skills from loom 2.6.2-2.7.0 delta"
@@ -242,25 +248,25 @@
     {
       "version": "1.5.1",
       "date": "2026-04-08",
-      "summary": "Sync loom 2.6.2 — /redteam spec compliance + /deploy hygiene + Rust leak fix. New skills, deploy infrastructure, rb variant testing.md confirmed Ruby-only with audit-mode additions.",
+      "summary": "Sync loom 2.6.2 \u2014 /redteam spec compliance + /deploy hygiene + Rust leak fix. New skills, deploy infrastructure, rb variant testing.md confirmed Ruby-only with audit-mode additions.",
       "changes": [
-        "NEW: skills/spec-compliance/SKILL.md — 9-check verification protocol (Python global, no Rust syntax leak — protocol is universal, examples are Python).",
-        "UPDATE: variants/rb/rules/testing.md — added § Audit Mode Rules (Ruby bundle exec rspec --dry-run, verify NEW specs for new modules, verify security mitigation specs). Confirmed Ruby-only — no Rust or Python syntax.",
-        "REWRITE: commands/redteam.md — semantic verification protocol, language-agnostic test enumeration phrasing.",
-        "REWRITE: commands/deploy.md — config-driven onboard/execute/check modes, 10-step checklist.",
-        "NEW: rules/deploy-hygiene.md — 6-level failure model, infrastructure-only paths (Dockerfile, deploy/**, k8s/**, vercel.json, etc.).",
-        "NEW: skills/10-deployment-git/application-deployment.md — deployment-config.md schema + Vite/Docker/Next.js frontend patterns.",
-        "UPDATE: commands/wrapup.md — 4-state deploy classification (type:application / type:sdk / legacy prose / missing).",
-        "UPDATE: agents/analysis/analyst.md and testing/testing-specialist.md — /redteam Step 1 and Step 4 ownership.",
+        "NEW: skills/spec-compliance/SKILL.md \u2014 9-check verification protocol (Python global, no Rust syntax leak \u2014 protocol is universal, examples are Python).",
+        "UPDATE: variants/rb/rules/testing.md \u2014 added \u00a7 Audit Mode Rules (Ruby bundle exec rspec --dry-run, verify NEW specs for new modules, verify security mitigation specs). Confirmed Ruby-only \u2014 no Rust or Python syntax.",
+        "REWRITE: commands/redteam.md \u2014 semantic verification protocol, language-agnostic test enumeration phrasing.",
+        "REWRITE: commands/deploy.md \u2014 config-driven onboard/execute/check modes, 10-step checklist.",
+        "NEW: rules/deploy-hygiene.md \u2014 6-level failure model, infrastructure-only paths (Dockerfile, deploy/**, k8s/**, vercel.json, etc.).",
+        "NEW: skills/10-deployment-git/application-deployment.md \u2014 deployment-config.md schema + Vite/Docker/Next.js frontend patterns.",
+        "UPDATE: commands/wrapup.md \u2014 4-state deploy classification (type:application / type:sdk / legacy prose / missing).",
+        "UPDATE: agents/analysis/analyst.md and testing/testing-specialist.md \u2014 /redteam Step 1 and Step 4 ownership.",
         "LANGUAGE MAPPING: sync-manifest.yaml header documents that rb USE template is Ruby-only."
       ]
     },
     {
       "version": "1.5.0",
       "date": "2026-04-06",
-      "summary": "VERSION bump — kailash-rs v3.9.0, loom v2.2.0 (no rb artifact changes — delta was rs-variant only)",
+      "summary": "VERSION bump \u2014 kailash-rs v3.9.0, loom v2.2.0 (no rb artifact changes \u2014 delta was rs-variant only)",
       "changes": [
-        "VERSION: upstream build_version 3.6.1→3.9.0, upstream version 2.1.0→2.2.0"
+        "VERSION: upstream build_version 3.6.1\u21923.9.0, upstream version 2.1.0\u21922.2.0"
       ]
     },
     {
@@ -268,12 +274,12 @@
       "date": "2026-04-05",
       "summary": "6 global skill files tightened (59% reduction) from loom v2.1.0",
       "changes": [
-        "UPDATED: skills/01-core-sdk/async-pythoncode-patterns.md — tightened (508→231 lines)",
-        "UPDATED: skills/02-dataflow/dataflow-debug-agent.md — tightened (532→220 lines), BUILD path stripped",
-        "UPDATED: skills/03-nexus/nexus-workflow-registration.md — tightened (544→187 lines)",
-        "UPDATED: skills/04-kaizen/kaizen-agent-registry.md — tightened (516→185 lines), BUILD path stripped",
-        "UPDATED: skills/04-kaizen/kaizen-observability-hooks.md — tightened (531→221 lines), BUILD path stripped",
-        "UPDATED: skills/07-development-guides/production-testing.md — tightened (536→246 lines)"
+        "UPDATED: skills/01-core-sdk/async-pythoncode-patterns.md \u2014 tightened (508\u2192231 lines)",
+        "UPDATED: skills/02-dataflow/dataflow-debug-agent.md \u2014 tightened (532\u2192220 lines), BUILD path stripped",
+        "UPDATED: skills/03-nexus/nexus-workflow-registration.md \u2014 tightened (544\u2192187 lines)",
+        "UPDATED: skills/04-kaizen/kaizen-agent-registry.md \u2014 tightened (516\u2192185 lines), BUILD path stripped",
+        "UPDATED: skills/04-kaizen/kaizen-observability-hooks.md \u2014 tightened (531\u2192221 lines), BUILD path stripped",
+        "UPDATED: skills/07-development-guides/production-testing.md \u2014 tightened (536\u2192246 lines)"
       ]
     },
     {
@@ -281,9 +287,9 @@
       "date": "2026-04-05",
       "summary": "28 skill files tightened (78% reduction) + 7 restored patterns from loom v2.0.0",
       "changes": [
-        "UPDATED: 6 DataFlow skills — tightened (bulk-ops, crud, gotchas, inspector, strict-mode, validation-layers)",
-        "UPDATED: 5 Nexus skills — tightened (codegen-decision-tree, golden-patterns, api-patterns, production-deployment, security)",
-        "UPDATED: 7 Kaizen skills — tightened (unified-api-design, unified-blueprint, config, memory, structured-outputs, tool-calling, trust-eatp)",
+        "UPDATED: 6 DataFlow skills \u2014 tightened (bulk-ops, crud, gotchas, inspector, strict-mode, validation-layers)",
+        "UPDATED: 5 Nexus skills \u2014 tightened (codegen-decision-tree, golden-patterns, api-patterns, production-deployment, security)",
+        "UPDATED: 7 Kaizen skills \u2014 tightened (unified-api-design, unified-blueprint, config, memory, structured-outputs, tool-calling, trust-eatp)",
         "UPDATED: 1 deployment skill (deployment-patterns)",
         "UPDATED: 1 frontend-integration skill (flutter-patterns)",
         "UPDATED: 2 flutter-patterns skills (creating-design-system, flutter-design-system)",
@@ -297,7 +303,7 @@
     {
       "version": "1.2.0",
       "date": "2026-04-05",
-      "summary": "TSG specialists + stale agent/rule cleanup + ontology catch-up from loom v1.2→1.6",
+      "summary": "TSG specialists + stale agent/rule cleanup + ontology catch-up from loom v1.2\u21921.6",
       "changes": [
         "NEW: 3 specialist agents (mcp-platform, ml, align) from loom v1.6.0",
         "NEW: skills/34-kailash-ml/ (8 ML lifecycle skills)",
@@ -305,9 +311,9 @@
         "NEW: 7 MCP platform skills in skills/05-kailash-mcp/",
         "DELETED: rules/no-stubs.md (merged into zero-tolerance.md in loom v1.3.0)",
         "DELETED: rules/branch-protection.md (merged into git.md in loom v1.3.0)",
-        "UPDATED: rules/agents.md — delegation table expanded to 8 specialists",
-        "UPDATED: commands/wrapup.md — red team verification with inline evidence",
-        "FIXED: cc-audit fixes — delegation routing, SKILL.md descriptions"
+        "UPDATED: rules/agents.md \u2014 delegation table expanded to 8 specialists",
+        "UPDATED: commands/wrapup.md \u2014 red team verification with inline evidence",
+        "FIXED: cc-audit fixes \u2014 delegation routing, SKILL.md descriptions"
       ]
     },
     {
@@ -323,7 +329,7 @@
     {
       "version": "1.0.0",
       "date": "2026-03-31",
-      "summary": "Initial Gate 2 sync — 515 artifacts from loom/ with rb variant overlays",
+      "summary": "Initial Gate 2 sync \u2014 515 artifacts from loom/ with rb variant overlays",
       "changes": [
         "Initial population: 515 artifacts (agents, commands, rules, skills, guides)",
         "12 rb variant overlays applied (Ruby-specific patterns, commands, skills)",
@@ -331,5 +337,6 @@
       ]
     }
   ],
-  "updated": "2026-05-03"
+  "updated": "2026-05-03",
+  "synced_at": "2026-05-04T01:00:00Z"
 }
