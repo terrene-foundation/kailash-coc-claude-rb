@@ -1,5 +1,5 @@
 {
-  "version": "1.11.0",
+  "version": "1.12.0",
   "type": "coc-use-template",
   "description": "COC USE template for Ruby SDK projects (Magnus bindings)",
   "released": "2026-05-05",
@@ -8,9 +8,10 @@
     "type": "coc-source",
     "version": "2.17.0",
     "build_version": "2.17.0",
-    "synced_at": "2026-05-05T06:46:25Z",
+    "synced_at": "2026-05-05T15:40:32Z",
     "loom_sha": "76a3bfc",
-    "source_commit": "76a3bfc"
+    "source_commit": "671b79f",
+    "template_version": "2.18.0"
   },
   "changelog": [
     {
@@ -342,6 +343,6 @@
       ]
     }
   ],
-  "updated": "2026-05-03",
+  "updated": "2026-05-05",
   "synced_at": "2026-05-04T01:00:00Z"
 }
