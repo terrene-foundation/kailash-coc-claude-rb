@@ -1,19 +1,24 @@
 {
-  "version": "1.12.0",
+  "version": "1.13.0",
   "type": "coc-use-template",
   "description": "COC USE template for Ruby SDK projects (Magnus bindings)",
-  "released": "2026-05-05",
+  "released": "2026-05-06",
   "upstream": {
     "name": "loom",
     "type": "coc-source",
-    "version": "2.17.0",
-    "build_version": "2.17.0",
-    "synced_at": "2026-05-05T15:40:32Z",
-    "loom_sha": "76a3bfc",
-    "source_commit": "671b79f",
-    "template_version": "2.18.0"
+    "version": "2.20.0",
+    "build_version": "2.20.0",
+    "synced_at": "2026-05-05T18:09:14Z",
+    "loom_sha": "da39ec7",
+    "source_commit": "da39ec7",
+    "template_version": "2.20.0"
   },
   "changelog": [
+    {
+      "version": "1.13.0",
+      "date": "2026-05-06",
+      "summary": "MINOR: cumulative 2.18.0 → 2.19.0 → 2.20.0 jump (rb missed-cycle clearance). Prior sync (1.12.0 at loom 2.18.0 content; upstream.template_version was set to 2.18.0 but upstream.version had drifted to 2.17.0 — schema dialect bug fixed this cycle per new sync-completeness.md MUST-3). Three new rules + one new hook + one detector fix + companion fixtures + companion guide. (1) NEW BASELINE RULE rules/coc-sync-landing.md (priority:0 / scope:baseline; 1,506 B) — BUILD-side discipline binding `/sync-to-build` deliveries to `main` BEFORE any other session work; 3 MUST clauses (PR #1, explicit-paths staging, admin-merge per owner workflow). Pairs with the new SessionStart hook coc-drift-warn.js. From loom 2.19.0. (2) NEW PATH-SCOPED RULE rules/hook-output-discipline.md (priority:10 / scope:path-scoped at .claude/hooks/** + variants + test-harness; 15,906 B) — 4 MUST + 4 MUST NOT clauses binding every halting hook to the canonical instructAndWait shape (severity / what_happened / why / agent_must_report / agent_must_wait / user_summary), forbidding severity:block from lexical regex alone, mandating shell-variable skip for command-string detectors, and requiring committed audit fixtures. From loom 2.20.0. (3) NEW PATH-SCOPED RULE rules/sync-completeness.md (priority:10 / scope:path-scoped at sync-manifest.yaml + commands/sync*.md + .claude/VERSION; 14,410 B) — 4 MUST + 4 MUST NOT clauses mandating every /sync* invocation enumerate templates from sync-manifest.yaml at invocation time, emit per-template verification table, conform to uniform VERSION schema (canonical upstream.version field), and source numerical claims in session-notes from verifying commands. THIS is the rule whose MUST-3 closes the schema-drift bug that left rb at upstream.version=2.17.0 / template_version=2.18.0 last cycle. From loom 2.20.0. (4) NEW HOOK hooks/coc-drift-warn.js (6,190 B; +x) — SessionStart hook that warns when COC artifacts have been delivered (working-tree drift) but not landed on main yet. Wired into settings.json::hooks.SessionStart with 5s timeout. Pairs with rules/coc-sync-landing.md. From loom 2.19.0. (5) UPDATED RULE rules/worktree-isolation.md — frontmatter DEMOTED priority:0/scope:baseline → priority:10/scope:path-scoped (paths: .claude/agents/**, .claude/commands/**, .claude/skills/**, **/*worktree*, **/workspaces/**). Body unchanged; only the loading scope changes — the rule now fires on worktree-touching paths instead of always-on baseline, restoring cap-headroom for the cap-budgeted CLI baseline emissions (cap-headroom is non-binding for this CC-only rb USE template, but the structural scope shift carries through). From loom 2.19.0. (6) DETECTOR FIX hooks/lib/violation-patterns.js::detectRepoScopeDriftBash — severity 'block' → 'halt-and-report' (lexical regex signal cannot justify block per hook-output-discipline.md MUST-2); skip captured groups referencing $VAR / ${VAR} / $(...) / backtick (MUST-3); strip surrounding quotes from captured target. From loom 2.20.0. (7) NEW AUDIT FIXTURES audit-fixtures/violation-patterns/detectRepoScopeDriftBash/ — 5 fixtures + README.md pinning each scope-restriction predicate of the detector per the new cc-artifacts.md Rule 9 + hook-output-discipline.md MUST-4 'Audit Tools Ship With Committed Test Fixtures'. From loom 2.20.0. (8) NEW EXTRACT guides/rule-extracts/coc-sync-landing.md (8,942 B) — companion guide for the new baseline rule carrying full BLOCKED-rationalizations, extended bash examples, origin post-mortem, MUST NOT clauses, and cross-rule relationships. From loom 2.19.0. (9) SETTINGS.JSON UPDATE — SessionStart hooks list += coc-drift-warn.js entry (5s timeout). Description preserved as 'Kailash COC Claude (Ruby) - Claude Code hooks configuration'. (10) VERSION SCHEMA REPAIR per new sync-completeness.md MUST-3: upstream.version was lagging at 2.17.0 while upstream.template_version had reached 2.18.0 — the rb-dialect drift the new rule explicitly cites. Both fields now equal 2.20.0; upstream.build_version retained for one back-compat cycle. NO SDK pin updates — RB target has no Gemfile / *.gemspec at the template root. NO new agents / commands. test-harness/trust-posture-poc/ extensions excluded per .claude/sync-manifest.yaml::exclude (test-harness/**)."
+    },
     {
       "version": "1.11.0",
       "date": "2026-05-05",
@@ -343,6 +348,6 @@
       ]
     }
   ],
-  "updated": "2026-05-05",
-  "synced_at": "2026-05-04T01:00:00Z"
+  "updated": "2026-05-06",
+  "synced_at": "2026-05-05T18:09:14Z"
 }
