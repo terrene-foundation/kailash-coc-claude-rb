@@ -208,6 +208,54 @@ function detectSelfConfession(finalText) {
   return null;
 }
 
+// 7. Menu-without-pick (rules/recommendation-quality.md MUST-1, 2026-05-06)
+//
+// Detects: ≥2 option markers in agent prose without a recommendation anchor.
+// Severity: advisory (lexical regex match — per hook-output-discipline.md
+//   MUST-2, lexical signals MUST NOT carry severity:block).
+// Cumulative tracking: violations accumulate in violations.jsonl; trust-posture
+//   downgrade triggers per rules/trust-posture.md MUST Rule 4 (5× total in 30d).
+//
+// Option markers (≥2 required):
+//   "Option A:" / "Option B:" / ... (newline-anchored, lowercase variants too)
+//   "(a)" / "(b)" / "(c)" / "(d)" — bulleted list-letter form
+//   "[a]" / "[b]" / "[c]" / "[d]" — bracketed list-letter form
+//
+// Recommendation anchor (presence cancels the finding):
+//   "Recommend:" / "I recommend" / "My recommendation" / "Going with"
+//   / "Pick:" / "My pick" / "I'd go with" / "I suggest going with"
+//   / "I'm going with" / "My choice"
+const MENU_OPTION_MARKERS = [
+  /^\s*\*?\*?Option [A-D]\b/gim, // "Option A", "**Option B**", indented
+  /(?:^|\s)\([a-d]\)\s/gm, // "(a) ", " (b) "
+  /(?:^|\s)\[[a-d]\]\s/gm, // "[a] ", " [b] "
+];
+const RECOMMENDATION_ANCHOR =
+  /\b(I\s+recommend\b|I'm\s+recommending\b|Recommend:|Recommended\s+option:|Recommendation:|My\s+recommendation|Going\s+with\b|My\s+pick:|Pick:|I'd\s+go\s+with\b|I\s+suggest\s+going\s+with\b|I'm\s+going\s+with\b|My\s+choice:|I\s+choose\b)/i;
+
+function detectMenuWithoutPick(text) {
+  if (!text || typeof text !== "string") return null;
+
+  // Sum option-marker hits across the three patterns.
+  let totalMarkers = 0;
+  const evidenceSamples = [];
+  for (const re of MENU_OPTION_MARKERS) {
+    const matches = [...text.matchAll(re)];
+    totalMarkers += matches.length;
+    for (const m of matches.slice(0, 2)) evidenceSamples.push(m[0].trim());
+  }
+  if (totalMarkers < 2) return null;
+
+  // Recommendation anchor present → not a menu-without-pick
+  if (RECOMMENDATION_ANCHOR.test(text)) return null;
+
+  return {
+    rule_id: "recommendation-quality/MUST-1",
+    severity: "advisory", // lexical only; per hook-output-discipline.md MUST-2
+    evidence: evidenceSamples.slice(0, 4).join(" / "),
+  };
+}
+
 module.exports = {
   detectPreExistingNoSha,
   detectRepoScopeDriftText,
@@ -216,4 +264,5 @@ module.exports = {
   detectCommitClaim,
   detectSweepSubstitution,
   detectSelfConfession,
+  detectMenuWithoutPick,
 };
