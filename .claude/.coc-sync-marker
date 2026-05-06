@@ -1,13 +1,13 @@
 # COC Sync Marker — kailash-coc-claude-rb
-timestamp: 2026-05-06T08:02:24Z
+timestamp: 2026-05-06T09:44:48Z
 source: loom/.claude
-loom_sha: 9e08d33
+loom_sha: c52c1e0
 variant: rb
 clis: ["claude"]
-template_version: 2.21.1
+template_version: 2.21.2
 stats:
-  updated: 2
-  created: 0
+  updated: 4   # codify.md (global), ml-specialist.md (global), 03-nexus/SKILL.md (rb overlay redistribution), 05-kailash-mcp/SKILL.md (rb overlay redistribution)
+  created: 1   # skills/30-claude-code-patterns/sync-flow.md
   unchanged: 615
   use_excluded: 3
   excluded: 0
