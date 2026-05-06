@@ -8,9 +8,9 @@
     "type": "coc-source",
     "version": "2.20.0",
     "build_version": "2.20.0",
-    "synced_at": "2026-05-05T18:09:14Z",
-    "loom_sha": "da39ec7",
-    "source_commit": "da39ec7",
+    "synced_at": "2026-05-06T01:07:26Z",
+    "loom_sha": "5811f4c",
+    "source_commit": "5811f4c",
     "template_version": "2.20.0"
   },
   "changelog": [
