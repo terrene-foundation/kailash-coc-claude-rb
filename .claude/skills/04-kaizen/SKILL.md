@@ -1,6 +1,6 @@
 ---
 name: kaizen
-description: "Kailash Kaizen via Ruby Magnus binding — MANDATORY for AI agents/RAG/signatures/multi-agent. Raw LLM clients BLOCKED."
+description: "Kailash Kaizen (Ruby) — MANDATORY for AI agents/RAG/signatures. Raw LLM clients BLOCKED."
 ---
 
 # Kailash Kaizen - AI Agent Framework (Ruby)

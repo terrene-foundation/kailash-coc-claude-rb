@@ -1,6 +1,6 @@
 ---
 name: dataflow
-description: "Kailash DataFlow via Ruby Magnus binding — MANDATORY for DB/CRUD/bulk/migrations/multi-tenancy. Raw SQL/ORMs BLOCKED."
+description: "Kailash DataFlow (Ruby/Magnus) — MANDATORY for DB/CRUD/bulk/migrations. Raw SQL/ORMs BLOCKED."
 ---
 
 # Kailash DataFlow - Zero-Config Database Framework (Ruby)
@@ -93,7 +93,7 @@ Each model definition generates:
 4. `{Model}_Delete` - Delete record
 5. `{Model}_List` - List with filters
 6. `{Model}_Upsert` - Insert or update (atomic)
-7. `{Model}_Count` - Efficient COUNT(*) queries
+7. `{Model}_Count` - Efficient COUNT(\*) queries
 8. `{Model}_BulkCreate` - Bulk insert
 9. `{Model}_BulkUpdate` - Bulk update
 10. `{Model}_BulkDelete` - Bulk delete

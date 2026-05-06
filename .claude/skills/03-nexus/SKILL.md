@@ -1,6 +1,6 @@
 ---
 name: nexus
-description: "Kailash Nexus (Ruby): zero-config multi-channel platform deploying workflows as API+CLI+MCP. Rack middleware, sessions, health, plugins, event system, workflow registration."
+description: "Kailash Nexus (Ruby) — MANDATORY for API+CLI+MCP. Direct Rack/Sinatra BLOCKED."
 ---
 
 # Kailash Nexus - Multi-Channel Platform Framework (Ruby)

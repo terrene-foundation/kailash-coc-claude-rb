@@ -1,6 +1,6 @@
 ---
 name: core-sdk
-description: "Kailash Ruby SDK fundamentals — gem setup, workflow creation, node patterns, runtime execution, and Magnus FFI bindings."
+description: "Kailash Ruby SDK — gem setup, workflows, nodes, runtime, Magnus FFI bindings."
 ---
 
 # Kailash Ruby SDK
@@ -44,12 +44,12 @@ workflow.close
 
 ## Core Types
 
-| Type | Purpose |
-|------|---------|
-| `Kailash::Registry` | Node type registry (must outlive workflows) |
-| `Kailash::WorkflowBuilder` | DAG builder — add_node, connect, build |
-| `Kailash::Runtime` | Workflow executor — open/close lifecycle |
-| `Kailash::Workflow` | Compiled workflow (from builder.build) |
+| Type                       | Purpose                                     |
+| -------------------------- | ------------------------------------------- |
+| `Kailash::Registry`        | Node type registry (must outlive workflows) |
+| `Kailash::WorkflowBuilder` | DAG builder — add_node, connect, build      |
+| `Kailash::Runtime`         | Workflow executor — open/close lifecycle    |
+| `Kailash::Workflow`        | Compiled workflow (from builder.build)      |
 
 ## Lifecycle Pattern
 

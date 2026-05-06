@@ -1,6 +1,6 @@
 ---
 name: architecture-decisions
-description: "Kailash architecture decisions: which framework (Core/DataFlow/Nexus/Kaizen), runtime (Async/Sync), DB (Postgres/SQLite), node, test tier."
+description: "Kailash architecture — pick framework, runtime, DB, node, test tier."
 ---
 
 # Kailash Architecture Decisions
