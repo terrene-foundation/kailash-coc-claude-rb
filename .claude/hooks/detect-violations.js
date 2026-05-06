@@ -203,6 +203,7 @@ function logAndEmit(payload, event, finding, what_happened) {
       P.detectSweepSubstitution(finalText),
       P.detectSelfConfession(finalText),
       P.detectRepoScopeDriftText(finalText),
+      P.detectMenuWithoutPick(finalText),
       ...ackFindings,
     ].filter(Boolean);
 
