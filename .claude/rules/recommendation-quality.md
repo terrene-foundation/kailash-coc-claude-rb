@@ -1,3 +1,15 @@
+---
+priority: 10
+scope: path-scoped
+paths:
+  - ".claude/**"
+  - "workspaces/**"
+  - "**/*.md"
+  - "briefs/**"
+  - "todos/**"
+  - "journal/**"
+---
+
 # Recommendation Quality — No Suggestion Without Recommendation
 
 When the agent surfaces a choice to the user — options, paths forward, design tradeoffs, technical decisions, mitigation strategies — the agent MUST present a **recommendation**, not a menu. The recommendation MUST include implications, pros and cons, and plain-language framing the user can act on without a technical glossary. Bare option enumeration without a pick is BLOCKED. Pros-and-cons-without-recommendation is BLOCKED. Technical jargon without translation is BLOCKED.

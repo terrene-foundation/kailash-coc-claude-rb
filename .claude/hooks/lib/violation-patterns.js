@@ -256,6 +256,77 @@ function detectMenuWithoutPick(text) {
   };
 }
 
+// 8. Regex-for-semantic-assertion (rules/probe-driven-verification.md MUST-1, 2026-05-06)
+//
+// Detects: regex/keyword/substring matching against assistant-prose-shaped
+// inputs in test/harness contexts. Heuristic — surfaces candidates for
+// human adjudication (advisory). Cannot perfectly distinguish structural
+// from semantic; the function-name heuristic is conservative.
+//
+// Severity: advisory (lexical detector per hook-output-discipline.md MUST-2).
+// Trigger: source contains BOTH:
+//   - a regex/grep pattern (re.search, re.match, grep -E, str.contains, /…/.test, .match, .search)
+//   - inside a function whose name suggests semantic verification
+//     (verify_*, score_*, assert_*, check_*, probe_* AND any of:
+//      recommendation, refusal, compliance, response, intent, semantic, quality)
+const REGEX_API_PATTERNS = [
+  /\bre\.(search|match|findall)\(/,
+  /\bstr\.(contains|matches)\b/,
+  /\bgrep\s+(-E|-P)/,
+  /\.match\(['"`/]/,
+  /\.test\(['"`/]/,
+];
+const SEMANTIC_FN_NAME =
+  /\b(verify|score|assert|check|probe)_\w*?(recommend|refus|complian|respons|intent|semantic|quality|outcome|narrative|reasoning)/i;
+
+function detectRegexForSemanticAssertion(source, filePath) {
+  if (!source || typeof source !== "string") return null;
+  if (
+    !/(\.test|tests?\/|test-harness|suites|audit-fixture)/.test(filePath || "")
+  )
+    return null;
+  const lines = source.split("\n");
+  const findings = [];
+  let inSemanticFn = false;
+  let fnStartLine = 0;
+  let braceDepth = 0;
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (
+      SEMANTIC_FN_NAME.test(line) &&
+      /\bdef\b|\bfunction\b|=>\s*\{?/.test(line)
+    ) {
+      inSemanticFn = true;
+      fnStartLine = i + 1;
+      braceDepth = 0;
+    }
+    if (inSemanticFn) {
+      braceDepth +=
+        (line.match(/\{/g) || []).length - (line.match(/\}/g) || []).length;
+      for (const re of REGEX_API_PATTERNS) {
+        if (re.test(line)) {
+          findings.push({
+            line: i + 1,
+            fnLine: fnStartLine,
+            snippet: line.trim().slice(0, 120),
+          });
+          break;
+        }
+      }
+      if (braceDepth <= 0 && i > fnStartLine + 1) inSemanticFn = false;
+    }
+  }
+  if (findings.length === 0) return null;
+  return {
+    rule_id: "probe-driven-verification/MUST-1",
+    severity: "advisory",
+    evidence: findings
+      .slice(0, 3)
+      .map((f) => `L${f.line}: ${f.snippet}`)
+      .join(" | "),
+  };
+}
+
 module.exports = {
   detectPreExistingNoSha,
   detectRepoScopeDriftText,
@@ -265,4 +336,5 @@ module.exports = {
   detectSweepSubstitution,
   detectSelfConfession,
   detectMenuWithoutPick,
+  detectRegexForSemanticAssertion,
 };

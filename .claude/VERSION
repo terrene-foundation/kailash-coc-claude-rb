@@ -1,17 +1,17 @@
 {
-  "version": "1.14.0",
+  "version": "1.15.0",
   "type": "coc-use-template",
   "description": "COC USE template for Ruby SDK projects (Magnus bindings)",
   "released": "2026-05-06",
   "upstream": {
     "name": "loom",
     "type": "coc-source",
-    "version": "2.25.0",
+    "version": "2.27.0",
     "build_version": "2.25.0",
-    "synced_at": "2026-05-06T12:30:00Z",
-    "loom_sha": "af13ce234d842af076d4a9e3aa6f89b7082c781f",
-    "source_commit": "c52c1e0",
-    "template_version": "2.25.0",
+    "synced_at": "2026-05-06T13:44:54Z",
+    "loom_sha": "e1569bd",
+    "source_commit": "e1569bd",
+    "template_version": "2.27.0",
     "sdk_packages": {
       "workspace": "3.25.0",
       "independent_crates": {
@@ -22,6 +22,22 @@
     }
   },
   "changelog": [
+    {
+      "date": "2026-05-06",
+      "version": "1.15.0",
+      "summary": "loom 2.27.0 sync (rb): cumulative deltas from 2.25.0 — (a) 2.25.1 PR #59 rules/recommendation-quality.md frontmatter fix (priority:10, scope:path-scoped, paths) — was missing in 2.25.0 distribution to rb. (b) 2.26.0 PR #60 probe-driven verification: rules/probe-driven-verification.md detection-mechanism status flipped to-be-implemented → IMPLEMENTED 2026-05-06; rules/hook-output-discipline.md cross-reference to probe-driven-verification.md MUST-4; hooks/lib/violation-patterns.js detectRegexForSemanticAssertion exported; hooks/detect-violations.js Stop-event + PostToolUse(Edit|Write) wiring; 4 audit fixtures shipped at .claude/audit-fixtures/violation-patterns/detectRegexForSemanticAssertion/. (c) 2.27.0 PR #61 tier-classify multi-CLI orchestration artifacts (commands/cli-audit.md is already current per md5 match — no diff). SDK pins unchanged. Pre-flight verify-overlays.sh rb 26/26 passing.",
+      "changes": [
+        "RULE FRONTMATTER FIX (loom 2.25.1 PR #59): rules/recommendation-quality.md prepended priority:10 + scope:path-scoped + paths block — closes activation gap in 2.25.0 distribution to rb.",
+        "RULE CONTENT (loom 2.26.0 PR #60): rules/probe-driven-verification.md detection-mechanism status flipped to-be-implemented → IMPLEMENTED 2026-05-06.",
+        "RULE CROSS-REF (loom 2.26.0): rules/hook-output-discipline.md added Pairs with rules/probe-driven-verification.md MUST-4.",
+        "HOOK WIRING (loom 2.26.0): hooks/lib/violation-patterns.js detectRegexForSemanticAssertion exported (74 LOC delta); hooks/detect-violations.js Stop-event + PostToolUse(Edit|Write) chain wires the detector (27 LOC delta).",
+        "AUDIT FIXTURES (loom 2.26.0): .claude/audit-fixtures/violation-patterns/detectRegexForSemanticAssertion/ — 4 fixtures (clean-non-test-file, clean-structural-probe, flag-grep-in-score-refusal, flag-regex-in-verify-recommendation) + README.",
+        "TIER CLASSIFY (loom 2.27.0 PR #61): commands/cli-audit.md is already current in this template (md5 match) — no diff to apply, classification metadata-only at the manifest layer.",
+        "VERSION SCHEMA: canonical upstream.version + upstream.template_version + upstream.synced_at + upstream.loom_sha all populated (loom 2.27.0 e1569bd).",
+        "SDK PINS: unchanged.",
+        "PRESERVED: CLAUDE.md (template-owned, never overwritten per coc-sync Step 7)."
+      ]
+    },
     {
       "version": "2.21.2",
       "date": "2026-05-06",
