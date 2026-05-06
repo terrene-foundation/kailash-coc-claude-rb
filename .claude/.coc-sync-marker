@@ -1,5 +1,18 @@
-synced_at: 2026-05-05T15:40:32Z
-loom_version: 2.18.0
-loom_commit: 671b79f
-event: kailash-py /codify upstream — Rule 3d + Rule 1a clause additions
-files_modified: 2
+# COC Sync Marker — kailash-coc-claude-rb
+timestamp: 2026-05-06T06:32:15Z
+source: loom/.claude
+loom_sha: e047b66
+loom_version: 2.21.0
+variant: rb
+clis: ["claude"]
+tier_subscriptions: ['cc', 'co', 'coc']
+stats:
+  updated: 27
+  created: 1
+  unchanged: 598
+  composed: 0
+  overlay_replaced: 26
+  preserved: 0
+  baselines_emitted:
+    cc: 0  # CLAUDE.md is preserved, not emitted
+  cli_artifacts: null  # CC-only template, no Codex/Gemini emission
