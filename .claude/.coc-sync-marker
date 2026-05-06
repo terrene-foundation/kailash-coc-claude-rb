@@ -1,25 +1,29 @@
 # COC Sync Marker — kailash-coc-claude-rb
-timestamp: 2026-05-06T09:44:48Z
+# Written by /sync rb Gate 2 (loom 2.25.0 → cc-claude-rb)
+# Source: loom af13ce2 (cumulative — PRs #53–#58: Loom-A through Loom-D, recommendation-quality, /migrate FINAL, cross-CLI hygiene, probe-driven verification)
+timestamp: 2026-05-06T12:30:00Z
 source: loom/.claude
-loom_sha: c52c1e0
+source_commit: af13ce2
+loom_version: 2.25.0
+template_version: 2.25.0
 variant: rb
 clis: ["claude"]
-template_version: 2.21.2
+template_type: cc-only-legacy
 stats:
-  updated: 4   # codify.md (global), ml-specialist.md (global), 03-nexus/SKILL.md (rb overlay redistribution), 05-kailash-mcp/SKILL.md (rb overlay redistribution)
-  created: 1   # skills/30-claude-code-patterns/sync-flow.md
-  unchanged: 615
-  use_excluded: 3
-  excluded: 0
-  skipped_missing: 0
-  preserved: 1   # CLAUDE.md
-  composed: 0    # rb has no slot-keyed overlays
+  updated: 6   # bin/emit-cli-artifacts.mjs, commands/cli-audit.md, hooks/detect-violations.js, hooks/lib/violation-patterns.js, skills/12-testing-strategies/SKILL.md, skills/30-claude-code-patterns/sync-flow.md
+  created: 4   # rules/cross-cli-artifact-hygiene.md, rules/probe-driven-verification.md, rules/recommendation-quality.md, skills/12-testing-strategies/probe-driven-verification.md
+  unchanged: ~614
+  use_excluded: 3   # commands/migrate.md (rb has no multi-CLI sister), skills/30-claude-code-patterns/multi-cli-migration.md, audit-fixtures/codex-mcp-guard/ (Codex-only)
+  preserved: 1   # CLAUDE.md (template-owned)
+  composed: 0    # rb has no slot-keyed overlays this cycle
+  obsoleted_purged: 0
   baselines_emitted:
-    cc: 0   # CLAUDE.md preserved (template-owned)
+    cc: 0   # CLAUDE.md preserved
     codex: 0   # rb is CC-only
     gemini: 0
   cli_artifacts:
     codex: null   # rb is CC-only
     gemini: null
-purges:
-  obsoleted: 0
+  mcp_guard:
+    policies_populated: false   # rb is CC-only — no codex-mcp-guard
+sync_scope: cumulative   # 4 versions distributed (2.22.0/2.23.0/2.24.0/2.25.0)
