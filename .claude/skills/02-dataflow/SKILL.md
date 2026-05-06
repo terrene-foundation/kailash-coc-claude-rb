@@ -1,6 +1,6 @@
 ---
 name: dataflow
-description: "Kailash DataFlow - zero-config database framework with automatic model-to-node generation for Ruby. Use when asking about 'database operations', 'DataFlow', 'database models', 'CRUD operations', 'bulk operations', 'database queries', 'database migrations', 'multi-tenancy', 'multi-instance', 'database transactions', 'PostgreSQL', 'MySQL', 'SQLite', 'Express API', 'database performance', 'database deployment', 'database testing', or 'TDD with databases'. DataFlow generates 11 workflow nodes per model and provides Express API for direct CRUD."
+description: "Kailash DataFlow via Ruby Magnus binding — MANDATORY for DB/CRUD/bulk/migrations/multi-tenancy. Raw SQL/ORMs BLOCKED."
 ---
 
 # Kailash DataFlow - Zero-Config Database Framework (Ruby)

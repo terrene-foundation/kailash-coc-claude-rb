@@ -1,6 +1,6 @@
 ---
 name: kaizen
-description: "Kailash Kaizen - production-ready AI agent framework for Ruby with signature-based programming, multi-agent coordination, and enterprise features. Use when asking about 'AI agents', 'agent framework', 'BaseAgent', 'multi-agent systems', 'agent coordination', 'signatures', 'Delegate', 'RAG agents', 'agent prompts', 'chain of thought', 'ReAct pattern', 'pipeline patterns', 'supervisor-worker', 'router pattern', 'ensemble pattern', 'streaming agents', 'agent memory', 'agentic workflows', 'L3 autonomy', 'PACT governance', 'GovernedSupervisor', 'budget tracking', or 'trust protocol'."
+description: "Kailash Kaizen via Ruby Magnus binding — MANDATORY for AI agents/RAG/signatures/multi-agent. Raw LLM clients BLOCKED."
 ---
 
 # Kailash Kaizen - AI Agent Framework (Ruby)
