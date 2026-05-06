@@ -1,18 +1,25 @@
 # COC Sync Marker — kailash-coc-claude-rb
-timestamp: 2026-05-06T06:32:15Z
+timestamp: 2026-05-06T08:02:24Z
 source: loom/.claude
-loom_sha: e047b66
-loom_version: 2.21.0
+loom_sha: 9e08d33
 variant: rb
 clis: ["claude"]
-tier_subscriptions: ['cc', 'co', 'coc']
+template_version: 2.21.1
 stats:
-  updated: 27
-  created: 1
-  unchanged: 598
-  composed: 0
-  overlay_replaced: 26
-  preserved: 0
+  updated: 2
+  created: 0
+  unchanged: 615
+  use_excluded: 3
+  excluded: 0
+  skipped_missing: 0
+  preserved: 1   # CLAUDE.md
+  composed: 0    # rb has no slot-keyed overlays
   baselines_emitted:
-    cc: 0  # CLAUDE.md is preserved, not emitted
-  cli_artifacts: null  # CC-only template, no Codex/Gemini emission
+    cc: 0   # CLAUDE.md preserved (template-owned)
+    codex: 0   # rb is CC-only
+    gemini: 0
+  cli_artifacts:
+    codex: null   # rb is CC-only
+    gemini: null
+purges:
+  obsoleted: 0

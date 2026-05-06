@@ -6,12 +6,12 @@
   "upstream": {
     "name": "loom",
     "type": "coc-source",
-    "version": "2.21.0",
-    "build_version": "2.21.0",
-    "synced_at": "2026-05-06T06:32:15Z",
-    "loom_sha": "e047b66",
-    "source_commit": "e047b66",
-    "template_version": "2.21.0",
+    "version": "2.21.1",
+    "build_version": "2.21.1",
+    "synced_at": "2026-05-06T08:02:24Z",
+    "loom_sha": "9e08d33",
+    "source_commit": "9e08d33",
+    "template_version": "2.21.1",
     "sdk_packages": {
       "workspace": "3.25.0",
       "independent_crates": {
@@ -22,6 +22,11 @@
     }
   },
   "changelog": [
+    {
+      "version": "2.21.1",
+      "date": "2026-05-06",
+      "summary": "Gate 2 redistribution from loom@9e08d33 (post PR #44 audit fixes). Updated variants/rb/skills/02-dataflow/SKILL.md + variants/rb/skills/04-kaizen/SKILL.md to \u2264200-char MANDATORY-framed descriptions per cc-architect Rule 1b (skill description \u2264200-char cap to restore semantic activation listing visibility)."
+    },
     {
       "version": "1.13.0",
       "date": "2026-05-06",
@@ -355,7 +360,5 @@
         "Express-first patterns in rules/patterns.md with Ruby syntax"
       ]
     }
-  ],
-  "updated": "2026-05-06",
-  "synced_at": "2026-05-05T18:09:14Z"
+  ]
 }
