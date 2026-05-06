@@ -1,6 +1,6 @@
 ---
 name: kailash-mcp
-description: "Kailash MCP (Model Context Protocol) - production-ready MCP server implementation for Ruby. Use when asking about 'MCP', 'Model Context Protocol', 'MCP server', 'MCP client', 'MCP tools', 'MCP resources', 'MCP prompts', 'MCP authentication', 'MCP transports', 'stdio transport', 'SSE transport', 'HTTP transport', 'MCP testing', 'progress reporting', or 'structured tools'."
+description: "Kailash MCP (Ruby): server, client, tools, resources, prompts, auth, transports (stdio/SSE/HTTP), testing. Use for AI agent integration."
 ---
 
 # Kailash MCP - Model Context Protocol Integration (Ruby)
