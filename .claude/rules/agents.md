@@ -34,6 +34,8 @@ When multiple independent operations are needed, launch agents in parallel via t
 
 **Why:** Sequential execution of independent operations wastes the autonomous execution multiplier, turning a 1-session task into a multi-session bottleneck.
 
+**See also**: `rules/time-pressure-discipline.md` — when the user signals time pressure ("speed up", "deadline looming"), parallelization (parallel specialist delegation, parallel worktree waves of 3) IS the throughput response. Procedure drops are BLOCKED even when the user authorizes them; the structural alternative is more parallel work, not fewer steps.
+
 ### MUST: Parallel Brief-Claim Verification When Issue Count ≥ 3
 
 When `/analyze` runs against a brief covering ≥ 3 distinct issues / failure modes / workstreams, the orchestrator MUST launch parallel deep-dive verification agents — one per claim cluster — to independently re-grep / re-read every factual claim in the brief tagged with file:line citations. Inaccuracies surfaced by the deep-dive sweep MUST be recorded in the workspace journal AND in the architecture plan's "Brief corrections" section AS THE GATE before `/todos`. Single-agent analysis on a ≥3-issue brief is BLOCKED — the framing inherited from the brief is the failure mode this rule prevents.
