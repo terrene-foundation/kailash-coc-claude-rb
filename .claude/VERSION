@@ -1,16 +1,14 @@
 {
-  "version": "1.15.0",
+  "version": "1.16.0",
   "type": "coc-use-template",
   "description": "COC USE template for Ruby SDK projects (Magnus bindings)",
-  "released": "2026-05-06",
+  "released": "2026-05-07",
   "upstream": {
     "name": "loom",
     "type": "coc-source",
     "version": "2.28.2",
-    "build_version": "2.25.0",
-    "synced_at": "2026-05-06T16:26:19Z",
-    "loom_sha": "94ed1be",
-    "source_commit": "e1569bd",
+    "synced_at": "2026-05-07T00:00:00Z",
+    "loom_sha": "721b382",
     "template_version": "2.28.2",
     "sdk_packages": {
       "workspace": "3.25.0",
@@ -22,6 +20,28 @@
     }
   },
   "changelog": [
+    {
+      "date": "2026-05-07",
+      "version": "1.16.0",
+      "summary": "loom 2.28.2 catch-up sync (rb): cumulative deltas 2.27.0 → 2.28.2 + Foundation rules purge per loom PRs #81 + #82. (a) PRs #67-#74 — value-prioritization stack (rules/value-prioritization.md, rules/time-pressure-discipline.md, hook detectors F-1/F-2/F-3 in violation-patterns.js + detect-violations.js). (b) Sweep-completeness rule + agent-reasoning paths broadened to **/*classifier* / **/*extractor* / **/*delegate* / **/*router* / **/*dispatcher* / **/*intent*. (c) trust-posture emergency-trigger expansion (time_pressure_procedure_drop, streetlight_selection, deferral_without_value_anchor). (d) PRs #80-#82 — Foundation rules tier shift (co → coc) + use_excluded for USE templates: rules/independence.md + rules/terrene-naming.md PURGED from rb (Ruby SDK consumers are third-party; MUST NOT inherit Foundation branding constraints). (e) commands/codify.md / sweep.md / todos.md / wrapup.md updated. (f) Skill 15 enterprise-infrastructure scheduler + durability patterns shipped (PR #83). (g) skills/01-core-sdk SKILL description compressed (cumulative listing fits under 1% context budget). Pre-flight verify-overlays.sh rb 26/26 passing.",
+      "changes": [
+        "NEW RULE (loom 2.28.0 PR #73): rules/value-prioritization.md — rank by user value before shard-fit; deferred shards carry value-anchors that survive /clear.",
+        "NEW RULE (loom 2.28.0 PR #68): rules/time-pressure-discipline.md — pressure framings trigger parallelization, never procedure-drop.",
+        "NEW RULE (loom 2.28.0): rules/sweep-completeness.md — multi-step protocol step substitution requires human gate.",
+        "RULE UPDATE (loom 2.28.0 PR #80): rules/agent-reasoning.md global paths broadened to capture classifier/extractor/delegate/router/dispatcher/intent surfaces. RB variant overlay frontmatter not updated in this cycle (still triggers on **/*agent* + **/kaizen/**); minor parity drift, not load-bearing.",
+        "RULE UPDATE: rules/agents.md / autonomous-execution.md / recommendation-quality.md / trust-posture.md / zero-tolerance.md — cross-references added to value-prioritization + time-pressure-discipline.",
+        "HOOK WIRING (loom 2.28.0 PRs #74-#76): hooks/lib/violation-patterns.js + hooks/detect-violations.js — F-1/F-2/F-3 detectors (detectStreetlightSelection, detectDeferredItemPickupWithoutRevalidation, detectGhIssueCloseAsNotPlanned).",
+        "COMMAND UPDATE: commands/codify.md / sweep.md / todos.md / wrapup.md — value-prioritization integration.",
+        "SKILL UPDATE (loom 2.28.2 PR #83): skills/15-enterprise-infrastructure/SKILL.md + scheduler-patterns.md + durability-patterns.md — shipped scheduler + durability content for the enterprise-infrastructure skill.",
+        "SKILL UPDATE: skills/01-core-sdk/SKILL.md — description compression (cumulative listing under 1% context budget).",
+        "PURGE (loom PRs #81 + #82, use_obsoleted): rules/independence.md + rules/terrene-naming.md REMOVED from this template — Foundation-branding rules are now BUILD-only (kailash-py/rs/prism); third-party Ruby SDK consumers using kailash gem do not inherit Foundation constraints.",
+        "OBSOLETED MANIFEST: .claude/.coc-obsoleted updated with the two purged Foundation rule paths so downstream consumers also purge on next sync.",
+        "VERSION SCHEMA: upstream.version + upstream.template_version + upstream.synced_at + upstream.loom_sha all populated at canonical schema per sync-completeness.md MUST-3. Removed legacy upstream.build_version + upstream.source_commit dialectal fields.",
+        "SDK PINS: unchanged (workspace 3.25.0 + EATP/governance/pact 0.1.0).",
+        "PRESERVED: CLAUDE.md (template-owned, never overwritten per coc-sync.md Step 7).",
+        "PRESERVED VARIANT: rules/agent-reasoning.md kept as rb variant overlay (full-file legacy form per coc-sync.md Step 2.5)."
+      ]
+    },
     {
       "date": "2026-05-06",
       "version": "1.15.0",

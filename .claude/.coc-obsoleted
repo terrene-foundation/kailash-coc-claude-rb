@@ -22,3 +22,6 @@ scripts/resolve-template.js
 .claude/guides/automated-maintenance.md
 .claude/guides/rule-extracts/git.md
 .claude/guides/rule-extracts/independence-rs.md
+# --- 2026-05-07: Foundation-branding rules now use_excluded (loom PRs #81, #82) ---
+.claude/rules/terrene-naming.md
+.claude/rules/independence.md
