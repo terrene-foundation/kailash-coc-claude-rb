@@ -38,3 +38,21 @@ notes:
   - "Foundation rules (independence.md, terrene-naming.md) purged per loom PRs #81 + #82 — these rules now BUILD-only (kailash-py/rs/prism); third-party Ruby SDK consumers MUST NOT inherit Foundation branding constraints."
   - "rules/agent-reasoning.md kept as rb variant overlay (full-file legacy form per coc-sync.md Step 2.5). Rb variant frontmatter narrower than loom 2.28.0's expanded paths (missing classifier/extractor/delegate/router/dispatcher/intent globs) — minor parity drift, not load-bearing (still triggers on **/*agent* + **/kaizen/**)."
   - "Schema: VERSION upstream block at canonical schema (upstream.version + upstream.template_version + upstream.synced_at + upstream.loom_sha) per sync-completeness.md MUST-3."
+
+# ─────────────────────────────────────────────────────────────────
+# 2026-05-08 follow-up sync — fix dead agent/rule references
+# ─────────────────────────────────────────────────────────────────
+# Distributes loom commit 940c07d (loom PR #97). Fixes dead pointers
+# identified in kailash-coc-claude-py#68 (same dead refs in -rs/-rb).
+#
+# timestamp: 2026-05-08T00:00:00Z
+# loom_sha: 0a87f3a
+# loom_pr: 97
+# changes:
+#   - hooks/validate-workflow.js: 5 BLOCK messages rules/no-stubs.md → rules/zero-tolerance.md
+#   - hooks/validate-bash-command.js: intermediate-reviewer → reviewer
+#   - skills/13-architecture-decisions/decide-framework.md: framework-advisor → analyst
+#   - skills/10-deployment-git/application-deployment.md: deployment-specialist hint rephrased
+#   - skills/11-frontend-integration/SKILL.md: frontend-developer → frontend-patterns link
+#   - skills/11-frontend-integration/frontend-developer.md → renamed to frontend-patterns.md
+#   - agents/frontend/flutter-specialist.md: frontend-developer → frontend-patterns cross-link
