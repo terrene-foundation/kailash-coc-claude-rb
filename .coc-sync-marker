@@ -1,2 +1,29 @@
-synced_at: "2026-05-03T08:30:12Z"
-source: loom@f1c9803
+# COC Sync Marker — kailash-coc-claude-rb
+timestamp: 2026-05-12T02:44:51Z
+source: loom/.claude
+variant: rb
+clis: ["claude"]
+loom_sha: 1c3b964
+loom_version: 2.29.4
+template_version: 1.20.0
+stats:
+  updated: 6        # rules/value-prioritization.md, skills/project/SKILL.md, settings.json, skills/30-claude-code-patterns/SKILL.md, .claude/VERSION (chained), .coc-sync-marker (this file)
+  created: 9        # hooks/coc-telemetry-autocommit.js, audit-fixtures/coc-telemetry-autocommit/gates.test.js, guides/rule-extracts/value-prioritization.md, skills/30-claude-code-patterns/multi-cli-migration.md, commands/migrate.md, audit-fixtures/violation-patterns/{detectDeferralWithoutValueAnchor,detectDeferredItemPickupWithoutRevalidation,detectGhIssueCloseAsNotPlanned,detectStreetlightSelection,detectTimePressureShortcut}/, detectRepoScopeDriftBash/upstream-remote/
+  composed: 0       # rb has full-file (legacy) variant overlays only; no slot-keyed composition
+  preserved: 1      # CLAUDE.md (template-owned, never overwritten)
+  baselines_emitted:
+    cc: 0           # CLAUDE.md is preserved, not emitted
+    codex: 0        # not applicable — rb is CC-only
+    gemini: 0       # not applicable — rb is CC-only
+  cli_artifacts:
+    codex:
+      prompts: 0    # not consumed — CC-only template
+      skills: 0
+    gemini:
+      commands: 0
+      skills: 0
+      agents: 0
+verify_overlays_rb: "26/26 passing"
+hooks_resolve: "17/17 in settings.json point to .claude/hooks/*.js on disk"
+scripts_hooks_leak: "none"
+obsoleted_orphans: "none"
