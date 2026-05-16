@@ -7,8 +7,8 @@
     "name": "loom",
     "type": "coc-source",
     "version": "2.31.0",
-    "synced_at": "2026-05-15T00:00:00Z",
-    "loom_sha": "f45759b",
+    "synced_at": "2026-05-16T11:13:16Z",
+    "loom_sha": "53dd297",
     "template_version": "2.31.0",
     "sdk_packages": {
       "workspace": "4.0.0",
