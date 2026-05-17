@@ -48,6 +48,6 @@ agent SHOULD treat that as a phase-gate skip signal:
 
 `/ws` (workspace status dashboard) flags missing-phase dirs in red.
 
-Origin: loom issue #19 Proposal 2 (2026-04-21 tpc/tpc_cash_treasury-scenario
+Origin: loom issue #19 Proposal 2 (2026-04-21 example-workspace/example-engagement
 /redteam — workspace had only `04-validate/` and `journal/`, agent drafted
 spec content + 13-shard program directly without `/analyze` or `/todos`).
