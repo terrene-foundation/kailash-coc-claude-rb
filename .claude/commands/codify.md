@@ -119,7 +119,7 @@ The trust-posture rule itself is the only grandfather exception. Every other rul
 
 ### 7. Create upstream proposal (routed by repo class)
 
-Detect repo class; route to matching Step in `guides/co-setup/09-proposal-protocol.md`. Four-row mutually-exclusive precedence per `rules/artifact-flow.md` § "Issue Routing By Change Type" — first matching signal wins. Manifests emit `origin: build | use-template | loom` explicitly; append-not-overwrite per `rules/artifact-flow.md`.
+Detect repo class (four-row mutually-exclusive precedence per `rules/artifact-flow.md` § "Issue Routing By Change Type" — first matching signal wins). USE-template origination schema (Step 7b) is self-contained in the synced skill `skills/30-claude-code-patterns/sync-flow.md` § "USE-Template Proposal Schema (Step 7b)" — use that in USE-template context; `guides/co-setup/09-proposal-protocol.md` carries the same schema plus full rationale but is loom-only (`use_excluded`) and MUST NOT be relied on as the schema authority where it is absent. Manifests emit `origin: build | use-template | loom` explicitly; append-not-overwrite per `rules/artifact-flow.md`.
 
 1. **loom** (`loom` in git remote AND `.claude/sync-manifest.yaml` exists) → Step 8 (loom→atelier; CC/CO-tier).
 2. **USE-template** (`kailash-coc-*` in git remote OR `.claude/VERSION::type == "coc-template"`) → Step 7b (USE-template→loom; COC-artifact only; mechanical wrong-lane glob-check enforced per Step 7b).
