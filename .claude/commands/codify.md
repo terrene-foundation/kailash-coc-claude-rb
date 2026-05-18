@@ -99,7 +99,7 @@ Ensure user-facing documentation reflects new capabilities. Verify README.md, do
 
 ### 6. Red team the agents and skills
 
-Validate that generated agents and skills are correct, complete, and secure. **cc-architect** verifies cc-artifacts compliance (descriptions under 120 chars, agents under 400 lines, commands under 150 lines, rules path-scoped, SKILL.md progressive disclosure).
+Validate that generated agents and skills are correct, complete, and secure. **cc-architect** verifies cc-artifacts compliance (descriptions under 120 chars, agents under 400 lines, commands under 150 lines, rules path-scoped, SKILL.md progressive disclosure). **Self-referential gate (MANDATORY, posture-independent):** before drafting convergence, match every file the proposal touches against `rules/self-referential-codify.md` Rule 2's allowlist; ANY match → the multi-agent redteam-with-tests round (that rule's Rule 1: reviewer + security-reviewer + structural-validator, parallel) is MANDATORY regardless of trust posture. Run this check from here — `self-referential-codify.md` is `scope: path-scoped` and may not be in context at framing time; this always-loaded command body is the structural guarantee the gate is evaluated before convergence is decided.
 
 ### 6b. Trust Posture Wiring (MANDATORY for new rules — ENFORCED)
 

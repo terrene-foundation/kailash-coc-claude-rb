@@ -1,13 +1,21 @@
 ---
-priority: 0
-scope: baseline
+priority: 10
+scope: path-scoped
+paths:
+  - ".claude/commands/**"
+  - ".claude/rules/**"
+  - ".claude/skills/**"
+  - ".claude/hooks/**"
+  - ".claude/bin/**"
+  - ".claude/agents/management/**"
+  - ".claude/audit-fixtures/violation-patterns/**"
 ---
 
 # Self-Referential /codify Discipline
 
 A `/codify` execution is **self-referential** when its proposal touches the loom-side artifacts that govern codification itself — commands like `/codify` / `/sync` / `/redteam`, the skills backing them, the rules governing artifact quality and trust posture, the hooks detecting violations, the bin scripts validating output. On those surfaces the agent is authoring rules that constrain its own next behavior, so a single-pass shipment can silently propagate a defect into every future session that loads the rule.
 
-Per posture defaults (`.claude/skills/32-trust-posture/redteam-integration.md`), L5_DELEGATED makes Round 1 OPTIONAL. On a non-self-referential surface that is the right trade-off — the user's blast radius is bounded by the artifact and the next session catches what slipped. On the self-referential surface the same default ships defects into the gate the next session would otherwise use to catch them. The forest-ledger arc (journal/0089–0098) cost 7 redteam rounds + a mid-arc Option A→B redesign before the substring-mask failure class was structurally closed — and per journal/0098 §FD #3: _"7 rounds of evidence say the single-pass L5 default would have shipped the R1 substring-mask silently."_
+Per posture defaults (`.claude/skills/32-trust-posture/redteam-integration.md`), L5*DELEGATED makes Round 1 OPTIONAL. On a non-self-referential surface that is the right trade-off — the user's blast radius is bounded by the artifact and the next session catches what slipped. On the self-referential surface the same default ships defects into the gate the next session would otherwise use to catch them. The forest-ledger arc (journal/0089–0098) cost 7 redteam rounds + a mid-arc Option A→B redesign before the substring-mask failure class was structurally closed — and per journal/0098 §FD #3: *"7 rounds of evidence say the single-pass L5 default would have shipped the R1 substring-mask silently."\_
 
 This rule overrides the posture default for that specific surface, and ONLY that surface, with a positive allowlist that names every file the gate covers.
 
@@ -66,6 +74,8 @@ The allowlist (load-bearing paths only; edge cases at the boundary resolve in fa
 - **Bin (codify-class):** `.claude/bin/{validate-*,scan-synced-disclosure,emit-cli-artifacts,emit,compose,sync-tier-aware,sync-consumer-dryrun}.mjs`
 - **Audit fixtures:** `.claude/audit-fixtures/violation-patterns/**`
 - **Management agents:** `.claude/agents/management/{coc-sync,sync-reviewer,repo-ops,settings-manager}.md`
+
+**`paths:` frontmatter is the load-trigger SUPERSET; this allowlist is the firing-scope SUBSET.** This rule is `scope: path-scoped`; its `paths:` globs (`.claude/{commands,rules,skills,hooks,bin}/**`, `.claude/agents/management/**`, `.claude/audit-fixtures/violation-patterns/**`) load the rule on ANY edit under those `.claude/` subtrees — deliberately broader than the named-file allowlist above. The allowlist is what the gate (Rule 1) FIRES on; the globs are only what LOADS the rule into context. Over-broad loading is fail-safe (an in-context rule that does not fire costs nothing). Narrowing the `paths:` globs to match the allowlist exactly is BLOCKED — it would drop the rule's load on a sibling surface and re-open the load-order gap that `commands/codify.md`'s gate directive closes. Every self-referential surface lives under `.claude/`, so the globs need no `workspaces/**` or filename-wildcard coverage (unlike `worktree-isolation.md`'s demotion).
 
 **BLOCKED rationalizations:**
 
